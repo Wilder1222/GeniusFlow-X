@@ -1,0 +1,33 @@
+/* MainLayout Component */
+
+.layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-background-primary);
+}
+
+/* MainLayout Component */
+
+.layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-background-primary);
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    position: relative;
+}
+
+.main {
+    flex: 1;
+    padding: var(--space-8);
+    min-height: calc(100vh - 73px);
+    /* Account for header height */
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}

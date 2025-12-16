@@ -1,0 +1,102 @@
+.container {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    color: #333;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.statCard {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.statCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.label {
+    font-size: 13px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.recentActivity {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+    margin-bottom: 24px;
+}
+
+.recentActivity h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    color: #333;
+}
+
+.activityGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+}
+
+.activityItem {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.activityLabel {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.activityValue {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 新增图表区域 */
+.chartsSection {
+    margin-top: 24px;
+}

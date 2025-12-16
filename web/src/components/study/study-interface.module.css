@@ -1,0 +1,217 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cardArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    perspective: 1000px;
+}
+
+.flashcard {
+    background: var(--surface-color);
+    width: 100%;
+    max-width: 600px;
+    min-height: 350px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.text {
+    font-size: 1.8rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+}
+
+.divider {
+    width: 80%;
+    height: 2px;
+    background: var(--border-color);
+    margin: 30px 0;
+}
+
+.answer {
+    color: var(--text-secondary);
+    font-size: 1.6rem;
+}
+
+.controls {
+    margin-top: 40px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 40px;
+}
+
+.revealBtn {
+    background: var(--primary-color);
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 16px 48px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    transition: transform 0.1s;
+    width: 100%;
+}
+
+.revealBtn:active {
+    transform: scale(0.98);
+}
+
+.gradeBtn {
+    flex: 1;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: white;
+}
+
+.again {
+    background: #FF3B30;
+}
+
+.hard {
+    background: #FF9500;
+}
+
+.good {
+    background: #34C759;
+}
+
+.easy {
+    background: #007AFF;
+}
+
+.gradeBtn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stats {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.emptyState {
+    text-align: center;
+    padding-top: 100px;
+}
+
+.emptyState h2 {
+    font-size: 2rem;
+    margin-bottom: 16px;
+}
+
+.xpReward {
+    margin-top: 32px;
+    padding: 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.xpGained {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+}
+
+.levelUp {
+    font-size: 1.5rem;
+    margin: 12px 0;
+    animation: bounce 0.5s ease;
+}
+
+.xpTotal {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin: 8px 0 0 0;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+.achievementsUnlocked {
+    margin-top: 24px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.achievementsUnlocked h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.3rem;
+    color: #333;
+}
+
+.achievementItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.achievementName {
+    font-weight: 600;
+    color: #333;
+}
+
+.achievementXP {
+    color: #667eea;
+    font-weight: 600;
+}

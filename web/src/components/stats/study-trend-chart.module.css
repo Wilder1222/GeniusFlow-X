@@ -1,0 +1,110 @@
+.container {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    color: #1a1a1a;
+}
+
+.loading,
+.empty {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 14px;
+}
+
+.chartSection {
+    margin-bottom: 32px;
+}
+
+.chartTitle {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    color: #333;
+}
+
+/* 评分分布区域 */
+.distributionSection {
+    margin-top: 24px;
+}
+
+.distributionContent {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: center;
+}
+
+.pieChartWrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.distributionStats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.statItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.statItem:hover {
+    background: #f0f0f0;
+    transform: translateX(4px);
+}
+
+.statColor {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.statLabel {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    flex: 1;
+}
+
+.statValue {
+    font-size: 14px;
+    color: #666;
+    font-weight: 600;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .container {
+        padding: 16px;
+    }
+
+    .distributionContent {
+        grid-template-columns: 1fr;
+    }
+
+    .pieChartWrapper {
+        order: 2;
+    }
+
+    .distributionStats {
+        order: 1;
+    }
+}

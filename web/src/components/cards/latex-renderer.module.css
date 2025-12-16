@@ -1,0 +1,24 @@
+.inlineMode {
+    display: inline;
+    vertical-align: middle;
+}
+
+.displayMode {
+    display: block;
+    text-align: center;
+    margin: 16px 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+/* KaTeX 样式增强 */
+.displayMode .katex-display {
+    margin: 0;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .displayMode {
+        font-size: 14px;
+    }
+}

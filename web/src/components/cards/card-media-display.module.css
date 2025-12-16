@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.container.compact {
+    gap: 4px;
+}
+
+.mediaItem {
+    flex: 1;
+    max-width: 200px;
+}
+
+.container.compact .mediaItem {
+    max-width: 80px;
+}
+
+.image {
+    width: 100%;
+    height: auto;
+    max-height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.container.compact .image {
+    max-height: 60px;
+    border-radius: 4px;
+}
+
+.image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}

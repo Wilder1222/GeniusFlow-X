@@ -1,0 +1,24 @@
+.editButton:active {
+    transform: scale(0.95);
+}
+
+.editDeckButton {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    opacity: 0.5;
+}
+
+.editDeckButton:hover {
+    background: #f3f4f6;
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+.editDeckButton:active {
+    transform: scale(0.95);
+}

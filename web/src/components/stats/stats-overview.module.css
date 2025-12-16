@@ -1,0 +1,95 @@
+/* Stats Overview Styles */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.row {
+    display: flex;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+}
+
+.card {
+    background: var(--color-surface-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+    flex: 1;
+    min-width: 300px;
+}
+
+.cardTitle {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-6);
+}
+
+/* Chart Placeholders */
+.chartPlaceholder {
+    width: 100%;
+    height: 200px;
+    background: var(--color-background-tertiary);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Simple CSS Bar Chart */
+.barChart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 150px;
+    padding-top: var(--space-4);
+}
+
+.bar {
+    width: 12%;
+    background: var(--color-brand-primary);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    opacity: 0.8;
+    transition: height 0.5s ease;
+}
+
+.bar:nth-child(even) {
+    background: var(--color-brand-secondary);
+}
+
+/* Heatmap Grid */
+.heatmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12px, 1fr));
+    gap: 4px;
+}
+
+.heatmapCell {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--color-background-tertiary);
+}
+
+.level1 {
+    background: #ffe3e3;
+}
+
+.level2 {
+    background: #ffa8a8;
+}
+
+.level3 {
+    background: #ff6b6b;
+}
+
+.level4 {
+    background: #c92a2a;
+}

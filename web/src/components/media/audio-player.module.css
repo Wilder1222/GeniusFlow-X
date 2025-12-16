@@ -1,0 +1,103 @@
+.container {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0;
+}
+
+.title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.playButton {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.playButton:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.playButton:active {
+    transform: scale(0.95);
+}
+
+.seekBar {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+    background: #e0e0e0;
+}
+
+.seekBar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.seekBar::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 8px rgba(102, 126, 234, 0.5);
+}
+
+.seekBar::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    border: none;
+}
+
+.timeDisplay {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .container {
+        padding: 12px;
+    }
+
+    .playButton {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    .timeDisplay {
+        font-size: 12px;
+        min-width: 35px;
+    }
+}

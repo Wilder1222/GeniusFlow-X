@@ -1,0 +1,162 @@
+.container {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 14px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.summary {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.tasksList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.taskCard {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.taskCard:hover {
+    background: #f0f0f0;
+    transform: translateX(4px);
+}
+
+.taskCard.completed {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: #4caf50;
+}
+
+.taskHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.taskInfo {
+    flex: 1;
+}
+
+.taskName {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 4px 0;
+}
+
+.taskDescription {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+}
+
+.taskReward {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2196f3;
+    background: rgba(33, 150, 243, 0.1);
+    padding: 6px 12px;
+    border-radius: 8px;
+}
+
+.taskCard.completed .taskReward {
+    background: transparent;
+    font-size: 20px;
+}
+
+.progressContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.progressBar {
+    flex: 1;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #2196f3 0%, #4caf50 100%);
+    border-radius: 4px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.taskCard.completed .progressFill {
+    background: #4caf50;
+}
+
+.progressText {
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    min-width: 60px;
+    text-align: right;
+}
+
+.allCompleted {
+    margin-top: 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, #fff9c4 0%, #ffeb3b 100%);
+    border-radius: 12px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #f57f17;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .container {
+        padding: 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .taskHeader {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .taskReward {
+        align-self: flex-start;
+    }
+}

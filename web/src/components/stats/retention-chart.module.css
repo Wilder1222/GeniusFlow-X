@@ -1,0 +1,123 @@
+.container {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    color: #1a1a1a;
+}
+
+.loading,
+.empty {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* 关键指标卡片 */
+.metricsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.metricCard {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: white;
+    transition: transform 0.2s;
+}
+
+.metricCard:hover {
+    transform: translateY(-2px);
+}
+
+.metricLabel {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+
+.metricValue {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+/* 图表区域 */
+.chartSection {
+    margin-bottom: 32px;
+}
+
+.chartTitle {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    color: #333;
+}
+
+/* 难度分类 */
+.difficultySection {
+    margin-top: 24px;
+}
+
+.difficultyGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+}
+
+.difficultyCard {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.difficultyCard:hover {
+    background: #f0f0f0;
+    transform: scale(1.02);
+}
+
+.difficultyLabel {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.difficultyRate {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.difficultyCount {
+    font-size: 12px;
+    color: #666;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .container {
+        padding: 16px;
+    }
+
+    .metricsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .metricValue {
+        font-size: 28px;
+    }
+}

@@ -1,0 +1,59 @@
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 2px solid transparent;
+}
+
+/* Size variants */
+.small {
+    padding: var(--space-1) var(--space-4);
+    font-size: var(--font-size-sm);
+    min-width: 80px;
+}
+
+.medium {
+    padding: var(--space-2) var(--space-5);
+    font-size: var(--font-size-base);
+    min-width: 100px;
+}
+
+/* Not following state */
+.notFollowing {
+    background: var(--color-accent-blue);
+    color: white;
+    border-color: var(--color-accent-blue);
+}
+
+.notFollowing:hover {
+    background: var(--color-accent-blue-hover);
+    border-color: var(--color-accent-blue-hover);
+}
+
+/* Following state */
+.following {
+    background: transparent;
+    color: var(--color-text-primary);
+    border-color: var(--color-border-medium);
+}
+
+.following:hover {
+    border-color: var(--color-status-again);
+}
+
+/* Unfollow hover state */
+.unfollowHover {
+    color: var(--color-status-again);
+    border-color: var(--color-status-again);
+    background: rgba(255, 107, 107, 0.1);
+}
+
+/* Disabled state */
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

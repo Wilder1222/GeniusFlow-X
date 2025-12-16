@@ -1,0 +1,158 @@
+/* ===================================================
+   GeniusFlow-X - FlashGenius Design System
+   Global CSS Variables & Tokens
+   =================================================== */
+
+:root {
+  /* --- Colors: Light Mode --- */
+  --color-background-primary: #f8f9fa;
+  /* Slightly off-white background */
+  --color-background-secondary: #ffffff;
+  /* White cards */
+  --color-background-tertiary: #f1f3f5;
+
+  --color-surface-primary: #ffffff;
+  --color-surface-secondary: rgba(255, 255, 255, 0.72);
+  --color-surface-elevated: #ffffff;
+
+  --color-text-primary: #1d1d1f;
+  --color-text-secondary: #86868b;
+  --color-text-tertiary: #a1a1a6;
+
+  /* --- Brand Colors --- */
+  --color-brand-primary: #ff6b6b;
+  /* Coral Red */
+  --color-brand-secondary: #f06595;
+  /* Pink */
+
+  /* --- Status Colors (Study Mode) --- */
+  --color-status-again: #ff6b6b;
+  /* Red/Pink */
+  --color-status-hard: #fd7e14;
+  /* Orange */
+  --color-status-good: #20c997;
+  /* Teal/Green */
+  --color-status-easy: #339af0;
+  /* Blue */
+
+  /* --- Gradients --- */
+  --gradient-primary: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+  --gradient-welcome: linear-gradient(135deg, #ff6b6b 0%, #f06595 50%, #cc5de8 100%);
+  --gradient-card-1: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  --gradient-card-2: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+  --gradient-card-3: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+
+  --color-accent-blue: #007aff;
+  --color-accent-blue-hover: #0051d5;
+  --success-color: #2e7d32;
+  --error-color: #d32f2f;
+
+  --color-border-light: rgba(0, 0, 0, 0.05);
+  --color-border-medium: rgba(0, 0, 0, 0.1);
+
+  /* --- Shadows --- */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+
+  /* --- Typography --- */
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
+  --font-family-mono: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+
+  --font-size-xs: 0.75rem;
+  /* 12px */
+  --font-size-sm: 0.875rem;
+  /* 14px */
+  --font-size-base: 1rem;
+  /* 16px */
+  --font-size-lg: 1.125rem;
+  /* 18px */
+  --font-size-xl: 1.25rem;
+  /* 20px */
+  --font-size-2xl: 1.5rem;
+  /* 24px */
+  --font-size-3xl: 2rem;
+  /* 32px */
+  --font-size-4xl: 2.5rem;
+  /* 40px */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* --- Spacing --- */
+  --space-1: 0.25rem;
+  /* 4px */
+  --space-2: 0.5rem;
+  /* 8px */
+  --space-3: 0.75rem;
+  /* 12px */
+  --space-4: 1rem;
+  /* 16px */
+  --space-5: 1.25rem;
+  /* 20px */
+  --space-6: 1.5rem;
+  /* 24px */
+  --space-8: 2rem;
+  /* 32px */
+  --space-10: 2.5rem;
+  /* 40px */
+  --space-12: 3rem;
+  /* 48px */
+  --space-16: 4rem;
+  /* 64px */
+
+  /* --- Border Radius --- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+
+  /* --- Transitions --- */
+  --transition-fast: 150ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
+
+  /* --- Blur (Glassmorphism) --- */
+  --blur-sm: blur(8px);
+  --blur-md: blur(16px);
+  --blur-lg: blur(24px);
+
+  /* --- Z-Index --- */
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-modal: 1040;
+  --z-tooltip: 1060;
+}
+
+/* --- Dark Mode --- */
+[data-theme="dark"] {
+  --color-background-primary: #121212;
+  --color-background-secondary: #1e1e1e;
+  --color-background-tertiary: #2c2c2e;
+
+  --color-surface-primary: #1e1e1e;
+  --color-surface-secondary: rgba(30, 30, 30, 0.72);
+  --color-surface-elevated: #2c2c2e;
+
+  --color-text-primary: #f5f5f7;
+  --color-text-secondary: #a1a1a6;
+  --color-text-tertiary: #636366;
+
+  --color-border-light: rgba(255, 255, 255, 0.1);
+  --color-border-medium: rgba(255, 255, 255, 0.2);
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.7);
+}
