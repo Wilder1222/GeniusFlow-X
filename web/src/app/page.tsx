@@ -185,7 +185,7 @@ export default function LandingPage() {
                     <span>光合作用需要哪些原料？</span>
                   </div>
                 </div>
-                <div className={styles.cardCount}>✨ 已生成 8 张高质量闪卡</div>
+                <div className={styles.cardCount}>✨ 已生成 3 张高质量闪卡</div>
               </div>
             </div>
           </div>

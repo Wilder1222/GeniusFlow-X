@@ -28,11 +28,20 @@ const demoConversation = [
     },
     {
         role: 'ai',
-        content: '已生成 5 张高质量闪卡！',
+        content: '已生成 3 张高质量闪卡！',
         cards: [
-            { front: 'useState 的作用是什么？', back: '用于在函数组件中添加状态管理，返回状态值和更新函数' },
-            { front: 'useEffect 何时执行？', back: '组件渲染后执行，可通过依赖数组控制执行时机' },
-            { front: 'useCallback 与 useMemo 的区别？', back: 'useCallback 缓存函数，useMemo 缓存计算结果' },
+            {
+                front: '什么是React Hooks？',
+                back: 'React Hooks 是 React 16.8 版本引入的一项核心功能，它允许你在函数组件中使用 state 和其他 React 特性（如生命周期、context 等），而无需编写 class，你可以通过组合现有的 Hooks 来创建自定义 Hook，将组件逻辑提取到可重用的函数中。自定义 Hook 的名称必须以 "use" 开头'
+            },
+            {
+                front: '常用的React Hooks有哪些？',
+                back: '1.useState：在函数组件中添加和管理局部状态。\n2.useEffect：用于处理副作用（数据获取、订阅、DOM 操作等），模拟生命周期。\n3.useContext：订阅 React Context，避免多层组件传递 props'
+            },
+            {
+                front: 'React Hooks的优点有哪些？',
+                back: '1.代码更简洁：避免了 class 组件中的 this绑定和复杂的生命周期方法。\n2.逻辑复用更灵活：通过自定义 Hook 可以轻松地在多个组件之间复用状态逻辑。\n3.关注点分离：可以将一个组件的不同功能拆分成更小的、独立的函数（Hook）。'
+            },
         ]
     }
 ];
@@ -165,7 +174,7 @@ export default function AIDemo() {
                                                     </div>
                                                     <div className={styles.cardBack}>
                                                         <span className={styles.cardLabel}>A</span>
-                                                        <p>{card.back}</p>
+                                                        <p style={{ whiteSpace: 'pre-line', textAlign: 'left', lineHeight: '1.6', fontSize: '0.85em' }}>{card.back}</p>
                                                     </div>
                                                 </div>
                                             </div>

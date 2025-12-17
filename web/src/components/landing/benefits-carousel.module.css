@@ -377,7 +377,7 @@
     gap: 64px;
     flex-wrap: wrap;
     padding-top: 60px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
     transform: translateZ(10px);
 }
 
@@ -385,8 +385,8 @@
     text-align: center;
     min-width: 120px;
     padding: 24px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 20px;
     backdrop-filter: blur(10px);
     transition: all 0.4s ease;
@@ -429,7 +429,7 @@
 
 .statLabel {
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: #555555;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -568,4 +568,24 @@
 [data-theme="classic-dark"] .cardActive,
 .dark .cardActive {
     background: rgba(45, 45, 100, 0.85);
+}
+
+/* Stats adaptations for dark mode */
+[data-theme="dark"] .stats,
+[data-theme="classic-dark"] .stats,
+.dark .stats {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .statItem,
+[data-theme="classic-dark"] .statItem,
+.dark .statItem {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .statLabel,
+[data-theme="classic-dark"] .statLabel,
+.dark .statLabel {
+    color: rgba(255, 255, 255, 0.6);
 }

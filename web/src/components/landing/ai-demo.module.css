@@ -349,7 +349,8 @@
     background: #ffffff;
     border: 2px solid rgba(0, 0, 0, 0.08);
     border-radius: 16px;
-    height: 80px;
+    min-height: 100px;
+    height: auto;
     cursor: pointer;
     perspective: 1000px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -367,6 +368,9 @@
     position: relative;
     width: 100%;
     height: 100%;
+    display: grid;
+    grid-template-columns: 100%;
+    align-items: stretch;
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     transform-style: preserve-3d;
 }
@@ -377,15 +381,20 @@
 
 .cardFront,
 .cardBack {
-    position: absolute;
+    grid-area: 1 / 1;
     width: 100%;
-    height: 100%;
+    position: relative;
     backface-visibility: hidden;
     display: flex;
     align-items: center;
     padding: 16px 20px;
     gap: 16px;
     border-radius: 14px;
+}
+
+.cardFront {
+    background: transparent;
+    z-index: 2;
 }
 
 .cardBack {
@@ -412,7 +421,7 @@
 .cardBack p {
     margin: 0;
     color: #000000;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     line-height: 1.5;
 }
@@ -570,11 +579,11 @@
 .promptSuggestions {
     margin-top: 32px;
     padding-top: 28px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .promptLabel {
-    color: rgba(255, 255, 255, 0.5);
+    color: #555555;
     font-size: 0.875rem;
     margin-bottom: 16px;
 }
@@ -587,19 +596,19 @@
 
 .promptTag {
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 50px;
-    color: rgba(255, 255, 255, 0.7);
+    color: #444444;
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .promptTag:hover {
-    background: rgba(102, 126, 234, 0.15);
-    border-color: rgba(102, 126, 234, 0.4);
-    color: #ffffff;
+    background: rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.6);
+    color: #333333;
 }
 
 /* --- Responsive --- */
@@ -624,7 +633,7 @@
     }
 
     .miniCard {
-        height: 90px;
+        min-height: 100px;
     }
 
     .featureItem {

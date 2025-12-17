@@ -287,20 +287,20 @@ export default function BenefitsCarousel() {
                 {/* Stats */}
                 <div className={`${styles.stats} ${statsInView ? styles.statsVisible : ''}`}>
                     <div className={styles.statItem} style={{ '--delay': '0s' } as any}>
-                        <div className={styles.statValue}>10K+</div>
-                        <div className={styles.statLabel}>活跃用户</div>
+                        <div className={styles.statValue}>5x</div>
+                        <div className={styles.statLabel}>效率提升</div>
                     </div>
                     <div className={styles.statItem} style={{ '--delay': '0.1s' } as any}>
-                        <div className={styles.statValue}>1M+</div>
-                        <div className={styles.statLabel}>AI生成卡片</div>
+                        <div className={styles.statValue}>10x</div>
+                        <div className={styles.statLabel}>生成速度提升</div>
                     </div>
                     <div className={styles.statItem} style={{ '--delay': '0.2s' } as any}>
                         <div className={styles.statValue}>95%</div>
                         <div className={styles.statLabel}>记忆保留率</div>
                     </div>
                     <div className={styles.statItem} style={{ '--delay': '0.3s' } as any}>
-                        <div className={styles.statValue}>80%</div>
-                        <div className={styles.statLabel}>时间节省</div>
+                        <div className={styles.statValue}>50+</div>
+                        <div className={styles.statLabel}>支持语言</div>
                     </div>
                 </div>
             </div>
