@@ -49,8 +49,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Auto-redirect to login if not authenticated
     useEffect(() => {
         // Public routes that don't require authentication
-        const publicRoutes = ['/auth/login', '/auth/signup', '/user'];
-        const isPublicRoute = publicRoutes.some(route => pathname?.startsWith(route));
+        // Landing page (root '/') is public, exact match required
+        const publicRoutes = ['/auth/login', '/auth/signup', '/auth/register', '/user'];
+        const isLandingPage = pathname === '/';
+        const isPublicRoute = isLandingPage || publicRoutes.some(route => pathname?.startsWith(route));
 
         // If not loading, no user, and not on a public route, redirect to login
         if (!loading && !user && pathname && !isPublicRoute) {

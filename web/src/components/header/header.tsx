@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import styles from './header.module.css';
 import { Button } from '../button';
 import { useAuth } from '@/lib/auth-context';
+import UserSettingsPanel from '../user-settings-panel/user-settings-panel';
 
 export interface HeaderProps {
     title?: string;
@@ -13,20 +14,11 @@ export interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-    title = 'FlashGenius',
+    title = 'GeniusFlow-X',
     showAuth = true,
 }) => {
-    const { user, loading, signOut } = useAuth();
+    const { user, loading } = useAuth();
     const pathname = usePathname();
-
-    const handleSignOut = async () => {
-        try {
-            await signOut();
-            window.location.href = '/auth/login';
-        } catch (error) {
-            console.error('Sign out error:', error);
-        }
-    };
 
     const navItems = [
         { label: 'Home', href: '/', icon: '🏠' },
@@ -63,17 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
                 {showAuth && !loading && (
                     <div className={styles.actions}>
                         {user ? (
-                            <>
-                                <Link href="/profile" className={styles.userLink}>
-                                    <span className={styles.username}>
-                                        {user.email?.split('@')[0]}
-                                    </span>
-                                    <span className={styles.userIcon}>👤</span>
-                                </Link>
-                                <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                                    Sign Out
-                                </Button>
-                            </>
+                            <UserSettingsPanel />
                         ) : (
                             <>
                                 <Link href="/auth/login">

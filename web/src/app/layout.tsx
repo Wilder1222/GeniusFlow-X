@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import { AuthProvider } from "@/lib/auth-context";
+import { ThemeProvider } from "@/lib/theme-context";
 import ErrorBoundary from "@/components/ui/error-boundary";
 
 export const metadata: Metadata = {
@@ -23,9 +24,11 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning>
         <ErrorBoundary>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </ThemeProvider>
         </ErrorBoundary>
         <script
           dangerouslySetInnerHTML={{

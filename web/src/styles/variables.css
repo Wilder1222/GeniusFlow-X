@@ -1,5 +1,5 @@
 /* ===================================================
-   GeniusFlow-X - FlashGenius Design System
+   GeniusFlow-X - GeniusFlow-X Design System
    Global CSS Variables & Tokens
    =================================================== */
 
@@ -135,7 +135,31 @@
 }
 
 /* --- Dark Mode --- */
-[data-theme="dark"] {
+[data-theme="dark"],
+.dark {
+  --color-background-primary: #0f0f23;
+  --color-background-secondary: #1a1a3e;
+  --color-background-tertiary: #252550;
+
+  --color-surface-primary: #1a1a3e;
+  --color-surface-secondary: rgba(26, 26, 62, 0.72);
+  --color-surface-elevated: #252550;
+
+  --color-text-primary: #f5f5f7;
+  --color-text-secondary: #a1a1a6;
+  --color-text-tertiary: #636366;
+
+  --color-border-light: rgba(255, 255, 255, 0.1);
+  --color-border-medium: rgba(255, 255, 255, 0.2);
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.7);
+}
+
+/* --- Classic Dark Mode --- */
+[data-theme="classic-dark"] {
   --color-background-primary: #121212;
   --color-background-secondary: #1e1e1e;
   --color-background-tertiary: #2c2c2e;
@@ -155,4 +179,36 @@
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.6);
   --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.7);
+}
+
+/* --- Settings Panel Theme Variables --- */
+
+/* Light Theme Settings Panel */
+:root {
+  --settings-panel-bg: #ffffff;
+  --settings-panel-border: rgba(0, 0, 0, 0.1);
+  --settings-divider: rgba(0, 0, 0, 0.08);
+  --settings-text-primary: #1a1a1a;
+  --settings-text-secondary: #666666;
+  --settings-text-tertiary: #999999;
+  --settings-icon-color: #555555;
+  --settings-hover-bg: rgba(0, 0, 0, 0.04);
+  --settings-active-bg: rgba(255, 107, 107, 0.08);
+  --settings-radio-border: #cccccc;
+}
+
+/* Dark Theme Settings Panel */
+[data-theme="dark"],
+[data-theme="classic-dark"],
+.dark {
+  --settings-panel-bg: #1e1e1e;
+  --settings-panel-border: rgba(255, 255, 255, 0.1);
+  --settings-divider: rgba(255, 255, 255, 0.08);
+  --settings-text-primary: #e0e0e0;
+  --settings-text-secondary: #a0a0a0;
+  --settings-text-tertiary: #666666;
+  --settings-icon-color: #b0b0b0;
+  --settings-hover-bg: rgba(255, 255, 255, 0.06);
+  --settings-active-bg: rgba(255, 107, 107, 0.15);
+  --settings-radio-border: #555555;
 }
