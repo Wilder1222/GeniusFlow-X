@@ -17,7 +17,7 @@
 
 <br/>
 
-![GeniusFlow-X Demo](web/public/assets/landing-demo.webp)
+![GeniusFlow-X Demo](web/public/assets/landing-demo.gif)
 
 </div>
 
@@ -86,7 +86,7 @@ GeniusFlow-X/
 *   **Package Manager**: npm or yarn
 *   **Service Dependency**: Supabase Project (Env vars required)
 
-### 🛠️ Start Web
+### 🛠️ Start Web TODO...
 ```bash
 cd web
 npm install
@@ -95,7 +95,7 @@ npm run dev
 # Visit: http://localhost:3000
 ```
 
-### 📱 Start Mobile
+### 📱 Start Mobile  TODO...
 ```bash
 cd mobile
 npm install

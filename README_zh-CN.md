@@ -17,7 +17,7 @@
 
 <br/>
 
-![GeniusFlow-X Demo](web/public/assets/landing-demo.webp)
+![GeniusFlow-X Demo](web/public/assets/landing-demo.gif)
 
 </div>
 
@@ -86,7 +86,7 @@ GeniusFlow-X/
 *   **包管理器**: npm 或 yarn
 *   **服务依赖**: Supabase 项目 (需配置环境变量)
 
-### 🛠️ 启动 Web 端
+### 🛠️ 启动 Web 端 TODO...
 ```bash
 cd web
 npm install
@@ -95,7 +95,7 @@ npm run dev
 # 访问: http://localhost:3000
 ```
 
-### 📱 启动 移动端
+### 📱 启动 移动端 TODO...
 ```bash
 cd mobile
 npm install
