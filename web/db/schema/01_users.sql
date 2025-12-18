@@ -23,6 +23,9 @@ CREATE TABLE IF NOT EXISTS public.user_settings (
     daily_goal INTEGER DEFAULT 20,
     notification_enabled BOOLEAN DEFAULT true,
     sound_enabled BOOLEAN DEFAULT true,
+    email_notifications BOOLEAN DEFAULT true,
+    tts_enabled BOOLEAN DEFAULT true,
+    tts_autoplay BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(user_id)

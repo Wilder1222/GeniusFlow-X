@@ -15,7 +15,12 @@ import {
  */
 export async function getSettings(): Promise<UserSettings | null> {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
+    if (!user) {
+        console.log('[Settings] 用户未登录');
+        return null;
+    }
+
+    console.log('[Settings] 正在获取用户设置，user.id:', user.id);
 
     const { data, error } = await supabase
         .from('profile_settings')
@@ -24,10 +29,52 @@ export async function getSettings(): Promise<UserSettings | null> {
         .single();
 
     if (error) {
-        console.error('获取用户设置失败:', error);
+        console.error('获取用户设置失败 - 详细信息:');
+        console.error('  错误对象:', error);
+        console.error('  错误码:', error.code);
+        console.error('  错误消息:', error.message);
+        console.error('  错误详情:', error.details);
+        console.error('  错误提示:', error.hint);
+        console.log('  用户 ID:', user.id);
+
+        // 如果是 PGRST116 错误（没有找到记录），自动创建默认设置
+        if (error.code === 'PGRST116') {
+            console.log('[Settings] 未找到设置记录，正在创建默认设置...');
+
+            try {
+                const defaultSettings = {
+                    user_id: user.id,
+                    theme: 'system',
+                    language: 'zh-CN',
+                    email_notifications: true,
+                    daily_goal: 20,
+                    tts_enabled: true,
+                    tts_autoplay: false,
+                };
+
+                const { data: newData, error: insertError } = await supabase
+                    .from('profile_settings')
+                    .insert(defaultSettings)
+                    .select()
+                    .single();
+
+                if (insertError) {
+                    console.error('[Settings] 创建默认设置失败:', insertError);
+                    return null;
+                }
+
+                console.log('[Settings] 成功创建默认设置:', newData);
+                return settingsFromRow(newData as UserSettingsRow);
+            } catch (createError) {
+                console.error('[Settings] 创建设置时发生异常:', createError);
+                return null;
+            }
+        }
+
         return null;
     }
 
+    console.log('[Settings] 成功获取设置:', data);
     return settingsFromRow(data as unknown as UserSettingsRow);
 }
 

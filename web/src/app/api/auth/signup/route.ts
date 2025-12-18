@@ -141,6 +141,8 @@ export async function POST(request: NextRequest) {
                             language: 'zh-CN',
                             email_notifications: true,
                             daily_goal: 20,
+                            tts_enabled: true,
+                            tts_autoplay: false,
                             updated_at: new Date().toISOString(),
                         });
 
