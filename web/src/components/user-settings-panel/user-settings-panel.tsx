@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { LuUser, LuSettings, LuEye, LuMoon, LuSun, LuMonitor, LuLogOut, LuChevronRight } from 'react-icons/lu';
 import { useAuth } from '@/lib/auth-context';
 import { useTheme } from '@/lib/theme-context';
+import Link from 'next/link';
 import styles from './user-settings-panel.module.css';
 
 export default function UserSettingsPanel() {
@@ -95,11 +96,11 @@ export default function UserSettingsPanel() {
 
                 {/* Menu Items */}
                 <div className={styles.menuSection}>
-                    <button className={styles.menuItem}>
+                    <Link href="/settings" className={styles.menuItem} onClick={() => setIsOpen(false)}>
                         <LuSettings size={12} />
                         <span>Account preferences</span>
                         <LuChevronRight size={12} className={styles.chevron} />
-                    </button>
+                    </Link>
                     <button className={styles.menuItem}>
                         <LuEye size={12} />
                         <span>Feature previews</span>

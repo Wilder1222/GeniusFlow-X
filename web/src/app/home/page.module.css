@@ -1,15 +1,235 @@
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: var(--space-6);
+    padding: 40px;
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
+    gap: 40px;
+    min-height: 100vh;
+}
+
+.welcomeSection {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+    padding: 40px;
+    border-radius: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.welcomeText h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.userName {
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.rocketIcon {
+    color: #F59E0B;
+}
+
+.welcomeText p {
+    color: #64748b;
+    font-size: 16px;
+}
+
+.levelWrapper {
+    min-width: 300px;
+}
+
+.quickActions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.actionCard {
+    background: white;
+    border: 1px solid #f1f5f9;
+    border-radius: 24px;
+    padding: 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.primaryAction {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    border: none;
+    color: white;
+}
+
+.primaryAction:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);
+}
+
+.actionIcon {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    background: #f8fafc;
+    color: #4f46e5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    transition: all 0.3s;
+}
+
+.primaryAction .actionIcon {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.actionCard:not(.primaryAction):hover {
+    border-color: #4f46e5;
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.actionCard:not(.primaryAction):hover .actionIcon {
+    background: #4f46e5;
+    color: white;
+}
+
+.mainGrid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 32px;
+    align-items: start;
+}
+
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.heatmapWrapper {
+    background: white;
+    padding: 24px;
+    border-radius: 24px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    position: sticky;
+    top: 32px;
+}
+
+.sideSection {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid #f1f5f9;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.sectionHeader h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: #1e293b;
+}
+
+.sectionHeader svg {
+    color: #4F46E5;
+}
+
+.recentList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.deckItem {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.deckItem:hover {
+    background: #f8fafc;
+}
+
+.deckEmoji {
+    font-size: 24px;
+}
+
+.deckInfo h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    color: #1e293b;
+}
+
+.deckInfo p {
+    font-size: 12px;
+    color: #94a3b8;
+    margin: 2px 0 0 0;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 20px;
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+@media (max-width: 1100px) {
+    .mainGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .rightColumn {
+        order: -1;
+    }
 }
 
 @media (max-width: 768px) {
     .container {
-        padding: var(--space-4);
-        gap: var(--space-4);
+        padding: 20px;
+        gap: 24px;
+    }
+
+    .welcomeSection {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .levelWrapper {
+        width: 100%;
+        min-width: unset;
     }
 }

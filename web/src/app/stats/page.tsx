@@ -3,21 +3,25 @@
 import { MainLayout } from '@/components';
 import StatsDashboard from '@/components/stats/stats-dashboard';
 import ActivityHeatmap from '@/components/stats/activity-heatmap';
+import AchievementList from '@/components/gamification/achievement-list';
 import styles from './stats.module.css';
 
 export default function StatsPage() {
     return (
         <MainLayout>
             <div className={styles.container}>
-                <h1 className={styles.pageTitle}>📊 Statistics & Analytics</h1>
+                <h1 className={styles.pageTitle}>📊 学习统计与分析</h1>
 
-                <StatsDashboard />
+                <div className={styles.dashboardSection}>
+                    <StatsDashboard />
+                </div>
 
-                <ActivityHeatmap />
+                <div className={styles.heatmapSection}>
+                    <ActivityHeatmap />
+                </div>
 
-                <div className={styles.comingSoon}>
-                    <h3>📈 More Analytics Coming Soon</h3>
-                    <p>Retention charts, performance trends, and detailed insights are on the way!</p>
+                <div className={styles.achievementsSection}>
+                    <AchievementList />
                 </div>
             </div>
         </MainLayout>

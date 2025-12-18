@@ -1,58 +1,76 @@
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    animation: fadeIn 0.2s ease-out;
+    animation: fadeIn 0.3s ease-out;
 }
 
 .modal {
-    background: white;
-    border-radius: 16px;
+    background: var(--color-surface-primary);
+    border-radius: 24px;
     padding: 32px;
     max-width: 500px;
     width: 90%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--color-border-light);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-brand-primary), var(--color-brand-secondary));
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
 }
 
 .title {
-    font-size: 22px;
-    font-weight: 600;
-    color: #1f2937;
+    font-size: 24px;
+    font-weight: 800;
     margin: 0;
+    color: var(--color-text-primary);
+    background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .closeButton {
     background: none;
     border: none;
     font-size: 24px;
-    color: #6b7280;
+    color: var(--color-text-secondary);
     cursor: pointer;
     padding: 4px;
     line-height: 1;
-    transition: color 0.2s;
+    transition: all 0.2s;
 }
 
 .closeButton:hover {
-    color: #1f2937;
+    color: var(--color-text-primary);
+    transform: rotate(90deg);
 }
 
 .form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
 }
 
 .formGroup {
@@ -63,40 +81,32 @@
 
 .label {
     font-size: 14px;
-    font-weight: 500;
-    color: #374151;
+    font-weight: 600;
+    color: var(--color-text-secondary);
 }
 
-.input {
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 15px;
-    font-family: inherit;
+.input,
+.textarea {
+    padding: 12px 16px;
+    border: 1px solid var(--color-border-light);
+    border-radius: 12px;
+    font-size: 16px;
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
     transition: all 0.2s;
 }
 
-.input:focus {
+.input:focus,
+.textarea:focus {
     outline: none;
-    border-color: #007AFF;
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+    border-color: var(--color-brand-primary);
+    background: var(--color-surface-primary);
+    box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
 }
 
 .textarea {
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 15px;
-    font-family: inherit;
     resize: vertical;
-    min-height: 80px;
-    transition: all 0.2s;
-}
-
-.textarea:focus {
-    outline: none;
-    border-color: #007AFF;
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+    min-height: 100px;
 }
 
 .actions {
@@ -107,39 +117,39 @@
 }
 
 .button {
-    padding: 10px 24px;
-    border-radius: 10px;
+    padding: 12px 28px;
+    border-radius: 12px;
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
     border: none;
 }
 
-.button:active {
-    transform: scale(0.97);
-}
-
 .cancelButton {
-    background: #f3f4f6;
-    color: #374151;
+    background: var(--color-background-tertiary);
+    color: var(--color-text-secondary);
 }
 
 .cancelButton:hover {
-    background: #e5e7eb;
+    background: var(--color-surface-hover);
+    color: var(--color-text-primary);
 }
 
 .saveButton {
-    background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
+    background: linear-gradient(135deg, var(--color-brand-primary) 0%, var(--color-brand-secondary) 100%);
     color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
 }
 
 .saveButton:hover {
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
 }
 
 .saveButton:disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
@@ -156,7 +166,7 @@
 @keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(20px) scale(0.95);
+        transform: translateY(30px) scale(0.95);
     }
 
     to {

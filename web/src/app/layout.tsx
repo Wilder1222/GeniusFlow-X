@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@/styles/globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { ThemeProvider } from "@/lib/theme-context";
+import { AchievementProvider } from "@/lib/contexts/achievement-context";
 import ErrorBoundary from "@/components/ui/error-boundary";
 
 export const metadata: Metadata = {
@@ -26,7 +27,9 @@ export default function RootLayout({
         <ErrorBoundary>
           <ThemeProvider>
             <AuthProvider>
-              {children}
+              <AchievementProvider>
+                {children}
+              </AchievementProvider>
             </AuthProvider>
           </ThemeProvider>
         </ErrorBoundary>
