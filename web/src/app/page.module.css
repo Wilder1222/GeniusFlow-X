@@ -11,7 +11,7 @@
     overflow-x: hidden;
 }
 
-/* Decorative gradient orbs - more visible */
+/* Decorative gradient orbs - subtle background effect */
 .landing::before {
     content: '';
     position: absolute;
@@ -20,117 +20,177 @@
     right: 0;
     bottom: 0;
     background:
-        radial-gradient(ellipse 80% 50% at 20% 10%, rgba(255, 107, 107, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 40% at 85% 20%, rgba(240, 101, 149, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse 70% 50% at 50% 90%, rgba(161, 140, 209, 0.1) 0%, transparent 50%);
+        radial-gradient(ellipse 80% 50% at 20% 10%, rgba(255, 107, 107, 0.02) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 85% 20%, rgba(240, 101, 149, 0.015) 0%, transparent 50%),
+        radial-gradient(ellipse 70% 50% at 50% 90%, rgba(161, 140, 209, 0.015) 0%, transparent 50%);
     pointer-events: none;
 }
 
-/* --- Navbar --- */
+/* --- Navbar --- Transparent with Floating Cards (Matches Application Header) */
 .navbar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
-    padding: 16px 32px;
+    z-index: var(--z-sticky);
+    padding: var(--space-4) var(--space-8);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
+    background: transparent;
+    backdrop-filter: none;
+    border-bottom: none;
+    transition: all var(--transition-fast);
+    height: 64px;
 }
 
-.navbarScrolled {
-    background: rgba(255, 255, 255, 0.98);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
 
+
+/* Logo Card - Left (Matches .branding from Application Header) */
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1d1d1f;
+    gap: var(--space-1);
     text-decoration: none;
+    color: inherit;
+    background: var(--color-surface-elevated);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border-light);
+    border-radius: 28px;
+    padding: 5px 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all var(--transition-base);
+    flex-shrink: 0;
+}
+
+.logo:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14),
+        0 6px 20px rgba(0, 0, 0, 0.1),
+        0 3px 12px rgba(0, 0, 0, 0.06);
 }
 
 .logoIcon {
-    width: 40px;
-    height: 40px;
+    font-size: var(--font-size-base);
+    display: flex;
+    align-items: center;
+}
+
+.title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
     background: var(--gradient-welcome);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    transition: all 0.3s ease;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
 }
 
-.logoIcon:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-}
-
+/* Navigation Links Card - Center (Matches .navCard from Application Header) */
 .navLinks {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    gap: 32px;
+    gap: 4px;
     align-items: center;
+    background: var(--color-surface-elevated);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border-light);
+    border-radius: 36px;
+    padding: 6px 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all var(--transition-base);
+}
+
+.navLinks:hover {
+    transform: translateX(-50%) translateY(-1px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14),
+        0 6px 20px rgba(0, 0, 0, 0.1),
+        0 3px 12px rgba(0, 0, 0, 0.06);
 }
 
 .navLink {
-    color: #86868b;
+    color: var(--color-text-secondary);
     text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
+    font-weight: var(--font-weight-semibold);
+    font-size: calc(var(--font-size-sm) - 1px);
+    transition: all var(--transition-fast);
+    padding: 8px 16px;
+    border-radius: 32px;
+    position: relative;
+    white-space: nowrap;
 }
 
 .navLink:hover {
-    color: #1d1d1f;
+    color: var(--color-text-primary);
+    background: var(--color-surface-hover);
 }
 
+/* User Actions Card - Right (Matches Application Header) */
 .navActions {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     align-items: center;
+    /* background: var(--color-surface-elevated); */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    /* border: 1px solid var(--color-border-light); */
+    border-radius: 28px;
+    padding: 5px 8px;
+    /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.04); */
+    transition: all var(--transition-base);
+}
+
+.navActions:hover {
+    transform: translateY(-1px);
+    /* box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14),
+        0 6px 20px rgba(0, 0, 0, 0.1),
+        0 3px 12px rgba(0, 0, 0, 0.06); */
 }
 
 .loginBtn {
-    padding: 10px 24px;
-    color: #1d1d1f;
+    padding: 8px 18px;
+    color: var(--color-text-primary);
     background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    font-weight: 600;
+    border: none;
+    border-radius: 24px;
+    font-weight: var(--font-weight-semibold);
+    font-size: calc(var(--font-size-sm) - 1px);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-fast);
     text-decoration: none;
     display: inline-block;
 }
 
 .loginBtn:hover {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: rgba(0, 0, 0, 0.2);
+    background: var(--color-surface-hover);
 }
 
 .signupBtn {
-    padding: 10px 24px;
+    padding: 8px 18px;
     color: #ffffff;
     background: var(--gradient-welcome);
     border: none;
-    border-radius: 12px;
-    font-weight: 600;
+    border-radius: 24px;
+    font-weight: var(--font-weight-semibold);
+    font-size: calc(var(--font-size-sm) - 1px);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-fast);
     text-decoration: none;
     display: inline-block;
 }
 
 .signupBtn:hover {
-    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4);
+    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.4);
     filter: brightness(1.05);
 }
 
@@ -193,13 +253,35 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: rgba(255, 107, 107, 0.15);
-    border: 1px solid rgba(255, 107, 107, 0.4);
     border-radius: 50px;
-    color: #e53935;
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 32px;
+    position: relative;
+    /* 蓝紫渐变 - Hero badge - 更饱和的颜色 */
+    background:
+        linear-gradient(var(--color-background-primary, #ffffff), var(--color-background-primary, #ffffff)) padding-box,
+        linear-gradient(135deg, #5a67d8 0%, #805ad5 50%, #d53f8c 100%) border-box;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.badgeEmoji {
+    font-size: 1rem;
+    -webkit-text-fill-color: initial;
+    background: none;
+}
+
+.badge span:not(.badgeEmoji) {
+    background: linear-gradient(135deg, #5a67d8 0%, #805ad5 50%, #d53f8c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.badge:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
 }
 
 .heroTitle {
@@ -505,13 +587,29 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: rgba(255, 107, 107, 0.15);
-    border: 1px solid rgba(255, 107, 107, 0.4);
     border-radius: 50px;
-    color: #e53935;
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 20px;
+    position: relative;
+    /* 蓝紫渐变 - 与 Hero badge 一致 - 更饱和的颜色 */
+    background:
+        linear-gradient(var(--color-background-primary, #ffffff), var(--color-background-primary, #ffffff)) padding-box,
+        linear-gradient(135deg, #5a67d8 0%, #805ad5 50%, #d53f8c 100%) border-box;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.sectionBadge span {
+    background: linear-gradient(135deg, #5a67d8 0%, #805ad5 50%, #d53f8c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sectionBadge:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
 }
 
 .sectionTitle {
@@ -1054,17 +1152,25 @@
 
 /* Navbar */
 [data-theme="dark"] .navbar,
-[data-theme="classic-dark"] .navbar,
 .dark .navbar {
-    background: rgba(26, 26, 62, 0.9);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    border-bottom: none;
+}
+
+[data-theme="classic-dark"] .navbar {
+    background: transparent;
+    border-bottom: none;
 }
 
 [data-theme="dark"] .navbarScrolled,
-[data-theme="classic-dark"] .navbarScrolled,
 .dark .navbarScrolled {
     background: rgba(26, 26, 62, 0.98);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="classic-dark"] .navbarScrolled {
+    background: rgba(18, 18, 18, 0.98);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
 }
 
 [data-theme="dark"] .logo,
@@ -1098,12 +1204,13 @@
     color: var(--color-text-secondary);
 }
 
-/* Badge */
+/* Badge - 蓝紫渐变 - 更饱和的颜色 */
 [data-theme="dark"] .badge,
 [data-theme="classic-dark"] .badge,
 .dark .badge {
-    background: rgba(255, 107, 107, 0.15);
-    border-color: rgba(255, 107, 107, 0.3);
+    background:
+        linear-gradient(var(--color-background-primary, #1a1a3e), var(--color-background-primary, #1a1a3e)) padding-box,
+        linear-gradient(135deg, #5a67d8 0%, #805ad5 50%, #d53f8c 100%) border-box;
 }
 
 /* Buttons */
@@ -1124,10 +1231,14 @@
 
 /* Mockup */
 [data-theme="dark"] .mockup,
-[data-theme="classic-dark"] .mockup,
 .dark .mockup {
     background: var(--color-surface-primary);
     border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="classic-dark"] .mockup {
+    background: #1e1e1e;
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .mockup:hover,
@@ -1137,16 +1248,24 @@
 }
 
 [data-theme="dark"] .mockupContent,
-[data-theme="classic-dark"] .mockupContent,
 .dark .mockupContent {
     background: var(--color-surface-elevated);
 }
 
+[data-theme="classic-dark"] .mockupContent {
+    background: #2c2c2e;
+}
+
 [data-theme="dark"] .chatBubbleAi,
-[data-theme="classic-dark"] .chatBubbleAi,
 .dark .chatBubbleAi {
     background: var(--color-surface-elevated);
     border-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-primary);
+}
+
+[data-theme="classic-dark"] .chatBubbleAi {
+    background: #2c2c2e;
+    border-color: rgba(255, 255, 255, 0.08);
     color: var(--color-text-primary);
 }
 
@@ -1157,16 +1276,24 @@
 }
 
 [data-theme="dark"] .miniCardPreview,
-[data-theme="classic-dark"] .miniCardPreview,
 .dark .miniCardPreview {
     background: var(--color-surface-primary);
     border-color: rgba(255, 255, 255, 0.08);
 }
 
+[data-theme="classic-dark"] .miniCardPreview {
+    background: #1e1e1e;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
 [data-theme="dark"] .miniCardPreview:hover,
-[data-theme="classic-dark"] .miniCardPreview:hover,
 .dark .miniCardPreview:hover {
     background: var(--color-surface-elevated);
+    border-color: rgba(255, 107, 107, 0.4);
+}
+
+[data-theme="classic-dark"] .miniCardPreview:hover {
+    background: #2c2c2e;
     border-color: rgba(255, 107, 107, 0.4);
 }
 
@@ -1189,19 +1316,25 @@
     color: var(--color-text-secondary);
 }
 
+/* sectionBadge - 蓝紫渐变 - 更饱和的颜色 */
 [data-theme="dark"] .sectionBadge,
 [data-theme="classic-dark"] .sectionBadge,
 .dark .sectionBadge {
-    background: rgba(255, 107, 107, 0.15);
-    border-color: rgba(255, 107, 107, 0.3);
+    background:
+        linear-gradient(var(--color-background-primary, #1a1a3e), var(--color-background-primary, #1a1a3e)) padding-box,
+        linear-gradient(135deg, #5a67d8 0%, #805ad5 50%, #d53f8c 100%) border-box;
 }
 
 /* Feature Cards */
 [data-theme="dark"] .featureCard,
-[data-theme="classic-dark"] .featureCard,
 .dark .featureCard {
     background: linear-gradient(135deg, rgba(26, 26, 62, 1) 0%, rgba(37, 37, 80, 1) 100%);
     border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="classic-dark"] .featureCard {
+    background: linear-gradient(135deg, #1e1e1e 0%, #2c2c2e 100%);
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .featureCard:hover,
@@ -1223,6 +1356,15 @@
 }
 
 /* CTA Section */
+[data-theme="dark"] .cta,
+.dark .cta {
+    background: linear-gradient(180deg, rgba(255, 107, 107, 0.03) 0%, transparent 100%);
+}
+
+[data-theme="classic-dark"] .cta {
+    background: linear-gradient(180deg, rgba(255, 107, 107, 0.02) 0%, transparent 100%);
+}
+
 [data-theme="dark"] .ctaTitle,
 [data-theme="classic-dark"] .ctaTitle,
 .dark .ctaTitle {
@@ -1237,16 +1379,23 @@
 
 /* Footer */
 [data-theme="dark"] .footer,
-[data-theme="classic-dark"] .footer,
 .dark .footer {
     background: linear-gradient(180deg, transparent 0%, rgba(26, 26, 62, 0.5) 100%);
     border-top-color: rgba(255, 255, 255, 0.1);
 }
 
-[data-theme="dark"] .footerTitle,
-[data-theme="classic-dark"] .footerTitle,
-.dark .footerTitle {
+[data-theme="classic-dark"] .footer {
+    background: linear-gradient(180deg, transparent 0%, rgba(18, 18, 18, 0.8) 100%);
+    border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .footerName,
+.dark .footerName {
     color: var(--color-text-primary);
+}
+
+[data-theme="classic-dark"] .footerName {
+    color: #f5f5f7;
 }
 
 [data-theme="dark"] .footerLink,
@@ -1261,12 +1410,8 @@
     color: var(--color-text-primary);
 }
 
-[data-theme="dark"] .footerBottom,
-[data-theme="classic-dark"] .footerBottom,
-.dark .footerBottom {
-    border-top-color: rgba(255, 255, 255, 0.1);
-    color: var(--color-text-secondary);
+[data-theme="dark"] .footerCopyright,
+[data-theme="classic-dark"] .footerCopyright,
+.dark .footerCopyright {
+    color: var(--color-text-tertiary);
 }
-
-/* Feature Section - Already added above but ensure featureIcon colors don't override in dark */
-/* Note: featureTitle and featureDescription already have dark theme support above */

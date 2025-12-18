@@ -5,9 +5,9 @@ export { Input } from './input';
 export { Header } from './header';
 export { Sidebar } from './sidebar';
 export { MainLayout } from './layout';
-export { WelcomeBanner } from './dashboard/welcome-banner';
-export { StatsCard } from './dashboard/stats-card';
-export { DeckCard } from './dashboard/deck-card';
+export { WelcomeBanner } from './home/welcome-banner';
+export { StatsCard } from './home/stats-card';
+export { DeckCard } from './home/deck-card';
 
 /* Profile Components */
 export { ProfileForm, AvatarUpload, FollowButton, SettingsForm } from './profile';

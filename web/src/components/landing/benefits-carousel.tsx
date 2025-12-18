@@ -235,7 +235,7 @@ export default function BenefitsCarousel() {
 
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <span className={styles.badge}>💡 为什么选择我们</span>
+                    <span className={styles.badge}><span>💡 为什么选择我们</span></span>
                     <h2 className={styles.title}>学习效率的革命性提升</h2>
                 </div>
 

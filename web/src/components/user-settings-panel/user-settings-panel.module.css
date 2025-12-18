@@ -1,18 +1,39 @@
 /* User Settings Panel Styles */
 
+/* Trigger Container - Card Style */
 .trigger {
-    background: none;
-    border: none;
-    padding: 0;
+    background: var(--color-surface-elevated);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border-light);
+    border-radius: 28px;
+    padding: 5px 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all var(--transition-base);
+}
+
+.trigger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14),
+        0 6px 20px rgba(0, 0, 0, 0.1),
+        0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Disable hover effect when panel is open to prevent jitter */
+.triggerActive:hover {
+    transform: none;
 }
 
 .avatar {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: var(--gradient-welcome);
     display: flex;
@@ -29,12 +50,17 @@
     box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
 }
 
+/* Disable avatar scale when panel is open */
+.triggerActive:hover .avatar {
+    transform: none;
+}
+
 .overlay {
     position: fixed;
     inset: 0;
     background: transparent;
     z-index: 999;
-    pointer-events: all;
+    pointer-events: none;
 }
 
 .panel {

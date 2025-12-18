@@ -16,7 +16,7 @@ export default function SignUpPage() {
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,10 +40,10 @@ export default function SignUpPage() {
                 setSuccess(result.message);
                 // 延迟跳转，让用户看到成功提示
                 setTimeout(() => {
-                    router.push('/dashboard');
+                    router.push('/home');
                 }, 1500);
             } else {
-                router.push('/dashboard');
+                router.push('/home');
             }
         } catch (err: any) {
             setError(err.message || '注册失败');

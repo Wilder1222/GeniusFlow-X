@@ -16,7 +16,8 @@ import {
 } from 'react-icons/lu';
 import AIDemo from '@/components/landing/ai-demo';
 import BenefitsCarousel from '@/components/landing/benefits-carousel';
-import UserSettingsPanel from '@/components/user-settings-panel/user-settings-panel';
+import FeaturesMarquee from '@/components/landing/features-marquee';
+import UserSettingsPanel from '@/components/user-settings-panel';
 import { useAuth } from '@/lib/auth-context';
 import styles from './page.module.css';
 
@@ -95,12 +96,12 @@ export default function LandingPage() {
       {/* Navbar */}
       <nav className={`${styles.navbar} ${scrolled ? styles.navbarScrolled : ''}`}>
         <Link href="/" className={styles.logo}>
-          <span className={styles.logoIcon}>✨</span>
-          <span>GeniusFlow-X</span>
+          <span className={styles.logoIcon}>📕</span>
+          <span className={styles.title}>GeniusFlow-X</span>
         </Link>
 
         <div className={styles.navLinks}>
-          {user && <Link href="/dashboard" className={styles.navLink}>Home</Link>}
+          {user && <Link href="/home" className={styles.navLink}>Home</Link>}
           <a href="#ai-demo" className={styles.navLink}>AI 演示</a>
           <a href="#features" className={styles.navLink}>功能</a>
           <a href="#benefits" className={styles.navLink}>优势</a>
@@ -128,7 +129,8 @@ export default function LandingPage() {
       <section className={styles.hero}>
         <div className={styles.heroContent}>
           <span className={styles.badge}>
-            🤖 AI 驱动 · 对话生成 · 智能学习
+            <span className={styles.badgeEmoji}>🤖</span>
+            <span>AI 驱动 · 对话生成 · 智能学习</span>
           </span>
 
           <h1 className={styles.heroTitle}>
@@ -195,36 +197,8 @@ export default function LandingPage() {
       {/* AI Demo Section - NEW PROMINENT SECTION */}
       <AIDemo />
 
-      {/* Features Section */}
-      <section id="features" className={styles.features}>
-        <div className={styles.sectionHeader}>
-          <span className={styles.sectionBadge}>✨ 更多功能</span>
-          <h2 className={styles.sectionTitle}>为高效学习而设计</h2>
-          <p className={styles.sectionSubtitle}>
-            除了强大的 AI 生成能力，我们还提供全方位的学习辅助功能
-          </p>
-        </div>
-
-        <div className={styles.featuresGrid}>
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className={styles.featureCard}
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 100;
-                const y = ((e.clientY - rect.top) / rect.height) * 100;
-                e.currentTarget.style.setProperty('--mouse-x', `${x}%`);
-                e.currentTarget.style.setProperty('--mouse-y', `${y}%`);
-              }}
-            >
-              <div className={styles.featureIcon}><feature.Icon size={28} /></div>
-              <h3 className={styles.featureTitle}>{feature.title}</h3>
-              <p className={styles.featureDescription}>{feature.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Features Section - Marquee Style */}
+      <FeaturesMarquee />
 
       {/* Benefits Section - 3D Carousel */}
       <BenefitsCarousel />

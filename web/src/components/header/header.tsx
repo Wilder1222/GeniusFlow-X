@@ -21,7 +21,7 @@ export const Header: React.FC<HeaderProps> = ({
     const pathname = usePathname();
 
     const navItems = [
-        { label: 'Home', href: '/', icon: '🏠' },
+        { label: 'Home', href: '/home', icon: '🏠' },
         { label: 'Decks', href: '/decks', icon: '🗂️' },
         { label: 'Stats', href: '/stats', icon: '📊' },
     ];
@@ -29,29 +29,33 @@ export const Header: React.FC<HeaderProps> = ({
     return (
         <header className={styles.header}>
             <div className={styles.container}>
-                <div className={styles.leftSection}>
+                {/* Left: Platform Branding */}
+                <div className={styles.branding}>
                     <Link href="/" className={styles.logo}>
                         <span className={styles.logoIcon}>📕</span>
                         <h1 className={styles.title}>{title}</h1>
                     </Link>
+                </div>
 
-                    <nav className={styles.nav}>
+                {/* Center: Navigation Card */}
+                <nav className={styles.navCard}>
+                    <div className={styles.navContent}>
                         {navItems.map((item) => (
                             <Link
                                 key={item.href}
                                 href={item.href}
                                 className={`${styles.navItem} ${pathname === item.href ? styles.active : ''}`}
                             >
-                                <span>{item.icon}</span>
                                 {item.label}
                             </Link>
                         ))}
                         <Link href="/add" className={styles.navItem}>
-                            <span>+</span> Add
+                            Add
                         </Link>
-                    </nav>
-                </div>
+                    </div>
+                </nav>
 
+                {/* Right: User Settings */}
                 {showAuth && !loading && (
                     <div className={styles.actions}>
                         {user ? (

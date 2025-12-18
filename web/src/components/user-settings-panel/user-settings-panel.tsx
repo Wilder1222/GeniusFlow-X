@@ -66,7 +66,7 @@ export default function UserSettingsPanel() {
             {/* Trigger Button */}
             <button
                 ref={triggerRef}
-                className={styles.trigger}
+                className={`${styles.trigger} ${isOpen ? styles.triggerActive : ''}`}
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label="User settings"
             >
@@ -77,10 +77,7 @@ export default function UserSettingsPanel() {
 
             {/* Overlay */}
             {isOpen && (
-                <div
-                    className={styles.overlay}
-                    onClick={() => setIsOpen(false)}
-                />
+                <div className={styles.overlay} />
             )}
 
             {/* Settings Panel */}

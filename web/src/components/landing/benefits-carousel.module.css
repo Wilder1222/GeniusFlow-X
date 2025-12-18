@@ -128,20 +128,29 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: rgba(255, 107, 107, 0.15);
-    border: 1px solid rgba(255, 107, 107, 0.4);
     border-radius: 50px;
-    color: #e53935;
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 24px;
-    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.15);
+    position: relative;
+    /* 金橙渐变 - 为什么选择我们 - 更饱和的颜色 */
+    background:
+        linear-gradient(var(--color-background-primary, #ffffff), var(--color-background-primary, #ffffff)) padding-box,
+        linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #dc2626 100%) border-box;
+    border: 2px solid transparent;
     transition: all 0.3s ease;
+}
+
+.badge span {
+    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .badge:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 30px rgba(255, 107, 107, 0.25);
+    filter: brightness(1.1);
 }
 
 .title {
@@ -281,8 +290,8 @@
 .cardIcon {
     width: 88px;
     height: 88px;
-    background: rgba(255, 107, 107, 0.1);
-    border: 1px solid rgba(255, 107, 107, 0.2);
+    background: rgba(255, 107, 107, 0.08);
+    border: 2px solid rgba(255, 107, 107, 0.4);
     border-radius: 24px;
     display: flex;
     align-items: center;
@@ -556,36 +565,67 @@
     color: #a1a1a6;
 }
 
-/* Card backgrounds for better contrast */
+/* Card backgrounds - Dark theme (purple tones) */
 [data-theme="dark"] .card,
-[data-theme="classic-dark"] .card,
 .dark .card {
     background: rgba(37, 37, 80, 0.7);
     border-color: rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="dark"] .cardActive,
-[data-theme="classic-dark"] .cardActive,
 .dark .cardActive {
     background: rgba(45, 45, 100, 0.85);
 }
 
+/* Card backgrounds - Classic Dark theme (pure black tones) */
+[data-theme="classic-dark"] .card {
+    background: rgba(30, 30, 30, 0.85);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="classic-dark"] .cardActive {
+    background: rgba(44, 44, 46, 0.95);
+}
+
 /* Stats adaptations for dark mode */
 [data-theme="dark"] .stats,
-[data-theme="classic-dark"] .stats,
 .dark .stats {
     border-top-color: rgba(255, 255, 255, 0.1);
 }
 
+[data-theme="classic-dark"] .stats {
+    border-top-color: rgba(255, 255, 255, 0.06);
+}
+
 [data-theme="dark"] .statItem,
-[data-theme="classic-dark"] .statItem,
 .dark .statItem {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(37, 37, 80, 0.4);
     border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="classic-dark"] .statItem {
+    background: rgba(30, 30, 30, 0.6);
+    border-color: rgba(255, 255, 255, 0.06);
 }
 
 [data-theme="dark"] .statLabel,
 [data-theme="classic-dark"] .statLabel,
 .dark .statLabel {
     color: rgba(255, 255, 255, 0.6);
+}
+
+/* Progress dots for dark themes */
+[data-theme="dark"] .progressDot,
+.dark .progressDot {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="classic-dark"] .progressDot {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .progressDot:hover,
+[data-theme="classic-dark"] .progressDot:hover,
+.dark .progressDot:hover {
+    background: rgba(255, 255, 255, 0.3);
 }

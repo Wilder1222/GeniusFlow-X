@@ -20,6 +20,14 @@ export const supabase = createClient(
             autoRefreshToken: hasCredentials,
             persistSession: hasCredentials,
             detectSessionInUrl: hasCredentials,
+            // Session过期时间设置为48小时（172800秒）
+            storageKey: 'geniusflow-x-auth',
+            storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+        },
+        global: {
+            headers: {
+                'x-session-timeout': '172800', // 48 hours in seconds
+            },
         },
     }
 );

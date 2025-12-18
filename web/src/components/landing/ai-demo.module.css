@@ -25,13 +25,33 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: rgba(255, 107, 107, 0.15);
-    border: 1px solid rgba(255, 107, 107, 0.4);
     border-radius: 50px;
-    color: #e53935;
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 24px;
+    position: relative;
+    /* 红粉渐变 - 核心亮点 - 更饱和的颜色 */
+    background:
+        linear-gradient(var(--color-background-primary, #ffffff), var(--color-background-primary, #ffffff)) padding-box,
+        linear-gradient(135deg, #e53e3e 0%, #d53f8c 50%, #9f7aea 100%) border-box;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.badge svg {
+    color: #e53e3e;
+}
+
+.badge span {
+    background: linear-gradient(135deg, #e53e3e 0%, #d53f8c 50%, #9f7aea 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.badge:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
 }
 
 .title {
@@ -61,7 +81,7 @@
     display: grid;
     grid-template-columns: 1.2fr 1fr;
     gap: 48px;
-    align-items: start;
+    align-items: stretch;
 }
 
 /* --- Chat Window --- */
@@ -611,6 +631,18 @@
     color: #333333;
 }
 
+.promptTagActive {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: transparent;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.promptTagActive:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+    color: #ffffff;
+}
+
 /* --- Responsive --- */
 @media (max-width: 1024px) {
     .demoContainer {
@@ -678,12 +710,17 @@
     color: #a1a1a6;
 }
 
-/* Chat Window */
+/* Chat Window - Dark Theme (purple tones) */
 [data-theme="dark"] .chatWindow,
-[data-theme="classic-dark"] .chatWindow,
 .dark .chatWindow {
     background: var(--color-surface-primary);
     border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Chat Window - Classic Dark Theme (pure black) */
+[data-theme="classic-dark"] .chatWindow {
+    background: #1e1e1e;
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .chatWindow:hover,
@@ -692,11 +729,17 @@
     border-color: rgba(255, 107, 107, 0.4);
 }
 
+/* Chat Header - Dark Theme */
 [data-theme="dark"] .chatHeader,
-[data-theme="classic-dark"] .chatHeader,
 .dark .chatHeader {
     background: linear-gradient(180deg, rgba(37, 37, 80, 1) 0%, var(--color-surface-primary) 100%);
     border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Chat Header - Classic Dark Theme */
+[data-theme="classic-dark"] .chatHeader {
+    background: linear-gradient(180deg, #2c2c2e 0%, #1e1e1e 100%);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
 }
 
 [data-theme="dark"] .chatTitle,
@@ -711,12 +754,18 @@
     color: #a1a1a6;
 }
 
-/* AI Messages */
+/* AI Messages - Dark Theme */
 [data-theme="dark"] .aiMessage .messageContent,
-[data-theme="classic-dark"] .aiMessage .messageContent,
 .dark .aiMessage .messageContent {
     background: var(--color-surface-elevated);
     border-color: rgba(255, 255, 255, 0.1);
+    color: #f5f5f7;
+}
+
+/* AI Messages - Classic Dark Theme */
+[data-theme="classic-dark"] .aiMessage .messageContent {
+    background: #2c2c2e;
+    border-color: rgba(255, 255, 255, 0.08);
     color: #f5f5f7;
 }
 
@@ -726,18 +775,27 @@
     color: #f5f5f7;
 }
 
-/* Mini Cards */
+/* Mini Cards - Dark Theme */
 [data-theme="dark"] .miniCard,
-[data-theme="classic-dark"] .miniCard,
 .dark .miniCard {
     background: var(--color-surface-primary);
     border-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Mini Cards - Classic Dark Theme */
+[data-theme="classic-dark"] .miniCard {
+    background: #1e1e1e;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
 [data-theme="dark"] .miniCard:hover,
-[data-theme="classic-dark"] .miniCard:hover,
 .dark .miniCard:hover {
     background: var(--color-surface-elevated);
+    border-color: rgba(255, 107, 107, 0.5);
+}
+
+[data-theme="classic-dark"] .miniCard:hover {
+    background: #2c2c2e;
     border-color: rgba(255, 107, 107, 0.5);
 }
 
@@ -762,12 +820,17 @@
     color: #ff9999;
 }
 
-/* Chat Footer */
+/* Chat Footer - Dark Theme */
 [data-theme="dark"] .chatFooter,
-[data-theme="classic-dark"] .chatFooter,
 .dark .chatFooter {
     background: linear-gradient(180deg, var(--color-surface-primary) 0%, rgba(37, 37, 80, 1) 100%);
     border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Chat Footer - Classic Dark Theme */
+[data-theme="classic-dark"] .chatFooter {
+    background: linear-gradient(180deg, #1e1e1e 0%, #2c2c2e 100%);
+    border-top-color: rgba(255, 255, 255, 0.06);
 }
 
 [data-theme="dark"] .chatPlaceholder,
@@ -788,12 +851,17 @@
     color: #86868b;
 }
 
-/* Features Highlight */
+/* Features Highlight - Dark Theme */
 [data-theme="dark"] .featuresHighlight,
-[data-theme="classic-dark"] .featuresHighlight,
 .dark .featuresHighlight {
     background: var(--color-surface-primary);
     border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Features Highlight - Classic Dark Theme */
+[data-theme="classic-dark"] .featuresHighlight {
+    background: #1e1e1e;
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .featuresHighlight:hover,
@@ -846,7 +914,7 @@
     color: #a1a1a6;
 }
 
-/* Prompt suggestions */
+/* Prompt suggestions - Dark Theme */
 [data-theme="dark"] .promptLabel,
 [data-theme="classic-dark"] .promptLabel,
 .dark .promptLabel {
@@ -854,9 +922,15 @@
 }
 
 [data-theme="dark"] .promptTag,
-[data-theme="classic-dark"] .promptTag,
 .dark .promptTag {
     background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #a1a1a6;
+}
+
+[data-theme="classic-dark"] .promptTag {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.06);
     color: #a1a1a6;
 }
 
@@ -864,5 +938,27 @@
 [data-theme="classic-dark"] .promptTag:hover,
 .dark .promptTag:hover {
     background: rgba(255, 107, 107, 0.2);
+    border-color: rgba(255, 107, 107, 0.4);
     color: #ff9999;
+}
+
+/* Reset button for dark themes */
+[data-theme="dark"] .resetBtn,
+.dark .resetBtn {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="classic-dark"] .resetBtn {
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .resetBtn:hover,
+[data-theme="classic-dark"] .resetBtn:hover,
+.dark .resetBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
 }

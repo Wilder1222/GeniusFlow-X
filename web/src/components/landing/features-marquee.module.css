@@ -1,0 +1,314 @@
+/* Features Marquee Section */
+.section {
+    padding: 100px 0;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(180deg,
+            var(--color-background-primary) 0%,
+            var(--color-background-secondary) 50%,
+            var(--color-background-primary) 100%);
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 0 20px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    position: relative;
+    /* 青绿渐变 - 核心功能 - 更饱和的颜色 */
+    background:
+        linear-gradient(var(--color-background-primary, #ffffff), var(--color-background-primary, #ffffff)) padding-box,
+        linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%) border-box;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.badge span {
+    background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.badge:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Marquee Container */
+.marqueeContainer {
+    position: relative;
+    width: 100%;
+}
+
+.gradientLeft,
+.gradientRight {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 150px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.gradientLeft {
+    left: 0;
+    background: linear-gradient(90deg,
+            var(--color-background-primary) 0%,
+            transparent 100%);
+}
+
+.gradientRight {
+    right: 0;
+    background: linear-gradient(270deg,
+            var(--color-background-primary) 0%,
+            transparent 100%);
+}
+
+/* Marquee Wrapper */
+.marqueeWrapper {
+    overflow: hidden;
+    width: 100%;
+    padding: 20px 0;
+}
+
+/* Marquee Track */
+.marqueeTrack {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+    will-change: transform;
+}
+
+/* Row 1 - Right to Left */
+.row1 {
+    animation: scrollLeft 40s linear infinite;
+}
+
+/* Row 2 - Left to Right */
+.row2 {
+    animation: scrollRight 45s linear infinite;
+}
+
+@keyframes scrollLeft {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes scrollRight {
+    0% {
+        transform: translateX(-50%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* Feature Card */
+.card {
+    position: relative;
+    width: 320px;
+    min-width: 320px;
+    padding: 28px;
+    background: var(--color-background-primary);
+    border: 1px solid var(--color-border-light);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(102, 126, 234, 0.4);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 40px rgba(102, 126, 234, 0.15);
+}
+
+.cardGlow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.card:hover .cardGlow {
+    opacity: 1;
+    height: 4px;
+}
+
+.cardContent {
+    position: relative;
+    z-index: 1;
+}
+
+.iconWrapper {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover .iconWrapper {
+    transform: scale(1.1) rotate(-5deg);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cardTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--color-text-primary);
+}
+
+.cardDescription {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Dark mode adjustments */
+:global([data-theme="dark"]) .section {
+    background: linear-gradient(180deg,
+            var(--color-background-primary) 0%,
+            rgba(20, 20, 50, 1) 50%,
+            var(--color-background-primary) 100%);
+}
+
+:global([data-theme="classic-dark"]) .section {
+    background: linear-gradient(180deg,
+            #121212 0%,
+            #1a1a1a 50%,
+            #121212 100%);
+}
+
+:global([data-theme="dark"]) .card {
+    background: rgba(26, 26, 62, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+:global([data-theme="classic-dark"]) .card {
+    background: rgba(30, 30, 30, 0.95);
+    border-color: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+}
+
+:global([data-theme="dark"]) .card:hover {
+    border-color: rgba(102, 126, 234, 0.5);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 60px rgba(102, 126, 234, 0.2);
+}
+
+:global([data-theme="classic-dark"]) .card:hover {
+    border-color: rgba(102, 126, 234, 0.4);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.5),
+        0 0 50px rgba(102, 126, 234, 0.15);
+}
+
+:global([data-theme="dark"]) .gradientLeft {
+    background: linear-gradient(90deg,
+            var(--color-background-primary) 0%,
+            transparent 100%);
+}
+
+:global([data-theme="classic-dark"]) .gradientLeft {
+    background: linear-gradient(90deg,
+            #121212 0%,
+            transparent 100%);
+}
+
+:global([data-theme="dark"]) .gradientRight {
+    background: linear-gradient(270deg,
+            var(--color-background-primary) 0%,
+            transparent 100%);
+}
+
+:global([data-theme="classic-dark"]) .gradientRight {
+    background: linear-gradient(270deg,
+            #121212 0%,
+            transparent 100%);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .section {
+        padding: 60px 0;
+    }
+
+    .header {
+        margin-bottom: 40px;
+    }
+
+    .card {
+        width: 280px;
+        min-width: 280px;
+        padding: 20px;
+    }
+
+    .iconWrapper {
+        width: 48px;
+        height: 48px;
+    }
+
+    .cardTitle {
+        font-size: 1.1rem;
+    }
+
+    .cardDescription {
+        font-size: 0.9rem;
+    }
+
+    .gradientLeft,
+    .gradientRight {
+        width: 60px;
+    }
+}

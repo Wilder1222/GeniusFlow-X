@@ -26,10 +26,10 @@ export default function LoginPage() {
             if (result?.message || result?.user) {
                 setSuccess('登录成功'); // API might return "message", or we default to this
                 setTimeout(() => {
-                    router.push('/dashboard');
+                    router.push('/home');
                 }, 1000);
             } else {
-                router.push('/dashboard');
+                router.push('/home');
             }
         } catch (err: any) {
             setError(err.message || '登录失败，请检查邮箱和密码');

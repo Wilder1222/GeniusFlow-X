@@ -36,7 +36,7 @@ export function getProviderConfig(provider: AIProvider): ProviderConfig {
             return {
                 apiKey: process.env.DEEPSEEK_API_KEY || '',
                 baseURL: 'https://api.deepseek.com/v1',
-                model: process.env.DEEPSEEK_MODEL || 'deepseek-chat'
+                model: process.env.DEEPSEEK_MODEL || 'deepseek-reasoner'
             };
 
         case 'zhipu':

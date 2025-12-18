@@ -1,15 +1,15 @@
-/* Header Component - FlashGenius Styles */
+/* Header Component - Transparent with Floating Cards */
 
 .header {
     position: sticky;
     top: 0;
     z-index: var(--z-sticky);
-    background: var(--color-surface-elevated);
-    backdrop-filter: var(--blur-md);
-    border-bottom: 1px solid var(--color-border-light);
+    background: transparent;
+    backdrop-filter: none;
+    border-bottom: none;
     transition: all var(--transition-fast);
-    height: 73px;
-    /* Fixed height */
+    height: 64px;
+    /* Fixed height - reduced from 73px */
 }
 
 .container {
@@ -22,26 +22,44 @@
     justify-content: space-between;
 }
 
-.leftSection {
+/* Branding Section - Left with Card Container */
+.branding {
     display: flex;
     align-items: center;
-    gap: var(--space-8);
+    flex-shrink: 0;
+    background: var(--color-surface-elevated);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border-light);
+    border-radius: 28px;
+    padding: 5px 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all var(--transition-base);
+}
+
+.branding:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14),
+        0 6px 20px rgba(0, 0, 0, 0.1),
+        0 3px 12px rgba(0, 0, 0, 0.06);
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-1);
     text-decoration: none;
     color: inherit;
 }
 
 .logoIcon {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-base);
 }
 
 .title {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-base);
     font-weight: var(--font-weight-bold);
     background: var(--gradient-welcome);
     -webkit-background-clip: text;
@@ -50,23 +68,52 @@
     margin: 0;
 }
 
-.nav {
+/* Navigation Card - Center */
+.navCard {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    transform-origin: center center;
+    background: var(--color-surface-elevated);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border-light);
+    border-radius: 36px;
+    padding: 6px 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all var(--transition-base);
+    will-change: transform;
+}
+
+.navCard:hover {
+    transform: translateX(-50%) translateY(-1px);
+    transform-origin: center center;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14),
+        0 6px 20px rgba(0, 0, 0, 0.1),
+        0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+.navContent {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
+    gap: var(--space-1);
 }
 
 .navItem {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    justify-content: center;
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
     text-decoration: none;
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-md);
+    padding: 8px 16px;
+    border-radius: 32px;
     transition: all var(--transition-fast);
+    position: relative;
+    white-space: nowrap;
 }
 
 .navItem:hover {
@@ -75,8 +122,20 @@
 }
 
 .navItem.active {
-    color: var(--color-brand-primary);
-    background: rgba(255, 107, 107, 0.1);
+    color: var(--color-text-primary);
+    background: rgba(255, 107, 107, 0.08);
+}
+
+.navItem.active::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: var(--color-brand-primary);
+    border-radius: 2px;
 }
 
 .actions {
@@ -132,4 +191,82 @@
 
 .userIcon {
     font-size: var(--font-size-base);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .navCard {
+        padding: 6px 10px;
+    }
+
+    .navItem {
+        padding: 8px 14px;
+        font-size: calc(var(--font-size-sm) - 0.5px);
+    }
+}
+
+@media (max-width: 900px) {
+    .container {
+        flex-wrap: wrap;
+        padding: 0 var(--space-4);
+        gap: var(--space-3);
+    }
+
+    .branding {
+        flex: 0 0 auto;
+        min-width: fit-content;
+    }
+
+    .actions {
+        flex: 0 0 auto;
+    }
+
+    .navCard {
+        position: static;
+        transform: none;
+        order: 3;
+        flex: 1 1 100%;
+        margin-top: var(--space-3);
+        justify-content: center;
+    }
+
+    .navContent {
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .navItem {
+        padding: 8px 12px;
+        font-size: calc(var(--font-size-sm) - 1px);
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .header {
+        height: auto;
+        padding: var(--space-3) 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: var(--font-size-lg);
+    }
+
+    .logoIcon {
+        font-size: var(--font-size-lg);
+    }
+
+    .navItem {
+        padding: 6px 10px;
+        font-size: calc(var(--font-size-xs) + 1px);
+    }
+
+    .navCard {
+        padding: 4px 6px;
+        border-radius: 32px;
+    }
 }
