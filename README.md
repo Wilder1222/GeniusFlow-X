@@ -23,6 +23,14 @@
 
 ---
 
+## Foreword
+
+I am a backend software engineer specializing in Java. I believe that in the AI era, the future belongs to **Full Stack + AI** rapid applications. As a beginner in frontend and full-stack development, this is my first experiment with **Full Stack + AI**. Prior to this, I had no experience with Next.js frameworks and related tech stacks.
+
+This project is **100% developed using Antigravity**.
+
+**Features are currently incomplete and actively being updated.**
+
 ## 📖 Introduction
 
 **GeniusFlow-X** is a modern learning tool that fuses **AI Content Generation** with the **Advanced Spaced Repetition Algorithm (FSRS)**. We are dedicated to making knowledge acquisition and retention easier and more efficient through technology.
