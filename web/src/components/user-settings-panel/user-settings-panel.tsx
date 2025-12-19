@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { LuUser, LuSettings, LuEye, LuMoon, LuSun, LuMonitor, LuLogOut, LuChevronRight } from 'react-icons/lu';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { useTheme } from '@/lib/theme-context';
 import Link from 'next/link';
@@ -11,8 +12,34 @@ export default function UserSettingsPanel() {
     const { user, signOut } = useAuth();
     const { theme, setTheme } = useTheme();
     const [isOpen, setIsOpen] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+    const [displayName, setDisplayName] = useState<string | null>(null);
     const panelRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
+
+    // Fetch user profile data
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchProfile = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('avatar_url, display_name, username')
+                    .eq('id', user.id)
+                    .maybeSingle();
+
+                if (!error && data) {
+                    setAvatarUrl(data.avatar_url);
+                    setDisplayName(data.display_name || data.username);
+                }
+            } catch (err) {
+                console.error('[UserSettingsPanel] Error fetching profile:', err);
+            }
+        };
+
+        fetchProfile();
+    }, [user]);
 
     if (!user) return null;
 
@@ -63,7 +90,7 @@ export default function UserSettingsPanel() {
     ];
 
     return (
-        <>
+        <div className={styles.container}>
             {/* Trigger Button */}
             <button
                 ref={triggerRef}
@@ -72,7 +99,11 @@ export default function UserSettingsPanel() {
                 aria-label="User settings"
             >
                 <div className={styles.avatar}>
-                    <LuUser size={20} />
+                    {avatarUrl ? (
+                        <img src={avatarUrl} alt="Avatar" className={styles.avatarImg} />
+                    ) : (
+                        <LuUser size={20} />
+                    )}
                 </div>
             </button>
 
@@ -86,10 +117,14 @@ export default function UserSettingsPanel() {
                 {/* User Info */}
                 <div className={styles.userInfo}>
                     <div className={styles.avatarLarge}>
-                        <LuUser size={16} />
+                        {avatarUrl ? (
+                            <img src={avatarUrl} alt="Avatar" className={styles.avatarImg} />
+                        ) : (
+                            <LuUser size={16} />
+                        )}
                     </div>
                     <div className={styles.userDetails}>
-                        <div className={styles.userName}>{user.email?.split('@')[0] || 'User'}</div>
+                        <div className={styles.userName}>{displayName || user.email?.split('@')[0] || 'User'}</div>
                         <div className={styles.userEmail}>{user.email}</div>
                     </div>
                 </div>
@@ -134,6 +169,6 @@ export default function UserSettingsPanel() {
                     </button>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

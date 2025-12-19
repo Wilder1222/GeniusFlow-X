@@ -29,10 +29,20 @@ export async function GET(req: NextRequest) {
             .from('profiles')
             .select('xp, level, current_streak, longest_streak, last_study_date')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
 
         if (profileError) {
             return errorResponse(profileError);
+        }
+
+        if (!profile) {
+            return successResponse({
+                xp: 0,
+                level: 1,
+                currentStreak: 0,
+                longestStreak: 0,
+                lastStudyDate: null
+            });
         }
 
         return successResponse({

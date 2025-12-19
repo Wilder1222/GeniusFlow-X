@@ -115,7 +115,7 @@ export default function LandingPage() {
           ) : (
             <>
               <Link href="/auth/login" className={styles.loginBtn}>登录</Link>
-              <Link href="/auth/register" className={styles.signupBtn}>免费注册</Link>
+              <Link href="/auth/signup" className={styles.signupBtn}>免费注册</Link>
             </>
           )}
         </div>
@@ -145,7 +145,7 @@ export default function LandingPage() {
           </p>
 
           <div className={styles.heroCta}>
-            <Link href="/auth/register" className={styles.primaryBtn}>
+            <Link href="/auth/signup" className={styles.primaryBtn}>
               🚀 免费开始使用
             </Link>
             <a href="#ai-demo" className={styles.secondaryBtn}>
@@ -214,7 +214,7 @@ export default function LandingPage() {
             完全免费，无需信用卡。
           </p>
           <div className={styles.ctaButtons}>
-            <Link href="/auth/register" className={styles.primaryBtn}>
+            <Link href="/auth/signup" className={styles.primaryBtn}>
               🚀 立即免费注册
             </Link>
             <Link href="/auth/login" className={styles.secondaryBtn}>
@@ -237,7 +237,7 @@ export default function LandingPage() {
             <a href="#features" className={styles.footerLink}>功能介绍</a>
             <a href="#benefits" className={styles.footerLink}>产品优势</a>
             <Link href="/auth/login" className={styles.footerLink}>登录</Link>
-            <Link href="/auth/register" className={styles.footerLink}>注册</Link>
+            <Link href="/auth/signup" className={styles.footerLink}>注册</Link>
           </div>
 
           <div className={styles.footerCopyright}>
