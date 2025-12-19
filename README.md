@@ -23,13 +23,15 @@
 
 ---
 
-## Foreword
+## 🚀 About This Project
 
-I am a backend software engineer specializing in Java. I believe that in the AI era, the future belongs to **Full Stack + AI** rapid applications. As a beginner in frontend and full-stack development, this is my first experiment with **Full Stack + AI**. Prior to this, I had no experience with Next.js frameworks and related tech stacks.
+As a backend developer deeply rooted in the Java ecosystem, I foresee that **"Full Stack + AI"** is reshaping the future of software engineering, leading the revolution of **Rapid Apps**.
 
-This project is **100% developed using Antigravity**.
+GeniusFlow-X marks my milestone as a new explorer in the full-stack realm, embracing the **AI Native** development paradigm. Starting from scratch with the modern Next.js stack, this journey validates the boundless expansion of technical frontiers.
 
-**Features are currently incomplete and actively being updated.**
+This project was **100% collaboratively developed with Antigravity**, serving as a vivid footnote to the era of human-AI co-creation.
+
+🚧 **Validation continues, features are evolving...**
 
 ## 📖 Introduction
 
