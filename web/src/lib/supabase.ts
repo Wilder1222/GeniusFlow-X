@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -12,7 +12,7 @@ if (!hasCredentials && isDevelopment) {
     console.warn('   当前使用开发模式，认证功能将不可用。');
 }
 
-export const supabase = createClient(
+export const supabase = createBrowserClient(
     supabaseUrl || 'https://placeholder.supabase.co',
     supabaseAnonKey || 'placeholder-anon-key',
     {
@@ -20,14 +20,6 @@ export const supabase = createClient(
             autoRefreshToken: hasCredentials,
             persistSession: hasCredentials,
             detectSessionInUrl: hasCredentials,
-            // Session过期时间设置为48小时（172800秒）
-            storageKey: 'geniusflow-x-auth',
-            storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-        },
-        global: {
-            headers: {
-                'x-session-timeout': '172800', // 48 hours in seconds
-            },
         },
     }
 );
