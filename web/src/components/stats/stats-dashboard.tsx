@@ -1,12 +1,244 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { apiClient } from '@/lib/api-client';
-import RetentionChart from './retention-chart';
-import StudyTrendChart from './study-trend-chart';
-import ForecastPanel from './forecast-panel';
+import { motion } from 'framer-motion';
+import {
+    LuActivity,
+    LuZap,
+    LuTarget,
+    LuFlame,
+    LuTrophy,
+    LuClock,
+    LuRefreshCw,
+    LuBrain
+} from 'react-icons/lu';
 import styles from './stats-dashboard.module.css';
-import { LuBook, LuCheck, LuClock, LuFlame, LuTrophy, LuTarget } from 'react-icons/lu';
+
+// Counter component for numeric values
+const Counter = ({ value, duration = 1 }: { value: number | string; duration?: number }) => {
+    const [displayValue, setDisplayValue] = useState(0);
+    const numericValue = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.]/g, '')) : value;
+    const suffix = typeof value === 'string' ? value.replace(/[0-9.]/g, '') : '';
+
+    useEffect(() => {
+        let start = 0;
+        const end = numericValue;
+        if (start === end) return;
+
+        let totalMiliseconds = duration * 1000;
+        let incrementTime = (totalMiliseconds / end) > 10 ? (totalMiliseconds / end) : 10;
+
+        let timer = setInterval(() => {
+            start += Math.ceil(end / (totalMiliseconds / incrementTime));
+            if (start >= end) {
+                setDisplayValue(end);
+                clearInterval(timer);
+            } else {
+                setDisplayValue(start);
+            }
+        }, incrementTime);
+
+        return () => clearInterval(timer);
+    }, [numericValue, duration]);
+
+    return <span>{displayValue}{suffix}</span>;
+};
+
+// Embedded Heatmap component
+interface HeatmapData {
+    date: string;
+    count: number;
+}
+
+interface StatsDashboardProps {
+    isStatsPage?: boolean;
+}
+
+function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
+    const [data, setData] = useState<HeatmapData[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchHeatmapData = async () => {
+            try {
+                const result = await apiClient.get('/api/stats/heatmap');
+                if (result.success) {
+                    setData(result.data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch heatmap data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchHeatmapData();
+    }, []);
+
+    const generateDays = () => {
+        const days: { date: string; count: number }[] = [];
+        const today = new Date();
+
+        for (let i = 364; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toISOString().split('T')[0];
+            const dayData = data.find(d => d.date === dateStr);
+            days.push({ date: dateStr, count: dayData?.count || 0 });
+        }
+        return days;
+    };
+
+    const getColor = (count: number): string => {
+        if (count === 0) return 'var(--heatmap-empty)';
+        if (count < 5) return 'var(--heatmap-low)';
+        if (count < 10) return 'var(--heatmap-medium)';
+        if (count < 20) return 'var(--heatmap-high)';
+        return 'var(--heatmap-very-high)';
+    };
+
+    const groupByWeeks = (days: { date: string; count: number }[]) => {
+        const weeks: { date: string; count: number }[][] = [];
+        let currentWeek: { date: string; count: number }[] = [];
+
+        if (days.length > 0) {
+            const firstDate = new Date(days[0].date);
+            const firstDayOfWeek = firstDate.getDay();
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                currentWeek.push({ date: '', count: -1 });
+            }
+        }
+
+        days.forEach((day, index) => {
+            const date = new Date(day.date);
+            const dayOfWeek = date.getDay();
+            if (dayOfWeek === 0 && currentWeek.length > 0) {
+                weeks.push(currentWeek);
+                currentWeek = [];
+            }
+            currentWeek.push(day);
+            if (index === days.length - 1) {
+                weeks.push(currentWeek);
+            }
+        });
+        return weeks;
+    };
+
+    const getMonthLabels = useMemo(() => {
+        const days = generateDays();
+        const weeks = groupByWeeks(days);
+        const monthLabels: { month: string; weekIndex: number }[] = [];
+        const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+        let lastYearMonth = '';
+
+        // Track the first found month index to align odd/even logic
+        let firstMonthFound = false;
+
+        weeks.forEach((week, weekIndex) => {
+            for (const day of week) {
+                if (day.count === -1 || !day.date) continue;
+                const date = new Date(day.date);
+                const year = date.getFullYear();
+                const month = date.getMonth(); // 0-11
+                const yearMonth = `${year}-${month}`;
+
+                if (yearMonth !== lastYearMonth) {
+                    monthLabels.push({ month: monthNames[month], weekIndex });
+                    lastYearMonth = yearMonth;
+                }
+                break;
+            }
+        });
+
+        // Remove the first '12月' if it exists to avoid showing it at both start and end
+        const displayLabels = (monthLabels.length > 0 && monthLabels[0].month === '12月')
+            ? monthLabels.slice(1)
+            : monthLabels;
+
+        return { monthLabels: displayLabels, totalWeeks: weeks.length };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data]);
+
+    if (loading) {
+        return <div className={styles.heatmapLoading}>加载活跃度数据...</div>;
+    }
+
+    const days = generateDays();
+    const weeks = groupByWeeks(days);
+    const totalActivity = data.reduce((sum, d) => sum + d.count, 0);
+    const { monthLabels, totalWeeks } = getMonthLabels;
+
+    // Exact width calc: 10px cell + 2px gap per week
+    // We explicitly set the months container width to match the grid
+    const heatmapWidth = totalWeeks * 12;
+
+    return (
+        <div className={styles.heatmapContainer}>
+            <div className={styles.heatmapHeader}>
+                <span className={styles.heatmapTitle}>学习活跃度</span>
+                <span className={styles.heatmapSummary}>过去一年 {totalActivity} 次复习</span>
+            </div>
+            <div className={styles.heatmapContent}>
+                <div
+                    className={styles.heatmapMonths}
+                    style={isStatsPage ? { width: '100%' } : { minWidth: `${heatmapWidth}px`, width: `${heatmapWidth}px` }}
+                >
+                    {monthLabels.map((label, i) => (
+                        <span
+                            key={i}
+                            style={{
+                                position: 'absolute',
+                                // Precise positioning:
+                                // Home: weekIndex * 12px
+                                // Stats: (weekIndex / totalWeeks) * 100%
+                                left: isStatsPage
+                                    ? `${(label.weekIndex / totalWeeks) * 100}%`
+                                    : `${label.weekIndex * 12}px`,
+                            }}
+                        >
+                            {label.month}
+                        </span>
+                    ))}
+                </div>
+                <div
+                    className={styles.heatmapGrid}
+                    style={isStatsPage ? { width: '100%', justifyContent: 'space-between' } : {}}
+                >
+                    {weeks.map((week, weekIndex) => (
+                        <div key={weekIndex} className={styles.heatmapWeek} style={isStatsPage ? { flex: 1 } : {}}>
+                            {week.map((day, dayIndex) => (
+                                <div
+                                    key={dayIndex}
+                                    className={styles.heatmapDay}
+                                    style={{
+                                        backgroundColor: day.count === -1 ? 'transparent' : getColor(day.count),
+                                        visibility: day.count === -1 ? 'hidden' : 'visible',
+                                        // Adaptive size for Stats page
+                                        width: isStatsPage ? '100%' : undefined,
+                                        height: isStatsPage ? 'auto' : undefined,
+                                        aspectRatio: isStatsPage ? '1' : undefined
+                                    }}
+                                    title={day.date ? `${day.date}: ${day.count} 次复习` : ''}
+                                />
+                            ))}
+                        </div>
+                    ))}
+                </div>
+                <div className={styles.heatmapLegend}>
+                    <span>少</span>
+                    <div className={styles.legendColors}>
+                        <div style={{ backgroundColor: 'var(--heatmap-empty)' }} />
+                        <div style={{ backgroundColor: 'var(--heatmap-low)' }} />
+                        <div style={{ backgroundColor: 'var(--heatmap-medium)' }} />
+                        <div style={{ backgroundColor: 'var(--heatmap-high)' }} />
+                        <div style={{ backgroundColor: 'var(--heatmap-very-high)' }} />
+                    </div>
+                    <span>多</span>
+                </div>
+            </div>
+        </div>
+    );
+}
 
 interface SummaryData {
     totalCards: number;
@@ -15,15 +247,12 @@ interface SummaryData {
 }
 
 interface StreakData {
-    xp: number;
-    level: number;
     currentStreak: number;
     longestStreak: number;
 }
 
 interface LearningData {
     averageAccuracy: number;
-    totalReviews: number;
 }
 
 interface ActivityData {
@@ -32,20 +261,12 @@ interface ActivityData {
     thisMonth: number;
 }
 
-interface StatsDashboardProps {
-    simplified?: boolean;
-}
-
-export default function StatsDashboard({ simplified = false }: StatsDashboardProps) {
+export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
     const [summary, setSummary] = useState<SummaryData | null>(null);
     const [streak, setStreak] = useState<StreakData | null>(null);
     const [learning, setLearning] = useState<LearningData | null>(null);
     const [activity, setActivity] = useState<ActivityData | null>(null);
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        fetchAllStats();
-    }, []);
 
     const fetchAllStats = async () => {
         setLoading(true);
@@ -68,90 +289,231 @@ export default function StatsDashboard({ simplified = false }: StatsDashboardPro
         }
     };
 
+    useEffect(() => {
+        fetchAllStats();
+    }, []);
+
+    // Landing page inspired colors
+    const indicators = [
+        {
+            label: '今天复习',
+            value: activity?.today || 0,
+            target: 50,
+            icon: <LuActivity />,
+            color: '#ff6b6b', // Coral
+            unit: '张'
+        },
+        {
+            label: '专注时长',
+            value: summary?.studyTime || 0,
+            target: 60,
+            icon: <LuClock />,
+            color: '#f06595', // Pink
+            unit: 'm'
+        },
+        {
+            label: '正确率',
+            value: learning?.averageAccuracy || 0,
+            target: 100,
+            icon: <LuTarget />,
+            color: '#cc5de8', // Purple
+            unit: '%'
+        }
+    ];
+
+    const secondaryStats = [
+        {
+            label: '当前连胜',
+            value: streak?.currentStreak || 0,
+            icon: <LuFlame />,
+            color: '#ff6b6b',
+            unit: '天'
+        },
+        {
+            label: '最高纪录',
+            value: streak?.longestStreak || 0,
+            icon: <LuTrophy />,
+            color: '#f06595',
+            unit: '天'
+        },
+        {
+            label: '总卡片数',
+            value: summary?.totalCards || 0,
+            icon: <LuBrain />,
+            color: '#cc5de8',
+            unit: '张'
+        }
+    ];
+
     if (loading) {
         return (
-            <div className={`${styles.container} ${simplified ? styles.simplified : ''}`}>
-                <div className={styles.loading}>
+            <div className={styles.container}>
+                <div className={styles.header}>
+                    <div className={styles.titleGroup}>
+                        <LuZap className={styles.zapIcon} />
+                        <h2 className={styles.title}>今日动力</h2>
+                    </div>
+                    <button className={styles.refreshBtn} disabled>
+                        <LuRefreshCw className={styles.refreshIcon} />
+                        同步
+                    </button>
+                </div>
+                <div className={styles.loadingContainer}>
                     <div className={styles.spinner}></div>
-                    <span>加载统计数据中...</span>
+                    <p>正在同步学习数据...</p>
                 </div>
             </div>
         );
     }
 
-    const statCards = [
-        { label: '总卡片数', value: summary?.totalCards || 0, icon: <LuBook />, color: '#4F46E5' },
-        { label: '复习次数', value: summary?.totalReviews || 0, icon: <LuCheck />, color: '#10B981' },
-        { label: '学习时长', value: `${summary?.studyTime || 0}m`, icon: <LuClock />, color: '#F59E0B' },
-        { label: '当前连胜', value: `${streak?.currentStreak || 0}d`, icon: <LuFlame />, color: '#EF4444' },
-        { label: '最高纪录', value: `${streak?.longestStreak || 0}d`, icon: <LuTrophy />, color: '#8B5CF6' },
-        { label: '正确率', value: `${learning?.averageAccuracy || 0}%`, icon: <LuTarget />, color: '#EC4899' },
-    ];
-
     return (
-        <div className={`${styles.container} ${simplified ? styles.simplified : ''}`}>
+        <div className={styles.container}>
             <div className={styles.header}>
-                <h2 className={styles.title}>{simplified ? '今日概览' : '学习成就仪表盘'}</h2>
-                <button onClick={fetchAllStats} className={styles.refreshBtn}>刷新</button>
+                <div className={styles.titleGroup}>
+                    <motion.div
+                        animate={{ rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                    >
+                        <LuZap className={styles.zapIcon} />
+                    </motion.div>
+                    <h2 className={styles.title}>今日动力</h2>
+                </div>
+                <motion.button
+                    onClick={fetchAllStats}
+                    className={styles.refreshBtn}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                    <LuRefreshCw className={styles.refreshIcon} />
+                    同步
+                </motion.button>
             </div>
 
-            <div className={styles.grid}>
-                {statCards.slice(0, simplified ? 4 : 6).map((card, index) => (
-                    <div key={index} className={styles.statCard} style={{ '--accent-color': card.color } as any}>
-                        <div className={styles.iconWrapper}>
-                            {card.icon}
-                        </div>
-                        <div className={styles.statInfo}>
-                            <div className={styles.value}>{card.value}</div>
-                            <div className={styles.label}>{card.label}</div>
-                        </div>
-                    </div>
-                ))}
-            </div>
+            {/* New Layout: Left 2/3 (Rings + Heatmap) | Right 1/3 (Secondary Stats) */}
+            <div className={styles.mainLayout}>
+                {/* Left Section: Ring Cards + Heatmap */}
+                <div className={styles.leftSection}>
+                    {/* Ring Cards */}
+                    <div className={styles.ringGrid}>
+                        {indicators.map((item, index) => {
+                            const progress = Math.min(item.value / item.target, 1);
+                            const circumference = 2 * Math.PI * 34;
 
-            <div className={styles.recentActivity}>
-                <h3>近期活跃度</h3>
-                <div className={styles.activityGrid}>
-                    <div className={styles.activityItem}>
-                        <span className={styles.activityLabel}>今天</span>
-                        <div className={styles.activityProgress}>
-                            <div className={styles.activityValue}>{activity?.today || 0} 张</div>
-                            <div className={styles.miniBar}>
-                                <div className={styles.miniFill} style={{ width: `${Math.min((activity?.today || 0) / 50 * 100, 100)}%` }}></div>
-                            </div>
-                        </div>
+                            return (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    transition={{
+                                        delay: index * 0.15,
+                                        duration: 0.5,
+                                        type: "spring",
+                                        stiffness: 100
+                                    }}
+                                    whileHover={{
+                                        scale: 1.05,
+                                        y: -5,
+                                        transition: { duration: 0.2 }
+                                    }}
+                                    className={styles.indicatorCard}
+                                    style={{ '--accent-color': item.color } as React.CSSProperties}
+                                >
+                                    <div className={styles.ringContainer}>
+                                        <svg className={styles.svg} viewBox="0 0 80 80">
+                                            <circle
+                                                className={styles.ringTrack}
+                                                cx="40"
+                                                cy="40"
+                                                r="34"
+                                            />
+                                            <motion.circle
+                                                className={styles.ringFill}
+                                                cx="40"
+                                                cy="40"
+                                                r="34"
+                                                initial={{ strokeDashoffset: circumference }}
+                                                animate={{
+                                                    strokeDashoffset: circumference - (circumference * progress)
+                                                }}
+                                                transition={{
+                                                    duration: 1.5,
+                                                    ease: "easeOut",
+                                                    delay: index * 0.2 + 0.3
+                                                }}
+                                                style={{
+                                                    strokeDasharray: circumference,
+                                                    stroke: item.color
+                                                }}
+                                            />
+                                        </svg>
+                                        <motion.div
+                                            className={styles.ringIcon}
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            transition={{
+                                                delay: index * 0.15 + 0.4,
+                                                type: "spring",
+                                                stiffness: 200
+                                            }}
+                                            style={{ color: item.color }}
+                                        >
+                                            {item.icon}
+                                        </motion.div>
+                                    </div>
+                                    <div className={styles.indicatorInfo}>
+                                        <div className={styles.indicatorLabel}>{item.label}</div>
+                                        <div className={styles.indicatorValue}>
+                                            <Counter value={item.value} duration={1.5} />
+                                            <span className={styles.unit}>{item.unit}</span>
+                                        </div>
+                                        <div className={styles.progressText}>
+                                            {Math.round(progress * 100)}% 完成
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
                     </div>
-                    {/* Weekly and Monthly only in non-simplified or small on simplified? Keep them but maybe smaller? */}
-                    <div className={styles.activityItem}>
-                        <span className={styles.activityLabel}>本周</span>
-                        <div className={styles.activityProgress}>
-                            <div className={styles.activityValue}>{activity?.thisWeek || 0} 张</div>
-                            <div className={styles.miniBar}>
-                                <div className={styles.miniFill} style={{ width: `${Math.min((activity?.thisWeek || 0) / 300 * 100, 100)}%`, background: '#8B5CF6' }}></div>
+
+                    {/* Embedded Heatmap */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                    >
+                        <EmbeddedHeatmap isStatsPage={isStatsPage} />
+                    </motion.div>
+                </div>
+
+                {/* Right Section: Secondary Stats (Stacked Vertically) */}
+                <div className={styles.rightSection}>
+                    {secondaryStats.map((item, index) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 + index * 0.1 }}
+                            className={styles.statCard}
+                            whileHover={{
+                                scale: 1.02,
+                                transition: { duration: 0.2 }
+                            }}
+                            style={{ '--accent-color': item.color } as React.CSSProperties}
+                        >
+                            <div className={styles.statIcon} style={{ color: item.color }}>
+                                {item.icon}
                             </div>
-                        </div>
-                    </div>
-                    {!simplified && (
-                        <div className={styles.activityItem}>
-                            <span className={styles.activityLabel}>本月</span>
-                            <div className={styles.activityProgress}>
-                                <div className={styles.activityValue}>{activity?.thisMonth || 0} 张</div>
-                                <div className={styles.miniBar}>
-                                    <div className={styles.miniFill} style={{ width: `${Math.min((activity?.thisMonth || 0) / 1000 * 100, 100)}%`, background: '#EC4899' }}></div>
+                            <div className={styles.statContent}>
+                                <div className={styles.statValue}>
+                                    <Counter value={item.value} duration={1.2} />
+                                    <span className={styles.statUnit}>{item.unit}</span>
                                 </div>
+                                <div className={styles.statLabel}>{item.label}</div>
                             </div>
-                        </div>
-                    )}
+                        </motion.div>
+                    ))}
                 </div>
             </div>
-
-            {!simplified && (
-                <div className={styles.chartsSection}>
-                    <RetentionChart />
-                    <StudyTrendChart />
-                    <ForecastPanel />
-                </div>
-            )}
         </div>
     );
 }

@@ -1,43 +1,133 @@
+/* Achievement List - Glassmorphism Design */
 .container {
-    margin-top: 32px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle gradient overlay */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(180deg, rgba(255, 215, 0, 0.03) 0%, transparent 100%);
+    pointer-events: none;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.titleGroup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.titleIcon {
+    font-size: 24px;
+    color: #ffcc00;
+    filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.5));
 }
 
 .title {
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text-primary);
     margin: 0;
-    color: #333;
 }
 
-.progress {
+.progressBadge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, rgba(255, 204, 0, 0.15) 0%, rgba(255, 149, 0, 0.1) 100%);
+    border: 1px solid rgba(255, 204, 0, 0.2);
+    border-radius: 20px;
     font-size: 14px;
-    color: #666;
-    background: #f5f5f5;
-    padding: 6px 12px;
-    border-radius: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.sparkleIcon {
+    font-size: 16px;
+    color: #ffcc00;
 }
 
 .loading {
-    text-align: center;
-    padding: 40px;
-    color: #666;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--color-text-secondary);
+    gap: 16px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 204, 0, 0.1);
+    border-top-color: #ffcc00;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Light theme adjustments */
+:global([data-theme="light"]) .container,
+:global(:root:not([data-theme])) .container {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme="light"]) .container::before,
+:global(:root:not([data-theme])) .container::before {
+    background: linear-gradient(180deg, rgba(255, 215, 0, 0.06) 0%, transparent 100%);
 }
 
 @media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        border-radius: 20px;
+    }
+
     .grid {
         grid-template-columns: 1fr;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
 }

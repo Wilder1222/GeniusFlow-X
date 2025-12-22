@@ -1,51 +1,110 @@
+/* Activity Heatmap - Apple Orange Theme (No Flowing Light) */
 .container {
-    background: white;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 24px;
+    --card-accent: #ff9500;
+    --card-accent-secondary: #ffcc00;
+    --card-glow: rgba(255, 149, 0, 0.3);
+
+    background: var(--chart-card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--chart-card-border);
+    border-radius: 24px;
+    padding: 28px;
+    height: 100%;
+    box-shadow: var(--chart-card-shadow);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Gradient accent border on hover */
+.container::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 24px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--card-accent) 0%, var(--card-accent-secondary) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.container:hover {
+    box-shadow: var(--chart-card-shadow-hover), 0 0 40px var(--card-glow);
+    transform: translateY(-6px);
+}
+
+.container:hover::before {
+    opacity: 0.5;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+    align-items: baseline;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
 }
 
 .title {
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--color-text-primary);
     margin: 0;
-    color: #333;
+    background: linear-gradient(135deg, var(--card-accent) 0%, var(--card-accent-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .summary {
     font-size: 14px;
-    color: #666;
-}
-
-.loading {
-    text-align: center;
-    padding: 40px;
-    color: #666;
+    color: var(--color-text-secondary);
+    font-weight: 500;
 }
 
 .heatmap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     overflow-x: auto;
+    padding-bottom: 8px;
+    position: relative;
+    z-index: 1;
 }
 
+/* Hide scrollbar but allow scrolling */
+.heatmap::-webkit-scrollbar {
+    height: 4px;
+}
+
+.heatmap::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.heatmap::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+/* Month labels container - positioned absolutely */
 .months {
-    display: flex;
-    gap: 8px;
+    position: relative;
+    height: 20px;
     margin-bottom: 8px;
-    padding-left: 20px;
+    width: 100%;
 }
 
 .month {
-    font-size: 12px;
-    color: #666;
-    min-width: 40px;
+    color: var(--color-text-tertiary);
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
 .grid {
@@ -62,43 +121,102 @@
 .day {
     width: 12px;
     height: 12px;
-    border-radius: 2px;
+    border-radius: 3px;
+    background-color: var(--heatmap-empty, rgba(255, 255, 255, 0.05));
+    transition: all 0.2s ease;
     cursor: pointer;
-    transition: transform 0.1s;
 }
 
 .day:hover {
-    transform: scale(1.2);
-    outline: 1px solid rgba(0, 0, 0, 0.3);
+    transform: scale(1.5);
+    z-index: 10;
+    box-shadow: 0 0 12px currentColor;
 }
 
 .legend {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 16px;
     justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
     font-size: 12px;
-    color: #666;
+    color: var(--color-text-tertiary);
+    font-weight: 600;
 }
 
 .legendColors {
     display: flex;
-    gap: 3px;
+    gap: 4px;
 }
 
 .legendColor {
     width: 12px;
     height: 12px;
-    border-radius: 2px;
+    border-radius: 3px;
+    transition: transform 0.2s ease;
 }
 
-/* Heatmap color variables */
-/* Heatmap color variables scoped to container */
-.container {
+.legendColor:hover {
+    transform: scale(1.3);
+}
+
+/* Apple Inspired Heatmap Colors */
+:global(:root) {
+    --heatmap-empty: rgba(255, 255, 255, 0.05);
+    --heatmap-low: #1e3a1e;
+    --heatmap-medium: #3a7a3a;
+    --heatmap-high: #aff100;
+    --heatmap-very-high: #d4ff5e;
+}
+
+:global([data-theme="light"]),
+:global(:root:not([data-theme])) {
     --heatmap-empty: #ebedf0;
     --heatmap-low: #9be9a8;
     --heatmap-medium: #40c463;
     --heatmap-high: #30a14e;
     --heatmap-very-high: #216e39;
+}
+
+/* Light theme adjustments */
+:global([data-theme="light"]) .container,
+:global(:root:not([data-theme])) .container {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--color-text-tertiary);
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .day {
+        width: 10px;
+        height: 10px;
+    }
+
+    .grid {
+        gap: 2px;
+    }
+
+    .week {
+        gap: 2px;
+    }
 }

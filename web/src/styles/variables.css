@@ -133,6 +133,48 @@
   --z-sticky: 1020;
   --z-modal: 1040;
   --z-tooltip: 1060;
+
+  /* --- Chart Color System (Apple Fitness Inspired) --- */
+  --chart-primary: #ff2d55;
+  /* Activity/Reviews - Vibrant Red/Pink */
+  --chart-secondary: #30d158;
+  /* Focus/Time - Vibrant Green */
+  --chart-tertiary: #00c7be;
+  /* Accuracy - Teal/Cyan */
+  --chart-accent: #ff9f0a;
+  /* Streak/Fire - Orange */
+  --chart-info: #5856d6;
+  /* Info - Purple */
+  --chart-success: #34c759;
+  /* Success - Green */
+  --chart-warning: #ffcc00;
+  /* Warning - Yellow */
+
+  /* Rating Colors */
+  --chart-again: #ff3b30;
+  /* Again - Red */
+  --chart-hard: #ff9500;
+  /* Hard - Orange */
+  --chart-good: #34c759;
+  /* Good - Green */
+  --chart-easy: #007aff;
+  /* Easy - Blue */
+
+  /* Chart Infrastructure - Light Theme */
+  --chart-grid: rgba(0, 0, 0, 0.06);
+  --chart-tooltip-bg: rgba(255, 255, 255, 0.98);
+  --chart-tooltip-border: rgba(0, 0, 0, 0.08);
+  --chart-tooltip-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --chart-text: #1d1d1f;
+  --chart-text-secondary: #86868b;
+  --chart-axis: rgba(0, 0, 0, 0.4);
+
+  /* Chart Card Floating Effect - Light Theme */
+  --chart-card-bg: rgba(255, 255, 255, 0.85);
+  --chart-card-border: rgba(0, 0, 0, 0.06);
+  --chart-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --chart-card-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1);
+  --chart-card-glow: 0 0 0 transparent;
 }
 
 /* --- Dark Mode --- */
@@ -158,6 +200,35 @@
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.6);
   --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.7);
+
+  /* Chart Colors - Dark Theme (More Vibrant/Neon) */
+  --chart-primary: #ff375f;
+  --chart-secondary: #32d74b;
+  --chart-tertiary: #64d2ff;
+  --chart-accent: #ffd60a;
+  --chart-info: #bf5af2;
+  --chart-success: #30d158;
+  --chart-warning: #ffd60a;
+
+  --chart-again: #ff453a;
+  --chart-hard: #ff9f0a;
+  --chart-good: #32d74b;
+  --chart-easy: #0a84ff;
+
+  --chart-grid: rgba(255, 255, 255, 0.08);
+  --chart-tooltip-bg: rgba(30, 30, 46, 0.95);
+  --chart-tooltip-border: rgba(255, 255, 255, 0.1);
+  --chart-tooltip-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --chart-text: #f5f5f7;
+  --chart-text-secondary: #a1a1a6;
+  --chart-axis: rgba(255, 255, 255, 0.5);
+
+  /* Chart Card Floating Effect - Dark Theme (Glowing) */
+  --chart-card-bg: rgba(26, 26, 62, 0.6);
+  --chart-card-border: rgba(255, 255, 255, 0.08);
+  --chart-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 60px rgba(102, 126, 234, 0.1);
+  --chart-card-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 80px rgba(102, 126, 234, 0.2);
+  --chart-card-glow: 0 0 40px rgba(102, 126, 234, 0.15);
 }
 
 /* --- Classic Dark Mode --- */
@@ -182,6 +253,35 @@
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.6);
   --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.7);
+
+  /* Chart Colors - Classic Dark Theme (Clean/Sharp) */
+  --chart-primary: #ff375f;
+  --chart-secondary: #32d74b;
+  --chart-tertiary: #5ac8fa;
+  --chart-accent: #ffcc00;
+  --chart-info: #af52de;
+  --chart-success: #30d158;
+  --chart-warning: #ffcc00;
+
+  --chart-again: #ff453a;
+  --chart-hard: #ff9500;
+  --chart-good: #32d74b;
+  --chart-easy: #0a84ff;
+
+  --chart-grid: rgba(255, 255, 255, 0.06);
+  --chart-tooltip-bg: rgba(28, 28, 30, 0.95);
+  --chart-tooltip-border: rgba(255, 255, 255, 0.08);
+  --chart-tooltip-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --chart-text: #f5f5f7;
+  --chart-text-secondary: #a1a1a6;
+  --chart-axis: rgba(255, 255, 255, 0.4);
+
+  /* Chart Card Floating Effect - Classic Dark (Clean Glow) */
+  --chart-card-bg: rgba(30, 30, 30, 0.7);
+  --chart-card-border: rgba(255, 255, 255, 0.06);
+  --chart-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 255, 255, 0.02);
+  --chart-card-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 60px rgba(255, 255, 255, 0.04);
+  --chart-card-glow: 0 0 30px rgba(255, 255, 255, 0.03);
 }
 
 /* --- Settings Panel Theme Variables --- */

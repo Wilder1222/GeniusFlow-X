@@ -1,59 +1,65 @@
+/* Retention Chart - Illustration Style */
 .container {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    margin-bottom: 24px;
+    background: var(--chart-card-bg);
+    border: 1px solid var(--chart-card-border);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.05),
+        0 1px 2px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
+}
+
+.container:hover {
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        0 2px 4px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
 }
 
 .title {
     font-size: 20px;
     font-weight: 600;
-    margin: 0 0 20px 0;
-    color: #1a1a1a;
+    margin: 0 0 24px 0;
+    color: var(--color-text-primary);
 }
 
-.loading,
-.empty {
-    text-align: center;
-    padding: 40px;
-    color: #666;
-    font-size: 14px;
-}
-
-/* 关键指标卡片 */
 .metricsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-bottom: 32px;
 }
 
 .metricCard {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 12px;
-    padding: 20px;
     text-align: center;
-    color: white;
-    transition: transform 0.2s;
+    padding: 20px;
+    background: var(--chart-card-bg);
+    border: 2px solid var(--chart-card-border);
+    border-radius: 16px;
+    transition: all 0.2s ease;
 }
 
 .metricCard:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .metricLabel {
     font-size: 13px;
-    opacity: 0.9;
+    color: var(--color-text-secondary);
+    font-weight: 500;
     margin-bottom: 8px;
 }
 
 .metricValue {
     font-size: 32px;
     font-weight: 700;
+    margin: 0;
 }
 
-/* 图表区域 */
 .chartSection {
     margin-bottom: 32px;
 }
@@ -61,32 +67,34 @@
 .chartTitle {
     font-size: 16px;
     font-weight: 600;
+    color: var(--color-text-primary);
     margin: 0 0 16px 0;
-    color: #333;
 }
 
-/* 难度分类 */
 .difficultySection {
-    margin-top: 24px;
+    margin-top: 32px;
 }
 
 .difficultyGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
 }
 
 .difficultyCard {
-    background: #f8f9fa;
+    background: var(--chart-card-bg);
+    border: 1px solid var(--chart-card-border);
+    border-left-width: 4px;
     border-radius: 12px;
     padding: 16px;
-    text-align: center;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
 .difficultyCard:hover {
-    background: #f0f0f0;
-    transform: scale(1.02);
+    transform: translateY(-2px);
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .difficultyLabel {
@@ -98,26 +106,64 @@
 .difficultyRate {
     font-size: 24px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--color-text-primary);
     margin-bottom: 4px;
 }
 
 .difficultyCount {
     font-size: 12px;
-    color: #666;
+    color: var(--color-text-secondary);
 }
 
-/* 响应式 */
+.loading,
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(129, 236, 236, 0.2);
+    border-top-color: #81ECEC;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .container {
-        padding: 16px;
+        padding: 24px;
+        border-radius: 16px;
+    }
+
+    .title {
+        font-size: 18px;
+        margin-bottom: 20px;
     }
 
     .metricsGrid {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .metricValue {
         font-size: 28px;
+    }
+
+    .difficultyGrid {
+        grid-template-columns: 1fr;
     }
 }

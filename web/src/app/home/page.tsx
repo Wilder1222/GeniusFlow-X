@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { MainLayout } from '@/components';
 import LevelProgress from '@/components/gamification/level-progress';
 import StatsDashboard from '@/components/stats/stats-dashboard';
-import ActivityHeatmap from '@/components/stats/activity-heatmap';
 import { apiClient } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth-context';
 import Link from 'next/link';
@@ -104,10 +103,7 @@ export default function Dashboard() {
         {/* Bottom: Main Dashboard Grid */}
         <div className={styles.mainGrid}>
           <div className={styles.leftColumn}>
-            <StatsDashboard simplified={true} />
-            <div className={styles.heatmapWrapper}>
-              <ActivityHeatmap />
-            </div>
+            <StatsDashboard />
           </div>
 
           <div className={styles.rightColumn}>

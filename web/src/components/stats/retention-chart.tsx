@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, Area, AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart } from 'recharts';
 import { apiClient } from '@/lib/api-client';
 import styles from './retention-chart.module.css';
 
@@ -55,6 +55,42 @@ export default function RetentionChart() {
         );
     }
 
+    // Landing Page Gradient Theme Colors
+    const LANDING_COLORS = {
+        coral: '#ff6b6b',      // Coral (Card 1)
+        pink: '#f06595',       // Pink (Card 2)
+        purple: '#cc5de8',     // Purple (Card 3)
+        lavender: '#a18cd1'    // Lavender (Card 4)
+    };
+
+    const CHART_COLOR = LANDING_COLORS.purple; // Purple for retention trend
+
+    const DIFFICULTY_COLORS = {
+        again: LANDING_COLORS.coral,     // 再来 - Coral
+        hard: LANDING_COLORS.pink,       // 困难 - Pink
+        good: LANDING_COLORS.purple,     // 良好 - Purple
+        easy: LANDING_COLORS.lavender    // 简单 - Lavender
+    };
+
+    const CustomLegend = (props: any) => {
+        const { payload } = props;
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '10px' }}>
+                {payload.map((entry: any, index: number) => (
+                    <div key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <div style={{
+                            width: '10px',
+                            height: '10px',
+                            borderRadius: '50%',
+                            backgroundColor: entry.color
+                        }}></div>
+                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>{entry.value}</span>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
     return (
         <div className={styles.container}>
             <h2 className={styles.title}>📊 留存率分析</h2>
@@ -63,60 +99,79 @@ export default function RetentionChart() {
             <div className={styles.metricsGrid}>
                 <div className={styles.metricCard}>
                     <div className={styles.metricLabel}>24小时留存</div>
-                    <div className={styles.metricValue}>{data.retention24h}%</div>
+                    <div className={styles.metricValue} style={{ color: LANDING_COLORS.coral }}>{data.retention24h}%</div>
                 </div>
                 <div className={styles.metricCard}>
                     <div className={styles.metricLabel}>7天留存</div>
-                    <div className={styles.metricValue}>{data.retention7d}%</div>
+                    <div className={styles.metricValue} style={{ color: LANDING_COLORS.pink }}>{data.retention7d}%</div>
                 </div>
                 <div className={styles.metricCard}>
                     <div className={styles.metricLabel}>30天留存</div>
-                    <div className={styles.metricValue}>{data.retention30d}%</div>
+                    <div className={styles.metricValue} style={{ color: LANDING_COLORS.purple }}>{data.retention30d}%</div>
                 </div>
             </div>
 
             {/* 留存率趋势图 */}
             <div className={styles.chartSection}>
                 <h3 className={styles.chartTitle}>30天留存率趋势</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={data.chartData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <ResponsiveContainer width="100%" height={240}>
+                    <ComposedChart data={data.chartData}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--grid-color, rgba(0,0,0,0.05))" />
                         <XAxis
                             dataKey="date"
-                            tick={{ fontSize: 12 }}
+                            tick={{ fontSize: 11, fill: 'var(--text-secondary)' }}
                             tickFormatter={(value) => {
                                 const date = new Date(value);
                                 return `${date.getMonth() + 1}/${date.getDate()}`;
                             }}
+                            axisLine={false}
+                            tickLine={false}
+                            dy={10}
                         />
                         <YAxis
-                            tick={{ fontSize: 12 }}
+                            tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }}
                             domain={[0, 100]}
-                            label={{ value: '留存率 (%)', angle: -90, position: 'insideLeft' }}
+                            label={{ value: '留存率 (%)', angle: -90, position: 'insideLeft', fill: 'var(--color-text-secondary)', fontSize: 11 }}
+                            axisLine={false}
+                            tickLine={false}
                         />
                         <Tooltip
+                            cursor={{ stroke: 'rgba(129, 236, 236, 0.2)', strokeWidth: 2 }}
                             contentStyle={{
-                                background: 'rgba(255, 255, 255, 0.95)',
-                                border: '1px solid #ddd',
-                                borderRadius: '8px',
-                                padding: '12px'
+                                background: 'var(--tooltip-bg, rgba(255, 255, 255, 0.95))',
+                                border: 'none',
+                                borderRadius: '12px',
+                                padding: '8px 12px',
+                                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)'
                             }}
                             formatter={(value: any, name: any) => {
-                                if (name === 'rate') return [`${value}%`, '留存率'];
-                                return [value, '复习数'];
+                                if (name === '留存率') return `${value}%`;
+                                return value;
                             }}
                         />
-                        <Legend />
+                        <Legend content={<CustomLegend />} />
+                        <Area
+                            type="monotone"
+                            dataKey="rate"
+                            fill={CHART_COLOR}
+                            fillOpacity={0.15}
+                            stroke="none"
+                            legendType="none"
+                            animationBegin={0}
+                            animationDuration={1500}
+                        />
                         <Line
                             type="monotone"
                             dataKey="rate"
-                            stroke="#2196f3"
-                            strokeWidth={2}
-                            dot={{ r: 3 }}
-                            activeDot={{ r: 5 }}
+                            stroke={CHART_COLOR}
+                            strokeWidth={6}
+                            dot={{ r: 5, fill: CHART_COLOR, strokeWidth: 3, stroke: '#fff' }}
+                            activeDot={{ r: 8, strokeWidth: 0, fill: CHART_COLOR }}
                             name="留存率"
+                            animationBegin={0}
+                            animationDuration={1500}
                         />
-                    </LineChart>
+                    </ComposedChart>
                 </ResponsiveContainer>
             </div>
 
@@ -131,15 +186,9 @@ export default function RetentionChart() {
                             good: '良好',
                             easy: '简单'
                         };
-                        const colors: Record<string, string> = {
-                            again: '#f44336',
-                            hard: '#ff9800',
-                            good: '#4caf50',
-                            easy: '#2196f3'
-                        };
                         return (
                             <div key={key} className={styles.difficultyCard}>
-                                <div className={styles.difficultyLabel} style={{ color: colors[key] }}>
+                                <div className={styles.difficultyLabel} style={{ color: DIFFICULTY_COLORS[key as keyof typeof DIFFICULTY_COLORS] }}>
                                     {labels[key]}
                                 </div>
                                 <div className={styles.difficultyRate}>{value.rate}%</div>

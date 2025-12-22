@@ -1,110 +1,211 @@
+/* Study Trend Chart - Illustration Style */
 .container {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    margin-bottom: 24px;
+    background: var(--chart-card-bg);
+    border: 1px solid var(--chart-card-border);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.05),
+        0 1px 2px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
+}
+
+.container:hover {
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        0 2px 4px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
 }
 
 .title {
     font-size: 20px;
     font-weight: 600;
-    margin: 0 0 20px 0;
-    color: #1a1a1a;
-}
-
-.loading,
-.empty {
-    text-align: center;
-    padding: 40px;
-    color: #666;
-    font-size: 14px;
+    margin: 0 0 24px 0;
+    color: var(--color-text-primary);
 }
 
 .chartSection {
     margin-bottom: 32px;
 }
 
+.chartSection:last-child {
+    margin-bottom: 0;
+}
+
 .chartTitle {
     font-size: 16px;
     font-weight: 600;
+    color: var(--color-text-primary);
     margin: 0 0 16px 0;
-    color: #333;
 }
 
-/* 评分分布区域 */
 .distributionSection {
-    margin-top: 24px;
+    margin-top: 32px;
 }
 
 .distributionContent {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     gap: 24px;
     align-items: center;
 }
 
 .pieChartWrapper {
-    display: flex;
-    justify-content: center;
+    flex: 1;
+    max-width: 300px;
 }
 
 .distributionStats {
-    display: flex;
-    flex-direction: column;
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
+}
+
+.distributionItem {
+    background: var(--chart-card-bg);
+    border: 1px solid var(--chart-card-border);
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.distributionItem:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.distributionLabel {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.distributionDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.distributionValue {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.distributionPercentage {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-top: 4px;
 }
 
 .statItem {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    transition: all 0.2s;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--chart-card-bg);
+    border: 1px solid var(--chart-card-border);
+    border-radius: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.05),
+        0 10px 20px -5px rgba(0, 0, 0, 0.04);
 }
 
 .statItem:hover {
-    background: #f0f0f0;
-    transform: translateX(4px);
+    transform: translateY(-3px) scale(1.01);
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.08),
+        0 15px 30px -8px rgba(0, 0, 0, 0.1);
+    border-color: var(--chart-card-border);
 }
 
 .statColor {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
     flex-shrink: 0;
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .statLabel {
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    flex: 1;
+    font-size: 15px;
+    font-weight: 700;
+    flex-shrink: 0;
+    letter-spacing: -0.01em;
 }
 
 .statValue {
-    font-size: 14px;
-    color: #666;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-left: auto;
     font-weight: 600;
 }
 
-/* 响应式 */
+.loading,
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(129, 236, 236, 0.2);
+    border-top-color: #81ECEC;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .container {
-        padding: 16px;
+        padding: 24px;
+        border-radius: 16px;
+    }
+
+    .title {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .chartSection {
+        margin-bottom: 24px;
+    }
+
+    .chartTitle {
+        font-size: 15px;
+        margin-bottom: 12px;
     }
 
     .distributionContent {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 
     .pieChartWrapper {
-        order: 2;
+        max-width: 100%;
     }
 
     .distributionStats {
-        order: 1;
+        width: 100%;
     }
 }

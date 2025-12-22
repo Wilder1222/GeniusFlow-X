@@ -9,8 +9,8 @@
 }
 
 .welcomeSection {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border: 1px solid #e2e8f0;
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border-light);
     padding: 40px;
     border-radius: 32px;
     display: flex;
@@ -24,7 +24,7 @@
     font-size: 32px;
     font-weight: 800;
     margin-bottom: 8px;
-    color: #1e293b;
+    color: var(--color-text-primary);
     display: flex;
     align-items: center;
     gap: 12px;
@@ -42,7 +42,7 @@
 }
 
 .welcomeText p {
-    color: #64748b;
+    color: var(--color-text-secondary);
     font-size: 16px;
 }
 
@@ -57,8 +57,8 @@
 }
 
 .actionCard {
-    background: white;
-    border: 1px solid #f1f5f9;
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border-light);
     border-radius: 24px;
     padding: 32px;
     display: flex;
@@ -84,7 +84,7 @@
     width: 64px;
     height: 64px;
     border-radius: 20px;
-    background: #f8fafc;
+    background: var(--color-surface-secondary);
     color: #4f46e5;
     display: flex;
     align-items: center;
@@ -123,10 +123,10 @@
 }
 
 .heatmapWrapper {
-    background: white;
+    background: var(--color-surface-elevated);
     padding: 24px;
     border-radius: 24px;
-    border: 1px solid #f1f5f9;
+    border: 1px solid var(--color-border-light);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
@@ -139,10 +139,10 @@
 }
 
 .sideSection {
-    background: white;
+    background: var(--color-surface-elevated);
     border-radius: 20px;
     padding: 24px;
-    border: 1px solid #f1f5f9;
+    border: 1px solid var(--color-border-light);
 }
 
 .sectionHeader {
@@ -156,7 +156,7 @@
     font-size: 18px;
     font-weight: 700;
     margin: 0;
-    color: #1e293b;
+    color: var(--color-text-primary);
 }
 
 .sectionHeader svg {
@@ -180,7 +180,7 @@
 }
 
 .deckItem:hover {
-    background: #f8fafc;
+    background: var(--color-surface-hover);
 }
 
 .deckEmoji {
@@ -191,19 +191,19 @@
     font-size: 15px;
     font-weight: 600;
     margin: 0;
-    color: #1e293b;
+    color: var(--color-text-primary);
 }
 
 .deckInfo p {
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--color-text-tertiary);
     margin: 2px 0 0 0;
 }
 
 .emptyState {
     text-align: center;
     padding: 20px;
-    color: #94a3b8;
+    color: var(--color-text-tertiary);
     font-size: 14px;
 }
 
