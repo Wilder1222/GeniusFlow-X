@@ -9,6 +9,8 @@ import { useAuth } from '@/lib/auth-context';
 import Link from 'next/link';
 import { LuPlay, LuPlus, LuLayoutDashboard, LuHistory, LuRocket } from 'react-icons/lu';
 import { CreateDeckModal } from '@/components/decks/create-deck-modal';
+import AIEntryCard from '@/components/home/ai-entry-card';
+import { AIGeneratorModal } from '@/components/ai/ai-generator-modal';
 import { createDeck } from '@/lib/decks';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
@@ -19,6 +21,7 @@ export default function Dashboard() {
   const [recentDecks, setRecentDecks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showAIModal, setShowAIModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -59,6 +62,11 @@ export default function Dashboard() {
     }
   };
 
+  const handleAISuccess = (deckId: string) => {
+    // Navigate to the deck where cards were added/created
+    router.push(`/decks/${deckId}`);
+  };
+
   return (
     <MainLayout>
       <div className={styles.container}>
@@ -73,6 +81,11 @@ export default function Dashboard() {
               <LevelProgress xp={profile.xp} level={profile.level} />
             </div>
           )}
+        </section>
+
+        {/* AI Entry Card - Main Feature */}
+        <section className={styles.aiSection}>
+          <AIEntryCard onStart={() => setShowAIModal(true)} />
         </section>
 
         {/* Middle: Quick Actions */}
@@ -138,6 +151,12 @@ export default function Dashboard() {
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onSubmit={handleCreateDeck}
+      />
+
+      <AIGeneratorModal
+        isOpen={showAIModal}
+        onClose={() => setShowAIModal(false)}
+        onSuccess={handleAISuccess}
       />
     </MainLayout>
   );

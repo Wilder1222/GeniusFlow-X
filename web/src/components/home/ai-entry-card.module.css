@@ -1,0 +1,209 @@
+.card {
+    position: relative;
+    background: linear-gradient(135deg, var(--color-surface-elevated) 0%, var(--color-background-tertiary) 100%);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 2rem;
+    border: 1px solid var(--color-border-medium);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-brand-primary);
+}
+
+.content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.iconWrapper {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-md);
+    background: var(--gradient-welcome);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 8px 16px -4px rgba(255, 107, 107, 0.4);
+}
+
+.icon {
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+.text {
+    flex: 1;
+}
+
+.title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.badge {
+    font-size: var(--font-size-xs);
+    padding: 0.2rem 0.5rem;
+    background: rgba(255, 107, 107, 0.1);
+    color: var(--color-brand-primary);
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    font-weight: 600;
+}
+
+.description {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+    max-width: 600px;
+}
+
+.actionButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 2rem;
+    background: var(--gradient-welcome);
+    color: white;
+    border: none;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    animation: shadowPulse 2s infinite;
+}
+
+.actionButton:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+    background-size: 200% auto;
+}
+
+.actionButton::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent);
+    transform: translateX(-100%) skewX(-15deg);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+
+    0%,
+    100% {
+        transform: translateX(-100%) skewX(-15deg);
+    }
+
+    50% {
+        transform: translateX(200%) skewX(-15deg);
+    }
+}
+
+@keyframes shadowPulse {
+    0% {
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 4px 25px rgba(255, 107, 107, 0.6);
+    }
+
+    100% {
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    }
+}
+
+.decoration {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40%;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.bgIcon {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-15deg);
+    color: var(--color-text-primary);
+    opacity: 0.03;
+}
+
+.glow {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(30%, -50%);
+    width: 200px;
+    height: 200px;
+    background: var(--color-brand-primary);
+    filter: blur(80px);
+    opacity: 0.1;
+    border-radius: 50%;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .text {
+        width: 100%;
+    }
+
+    .actionButton {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .bgIcon {
+        right: -40px;
+        opacity: 0.02;
+    }
+}

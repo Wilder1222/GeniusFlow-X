@@ -19,9 +19,9 @@ export async function POST(req: NextRequest) {
         const body: GenerateCardsRequest = await req.json();
         const { text, granularity = 'recommended' } = body;
 
-        if (!text || !text.trim() || text.trim().length < 5) {
+        if (!text || !text.trim() || text.trim().length < 4) {
             return NextResponse.json(
-                errorResponse('INPUT_INVALID, Text must be at least 5 characters'),
+                errorResponse('INPUT_INVALID, Text must be at least 4 characters'),
                 { status: 400 }
             );
         }
