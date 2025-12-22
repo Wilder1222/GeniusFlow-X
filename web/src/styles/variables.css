@@ -175,6 +175,13 @@
   --chart-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
   --chart-card-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1);
   --chart-card-glow: 0 0 0 transparent;
+
+  /* Heatmap (Green Theme) - Light */
+  --heatmap-empty: #ebedf0;
+  --heatmap-low: rgba(52, 211, 153, 0.4);
+  --heatmap-medium: rgba(16, 185, 129, 0.6);
+  --heatmap-high: rgba(5, 150, 105, 0.8);
+  --heatmap-very-high: #059669;
 }
 
 /* --- Dark Mode --- */
@@ -229,6 +236,13 @@
   --chart-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 60px rgba(102, 126, 234, 0.1);
   --chart-card-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 80px rgba(102, 126, 234, 0.2);
   --chart-card-glow: 0 0 40px rgba(102, 126, 234, 0.15);
+
+  /* Heatmap (Green Theme) - Dark */
+  --heatmap-empty: rgba(255, 255, 255, 0.05);
+  --heatmap-low: rgba(52, 211, 153, 0.3);
+  --heatmap-medium: rgba(16, 185, 129, 0.5);
+  --heatmap-high: rgba(5, 150, 105, 0.7);
+  --heatmap-very-high: #059669;
 }
 
 /* --- Classic Dark Mode --- */
@@ -282,6 +296,13 @@
   --chart-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 255, 255, 0.02);
   --chart-card-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 60px rgba(255, 255, 255, 0.04);
   --chart-card-glow: 0 0 30px rgba(255, 255, 255, 0.03);
+
+  /* Heatmap (Green Theme) - Classic Dark */
+  --heatmap-empty: rgba(255, 255, 255, 0.05);
+  --heatmap-low: rgba(52, 211, 153, 0.3);
+  --heatmap-medium: rgba(16, 185, 129, 0.5);
+  --heatmap-high: rgba(5, 150, 105, 0.7);
+  --heatmap-very-high: #059669;
 }
 
 /* --- Settings Panel Theme Variables --- */

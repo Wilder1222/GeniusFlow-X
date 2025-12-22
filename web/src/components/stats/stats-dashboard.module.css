@@ -451,17 +451,7 @@
 }
 
 /* Heatmap Colors - Green Theme */
-:global(:root) {
-    --heatmap-empty: rgba(255, 255, 255, 0.05);
-    --heatmap-low: rgba(52, 211, 153, 0.3);
-    /* Emerald-400 */
-    --heatmap-medium: rgba(16, 185, 129, 0.5);
-    /* Emerald-500 */
-    --heatmap-high: rgba(5, 150, 105, 0.7);
-    /* Emerald-600 */
-    --heatmap-very-high: #059669;
-    /* Emerald-600 */
-}
+
 
 /* Light theme adjustments */
 :global([data-theme="light"]) .container,
@@ -543,18 +533,7 @@
     border-color: rgba(0, 0, 0, 0.05);
 }
 
-:global([data-theme="light"]),
-:global(:root:not([data-theme])) {
-    --heatmap-empty: #ebedf0;
-    --heatmap-low: rgba(52, 211, 153, 0.4);
-    /* Emerald-400 */
-    --heatmap-medium: rgba(16, 185, 129, 0.6);
-    /* Emerald-500 */
-    --heatmap-high: rgba(5, 150, 105, 0.8);
-    /* Emerald-600 */
-    --heatmap-very-high: #059669;
-    /* Emerald-600 */
-}
+
 
 @keyframes spin {
     to {
