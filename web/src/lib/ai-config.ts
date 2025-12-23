@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 
 // AI Provider configuration
-export type AIProvider = 'openai' | 'anthropic' | 'deepseek' | 'zhipu' | 'moonshot';
+export type AIProvider = 'openai' | 'anthropic' | 'deepseek' | 'zhipu' | 'moonshot' | 'mimo';
 
 interface ProviderConfig {
     apiKey: string;
@@ -53,6 +53,13 @@ export function getProviderConfig(provider: AIProvider): ProviderConfig {
                 model: process.env.MOONSHOT_MODEL || 'moonshot-v1-8k'
             };
 
+        case 'mimo':
+            return {
+                apiKey: process.env.MIMO_API_KEY || '',
+                baseURL: 'https://api.xiaomimimo.com/v1',
+                model: process.env.MIMO_MODEL || 'mimo-v2-flash'
+            };
+
         default:
             throw new Error(`Unknown AI provider: ${provider}`);
     }
@@ -70,6 +77,7 @@ export function createAIClient(provider?: AIProvider): OpenAI {
     return new OpenAI({
         apiKey: config.apiKey,
         baseURL: config.baseURL,
+        defaultHeaders: selectedProvider === 'mimo' ? { 'api-key': config.apiKey } : undefined,
         dangerouslyAllowBrowser: false // Server-side only
     });
 }
