@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { LineChart, Line, Area, AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart } from 'recharts';
-import { apiClient } from '@/lib/api-client';
+import { useStats } from '@/lib/contexts/stats-context';
 import styles from './retention-chart.module.css';
 
 interface RetentionData {
@@ -19,25 +19,7 @@ interface RetentionData {
 }
 
 export default function RetentionChart() {
-    const [data, setData] = useState<RetentionData | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
-        try {
-            const result = await apiClient.get<{ success: boolean; data: RetentionData }>('/api/stats/retention');
-            if (result.success) {
-                setData(result.data);
-            }
-        } catch (error) {
-            console.error('Failed to load retention data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { retention: data, loading } = useStats();
 
     if (loading) {
         return (

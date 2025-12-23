@@ -9,37 +9,14 @@ import Link from 'next/link';
 import styles from './user-settings-panel.module.css';
 
 export default function UserSettingsPanel() {
-    const { user, signOut } = useAuth();
+    const { user, profile, signOut } = useAuth();
     const { theme, setTheme } = useTheme();
     const [isOpen, setIsOpen] = useState(false);
-    const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-    const [displayName, setDisplayName] = useState<string | null>(null);
     const panelRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
 
-    // Fetch user profile data
-    useEffect(() => {
-        if (!user) return;
-
-        const fetchProfile = async () => {
-            try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('avatar_url, display_name, username')
-                    .eq('id', user.id)
-                    .maybeSingle();
-
-                if (!error && data) {
-                    setAvatarUrl(data.avatar_url);
-                    setDisplayName(data.display_name || data.username);
-                }
-            } catch (err) {
-                console.error('[UserSettingsPanel] Error fetching profile:', err);
-            }
-        };
-
-        fetchProfile();
-    }, [user]);
+    const avatarUrl = profile?.avatar_url;
+    const displayName = profile?.display_name || profile?.username;
 
     if (!user) return null;
 

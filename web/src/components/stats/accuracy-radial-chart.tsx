@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { RadialBarChart, RadialBar, Legend, ResponsiveContainer, PolarAngleAxis } from 'recharts';
-import { apiClient } from '@/lib/api-client';
+import { useStats } from '@/lib/contexts/stats-context';
 import styles from './accuracy-radial-chart.module.css';
 
 interface RadialData {
@@ -12,33 +12,14 @@ interface RadialData {
 }
 
 export default function AccuracyRadialChart() {
-    const [data, setData] = useState<RadialData | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { learning, retention, loading } = useStats();
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
-        try {
-            const [learningRes, retentionRes] = await Promise.all([
-                apiClient.get('/api/stats/learning'),
-                apiClient.get('/api/stats/retention')
-            ]);
-
-            if (learningRes.success && retentionRes.success) {
-                setData({
-                    accuracy: learningRes.data.averageAccuracy || 0,
-                    retention24h: retentionRes.data.retention24h || 0,
-                    retention7d: retentionRes.data.retention7d || 0
-                });
-            }
-        } catch (error) {
-            console.error('Failed to load radial chart data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // Compute data from context
+    const data: RadialData | null = (learning && retention) ? {
+        accuracy: learning.averageAccuracy || 0,
+        retention24h: retention.retention24h || 0,
+        retention7d: retention.retention7d || 0
+    } : null;
 
     if (loading) {
         return (

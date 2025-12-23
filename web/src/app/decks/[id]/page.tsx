@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { MainLayout } from '@/components';
 import { AIGeneratorModal } from '@/components/ai/ai-generator-modal';
@@ -55,6 +55,7 @@ export default function DeckDetailPage() {
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+    const isFetchingRef = useRef(false);
 
     useEffect(() => {
         if (deckId) {
@@ -63,6 +64,8 @@ export default function DeckDetailPage() {
     }, [deckId]);
 
     const loadData = async () => {
+        if (isFetchingRef.current) return;
+        isFetchingRef.current = true;
         try {
             const [deckData, cardsData] = await Promise.all([
                 getDeckById(deckId),
@@ -83,6 +86,7 @@ export default function DeckDetailPage() {
             setLoading(false);
             setSelectedCards(new Set()); // Clear selection when data reloads
             setSearchQuery(''); // Clear search when data reloads
+            isFetchingRef.current = false;
         }
     };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { apiClient } from '@/lib/api-client';
 import { motion } from 'framer-motion';
 import { LuTrophy, LuSparkles } from 'react-icons/lu';
@@ -21,12 +21,15 @@ interface Achievement {
 export default function AchievementList() {
     const [achievements, setAchievements] = useState<Achievement[]>([]);
     const [loading, setLoading] = useState(true);
+    const isFetchingRef = useRef(false);
 
     useEffect(() => {
         fetchAchievements();
     }, []);
 
     const fetchAchievements = async () => {
+        if (isFetchingRef.current) return;
+        isFetchingRef.current = true;
         try {
             const data = await apiClient.get('/api/achievements');
             if (data.success) {
@@ -36,6 +39,7 @@ export default function AchievementList() {
             console.error('Failed to fetch achievements:', error);
         } finally {
             setLoading(false);
+            isFetchingRef.current = false;
         }
     };
 

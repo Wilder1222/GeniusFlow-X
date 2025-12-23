@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { MainLayout } from '@/components';
+import { StatsProvider, useStats } from '@/lib/contexts/stats-context';
 import LevelProgress from '@/components/gamification/level-progress';
 import StatsDashboard from '@/components/stats/stats-dashboard';
 import { apiClient } from '@/lib/api-client';
@@ -13,41 +14,43 @@ import AIEntryCard from '@/components/home/ai-entry-card';
 import { AIGeneratorModal } from '@/components/ai/ai-generator-modal';
 import { createDeck } from '@/lib/decks';
 import { useRouter } from 'next/navigation';
+import { Deck } from '@/types/decks';
 import styles from './page.module.css';
 
-export default function Dashboard() {
+// Inner component that uses Stats Context
+function DashboardContent() {
   const { user } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
-  const [recentDecks, setRecentDecks] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { streak: profile, loading: statsLoading } = useStats();
+  const [recentDecks, setRecentDecks] = useState<Deck[]>([]);
+  const [decksLoading, setDecksLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
+  const isFetchingRef = useRef(false);
   const router = useRouter();
 
   useEffect(() => {
     if (user) {
-      fetchData();
+      fetchDecks();
     }
   }, [user]);
 
-  const fetchData = async () => {
+  // Only fetch decks - streak data comes from context
+  const fetchDecks = async () => {
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+
     try {
-      const [streakRes, decksRes] = await Promise.all([
-        apiClient.get('/api/stats/streak'),
-        apiClient.get('/api/decks')
-      ]);
-
-      if (streakRes.success) {
-        setProfile(streakRes.data);
-      }
-
+      const decksRes = await apiClient.get('/api/decks');
       if (decksRes.success) {
         setRecentDecks(decksRes.data.slice(0, 3));
       }
     } catch (error) {
-      console.error('Failed to fetch dashboard data:', error);
+      console.error('Failed to fetch decks:', error);
     } finally {
-      setLoading(false);
+      setDecksLoading(false);
+      // We don't reset isFetchingRef here to ensure it only runs once per mount
+      // unless we want to allow refreshing. Since it's in a useEffect with [user],
+      // once per user session mount is usually enough.
     }
   };
 
@@ -63,12 +66,13 @@ export default function Dashboard() {
   };
 
   const handleAISuccess = (deckId: string) => {
-    // Navigate to the deck where cards were added/created
     router.push(`/decks/${deckId}`);
   };
 
+  const loading = statsLoading || decksLoading;
+
   return (
-    <MainLayout>
+    <>
       <div className={styles.container}>
         {/* Top: Welcome & Profile */}
         <section className={styles.welcomeSection}>
@@ -76,7 +80,7 @@ export default function Dashboard() {
             <h1>欢迎回来, <span className={styles.userName}>{user?.email?.split('@')[0] || 'Learning Master'}</span> <LuRocket className={styles.rocketIcon} /></h1>
             <p>今天也是充满进步的一天，准备好开始挑战了吗？</p>
           </div>
-          {!loading && profile && (
+          {!statsLoading && profile && (
             <div className={styles.levelWrapper}>
               <LevelProgress xp={profile.xp} level={profile.level} />
             </div>
@@ -158,6 +162,17 @@ export default function Dashboard() {
         onClose={() => setShowAIModal(false)}
         onSuccess={handleAISuccess}
       />
+    </>
+  );
+}
+
+// Page component wraps with StatsProvider
+export default function Dashboard() {
+  return (
+    <MainLayout>
+      <StatsProvider>
+        <DashboardContent />
+      </StatsProvider>
     </MainLayout>
   );
 }

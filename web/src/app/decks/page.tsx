@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { MainLayout } from '@/components';
 import { useAuth } from '@/lib/auth-context';
 import { DeckList } from '@/components/decks/deck-list';
@@ -24,6 +24,7 @@ export default function DecksPage() {
     const [showImportModal, setShowImportModal] = useState(false);
     const [newDeckTitle, setNewDeckTitle] = useState('');
     const [newDeckDescription, setNewDeckDescription] = useState('');
+    const isFetchingRef = useRef(false);
 
     useEffect(() => {
         if (user) {
@@ -32,6 +33,8 @@ export default function DecksPage() {
     }, [user]);
 
     const loadDecks = async () => {
+        if (isFetchingRef.current) return;
+        isFetchingRef.current = true;
         try {
             if (!user) return;
             const data = await getUserDecks(user.id);
@@ -40,6 +43,9 @@ export default function DecksPage() {
             console.error('Failed to load decks:', error);
         } finally {
             setLoading(false);
+            // Non-Strict Mode reset. In strict mode, the second call returns early.
+            // For periodic refresh, we can either keep this or add a manual refresh func.
+            isFetchingRef.current = false;
         }
     };
 

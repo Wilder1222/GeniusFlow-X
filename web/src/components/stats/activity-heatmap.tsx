@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
-import { apiClient } from '@/lib/api-client';
+import { useMemo } from 'react';
+import { useStats } from '@/lib/contexts/stats-context';
 import styles from './activity-heatmap.module.css';
 
 interface HeatmapData {
@@ -10,25 +10,7 @@ interface HeatmapData {
 }
 
 export default function ActivityHeatmap() {
-    const [data, setData] = useState<HeatmapData[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        fetchHeatmapData();
-    }, []);
-
-    const fetchHeatmapData = async () => {
-        try {
-            const result = await apiClient.get('/api/stats/heatmap');
-            if (result.success) {
-                setData(result.data);
-            }
-        } catch (error) {
-            console.error('Failed to fetch heatmap data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { heatmap: data, loading } = useStats();
 
     // Generate last 365 days
     const generateDays = () => {

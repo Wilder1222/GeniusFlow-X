@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { apiClient } from '@/lib/api-client';
+import { useStats } from '@/lib/contexts/stats-context';
 import styles from './forecast-panel.module.css';
 
 interface ForecastData {
@@ -21,25 +20,7 @@ interface ForecastData {
 }
 
 export default function ForecastPanel() {
-    const [data, setData] = useState<ForecastData | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
-        try {
-            const result = await apiClient.get<{ success: boolean; data: ForecastData }>('/api/stats/forecast');
-            if (result.success) {
-                setData(result.data);
-            }
-        } catch (error) {
-            console.error('Failed to load forecast data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { forecast: data, loading } = useStats();
 
     if (loading) {
         return (

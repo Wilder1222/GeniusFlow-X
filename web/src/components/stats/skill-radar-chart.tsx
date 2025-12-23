@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip, Customized } from 'recharts';
-import { apiClient } from '@/lib/api-client';
+import { useStats } from '@/lib/contexts/stats-context';
 import styles from './skill-radar-chart.module.css';
 
 interface SkillData {
@@ -25,50 +25,17 @@ const ABILITY_COLORS = {
 };
 
 export default function SkillRadarChart() {
-    const [skills, setSkills] = useState<SkillData | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { streak, learning, summary, retention, loading } = useStats();
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
-        try {
-            const [streakRes, learningRes, summaryRes, retentionRes] = await Promise.all([
-                apiClient.get('/api/stats/streak'),
-                apiClient.get('/api/stats/learning'),
-                apiClient.get('/api/stats/summary'),
-                apiClient.get('/api/stats/retention')
-            ]);
-
-            if (streakRes.success && learningRes.success && summaryRes.success && retentionRes.success) {
-                const streak = streakRes.data;
-                const learning = learningRes.data;
-                const summary = summaryRes.data;
-                const retention = retentionRes.data;
-
-                const memory = Math.min(100, (retention.retention7d || 0));
-                const focus = Math.min(100, (streak.currentStreak || 0) * 5);
-                const persistence = Math.min(100, (summary.studyTime || 0) / 10);
-                const efficiency = Math.min(100, ((summary.totalReviews || 0) / Math.max(1, summary.studyTime || 1)) * 5);
-                const accuracy = Math.min(100, learning.averageAccuracy || 0);
-                const studyTime = Math.min(100, (summary.studyTime || 0) / 5);
-
-                setSkills({
-                    memory,
-                    focus,
-                    persistence,
-                    efficiency,
-                    accuracy,
-                    studyTime
-                });
-            }
-        } catch (error) {
-            console.error('Failed to load skill radar data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // Compute skills from context data
+    const skills: SkillData | null = (streak && learning && summary && retention) ? {
+        memory: Math.min(100, retention.retention7d || 0),
+        focus: Math.min(100, (streak.currentStreak || 0) * 5),
+        persistence: Math.min(100, (summary.studyTime || 0) / 10),
+        efficiency: Math.min(100, ((summary.totalReviews || 0) / Math.max(1, summary.studyTime || 1)) * 5),
+        accuracy: Math.min(100, learning.averageAccuracy || 0),
+        studyTime: Math.min(100, (summary.studyTime || 0) / 5)
+    } : null;
 
     if (loading) {
         return (

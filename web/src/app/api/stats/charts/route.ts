@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { NextRequest } from 'next/server';
+import { createRouteClient } from '@/lib/supabase-server';
 import { successResponse, errorResponse } from '@/lib/api-response';
 import { AppError, ErrorCode } from '@/lib/errors';
 
@@ -9,19 +9,7 @@ import { AppError, ErrorCode } from '@/lib/errors';
  */
 export async function GET(req: NextRequest) {
     try {
-        const supabase = createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            {
-                cookies: {
-                    get(name: string) {
-                        return req.cookies.get(name)?.value;
-                    },
-                    set() { },
-                    remove() { }
-                }
-            }
-        );
+        const supabase = createRouteClient(req);
 
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 

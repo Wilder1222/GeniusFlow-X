@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { apiClient } from '@/lib/api-client';
+import { useStats } from '@/lib/contexts/stats-context';
 import styles from './study-trend-chart.module.css';
 
 interface ChartData {
@@ -32,25 +31,7 @@ const getCSSColor = (varName: string) => {
 };
 
 export default function StudyTrendChart() {
-    const [data, setData] = useState<ChartData | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
-        try {
-            const result = await apiClient.get<{ success: boolean; data: ChartData }>('/api/stats/charts');
-            if (result.success) {
-                setData(result.data);
-            }
-        } catch (error) {
-            console.error('Failed to load chart data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { charts: data, loading } = useStats();
 
     if (loading) {
         return (
@@ -92,8 +73,9 @@ export default function StudyTrendChart() {
 
     const totalReviews = Object.values(data.ratingDistribution).reduce((a, b) => a + b, 0);
 
-    const CustomLegend = (props: any) => {
+    const CustomLegend = (props: { payload?: Array<{ value: string; color: string }> }) => {
         const { payload } = props;
+        if (!payload) return null;
         return (
             <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '10px' }}>
                 {payload.map((entry: any, index: number) => (
@@ -179,7 +161,7 @@ export default function StudyTrendChart() {
                         <XAxis
                             dataKey="date"
                             tick={{ fontSize: 11, fill: 'var(--text-secondary)' }}
-                            tickFormatter={(value) => {
+                            tickFormatter={(value: string) => {
                                 const date = new Date(value);
                                 return `${date.getMonth() + 1}/${date.getDate()}`;
                             }}

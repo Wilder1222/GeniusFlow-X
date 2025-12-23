@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { apiClient } from '@/lib/api-client';
+import { useStats } from '@/lib/contexts/stats-context';
 import { motion } from 'framer-motion';
 import {
     LuActivity,
@@ -56,24 +56,7 @@ interface StatsDashboardProps {
 }
 
 function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
-    const [data, setData] = useState<HeatmapData[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchHeatmapData = async () => {
-            try {
-                const result = await apiClient.get('/api/stats/heatmap');
-                if (result.success) {
-                    setData(result.data);
-                }
-            } catch (error) {
-                console.error('Failed to fetch heatmap data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchHeatmapData();
-    }, []);
+    const { heatmap: data, loading } = useStats();
 
     const generateDays = () => {
         const days: { date: string; count: number }[] = [];
@@ -131,15 +114,12 @@ function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
         const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
         let lastYearMonth = '';
 
-        // Track the first found month index to align odd/even logic
-        let firstMonthFound = false;
-
         weeks.forEach((week, weekIndex) => {
             for (const day of week) {
                 if (day.count === -1 || !day.date) continue;
                 const date = new Date(day.date);
                 const year = date.getFullYear();
-                const month = date.getMonth(); // 0-11
+                const month = date.getMonth();
                 const yearMonth = `${year}-${month}`;
 
                 if (yearMonth !== lastYearMonth) {
@@ -150,7 +130,6 @@ function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
             }
         });
 
-        // Remove the first '12月' if it exists to avoid showing it at both start and end
         const displayLabels = (monthLabels.length > 0 && monthLabels[0].month === '12月')
             ? monthLabels.slice(1)
             : monthLabels;
@@ -168,8 +147,6 @@ function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
     const totalActivity = data.reduce((sum, d) => sum + d.count, 0);
     const { monthLabels, totalWeeks } = getMonthLabels;
 
-    // Exact width calc: 10px cell + 2px gap per week
-    // We explicitly set the months container width to match the grid
     const heatmapWidth = totalWeeks * 12;
 
     return (
@@ -188,9 +165,6 @@ function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
                             key={i}
                             style={{
                                 position: 'absolute',
-                                // Precise positioning:
-                                // Home: weekIndex * 12px
-                                // Stats: (weekIndex / totalWeeks) * 100%
                                 left: isStatsPage
                                     ? `${(label.weekIndex / totalWeeks) * 100}%`
                                     : `${label.weekIndex * 12}px`,
@@ -213,7 +187,6 @@ function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
                                     style={{
                                         backgroundColor: day.count === -1 ? 'transparent' : getColor(day.count),
                                         visibility: day.count === -1 ? 'hidden' : 'visible',
-                                        // Adaptive size for Stats page
                                         width: isStatsPage ? '100%' : undefined,
                                         height: isStatsPage ? 'auto' : undefined,
                                         aspectRatio: isStatsPage ? '1' : undefined
@@ -240,58 +213,8 @@ function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
     );
 }
 
-interface SummaryData {
-    totalCards: number;
-    totalReviews: number;
-    studyTime: number;
-}
-
-interface StreakData {
-    currentStreak: number;
-    longestStreak: number;
-}
-
-interface LearningData {
-    averageAccuracy: number;
-}
-
-interface ActivityData {
-    today: number;
-    thisWeek: number;
-    thisMonth: number;
-}
-
 export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
-    const [summary, setSummary] = useState<SummaryData | null>(null);
-    const [streak, setStreak] = useState<StreakData | null>(null);
-    const [learning, setLearning] = useState<LearningData | null>(null);
-    const [activity, setActivity] = useState<ActivityData | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    const fetchAllStats = async () => {
-        setLoading(true);
-        try {
-            const [summaryRes, streakRes, learningRes, activityRes] = await Promise.all([
-                apiClient.get('/api/stats/summary'),
-                apiClient.get('/api/stats/streak'),
-                apiClient.get('/api/stats/learning'),
-                apiClient.get('/api/stats/activity')
-            ]);
-
-            if (summaryRes.success) setSummary(summaryRes.data);
-            if (streakRes.success) setStreak(streakRes.data);
-            if (learningRes.success) setLearning(learningRes.data);
-            if (activityRes.success) setActivity(activityRes.data);
-        } catch (error) {
-            console.error('Failed to fetch stats:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchAllStats();
-    }, []);
+    const { summary, streak, learning, activity, loading, refresh } = useStats();
 
     // Landing page inspired colors
     const indicators = [
@@ -379,7 +302,7 @@ export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
                     <h2 className={styles.title}>今日动力</h2>
                 </div>
                 <motion.button
-                    onClick={fetchAllStats}
+                    onClick={refresh}
                     className={styles.refreshBtn}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
