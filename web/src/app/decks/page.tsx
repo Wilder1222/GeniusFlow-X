@@ -6,7 +6,8 @@ import { useAuth } from '@/lib/auth-context';
 import { DeckList } from '@/components/decks/deck-list';
 import { CreateDeckModal } from '@/components/decks/create-deck-modal';
 import dynamic from 'next/dynamic';
-import { getUserDecks, createDeck } from '@/lib/decks';
+import { apiClient } from '@/lib/api-client';
+import { createDeck } from '@/lib/decks';
 import { Deck } from '@/types/decks';
 import styles from './decks.module.css';
 
@@ -37,14 +38,16 @@ export default function DecksPage() {
         isFetchingRef.current = true;
         try {
             if (!user) return;
-            const data = await getUserDecks(user.id);
-            setDecks(data);
+            const res = await apiClient.get('/api/decks');
+            if (res.success) {
+                setDecks(res.data);
+            } else {
+                console.error('Failed to load decks:', res.error);
+            }
         } catch (error) {
             console.error('Failed to load decks:', error);
         } finally {
             setLoading(false);
-            // Non-Strict Mode reset. In strict mode, the second call returns early.
-            // For periodic refresh, we can either keep this or add a manual refresh func.
             isFetchingRef.current = false;
         }
     };

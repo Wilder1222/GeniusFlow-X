@@ -41,10 +41,7 @@ export default function SignUpPage() {
             const result = await signUp({ email, password, username });
             if (result?.message) {
                 setSuccess(result.message);
-                // 延迟跳转，让用户看到成功提示
-                setTimeout(() => {
-                    router.push('/home');
-                }, 1500);
+                router.push('/home');
             } else {
                 router.push('/home');
             }

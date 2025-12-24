@@ -69,10 +69,16 @@ export async function signIn({ email, password }: SignInData) {
 
     // 设置 session 到 Supabase 客户端
     if (result.data?.session) {
-        await supabase.auth.setSession({
+        console.log('[Auth] Setting session locally...');
+        const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
             access_token: result.data.session.accessToken,
             refresh_token: result.data.session.refreshToken,
         });
+        if (sessionError) {
+            console.error('[Auth] setSession error:', sessionError);
+        } else {
+            console.log('[Auth] setSession success, user:', sessionData.user?.email);
+        }
     }
 
     return result.data;
@@ -104,7 +110,10 @@ export async function signOut() {
  */
 export async function getSession(): Promise<Session | null> {
     const { data, error } = await supabase.auth.getSession();
-    if (error) throw error;
+    if (error) {
+        console.error('[Auth] getSession error:', error);
+        throw error;
+    }
     return data.session;
 }
 
@@ -112,8 +121,13 @@ export async function getSession(): Promise<Session | null> {
  * 获取当前用户
  */
 export async function getCurrentUser(): Promise<AuthUser | null> {
+    console.log('[Auth] Getting current user...');
     const { data, error } = await supabase.auth.getUser();
-    if (error) throw error;
+    if (error) {
+        console.error('[Auth] getUser error:', error);
+        throw error;
+    }
+    console.log('[Auth] getUser success:', data.user?.email);
     return data.user as AuthUser;
 }
 

@@ -27,10 +27,8 @@ export default function LoginPage() {
         try {
             const result = await signIn({ email, password });
             if (result?.message || result?.user) {
-                setSuccess('登录成功'); // API might return "message", or we default to this
-                setTimeout(() => {
-                    router.push('/home');
-                }, 1000);
+                setSuccess('登录成功');
+                router.push('/home');
             } else {
                 router.push('/home');
             }

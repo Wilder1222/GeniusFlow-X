@@ -3,6 +3,7 @@ import { apiClient } from './api-client';
 export interface GeneratedCard {
     front: string;
     back: string;
+    tags?: string[];
 }
 
 interface GenerateResponse {
@@ -23,11 +24,14 @@ interface GenerateResponse {
 }
 
 export const aiService = {
-    generateFlashcards: async (topic: string): Promise<GeneratedCard[]> => {
+    generateFlashcards: async (topic: string, count?: number): Promise<GeneratedCard[]> => {
         try {
             // Use existing endpoint /api/ai/generate-cards
             // Backend expects 'text' not 'topic'
-            const response = await apiClient.post<GenerateResponse>('/api/ai/generate-cards', { text: topic });
+            const response = await apiClient.post<GenerateResponse>('/api/ai/generate-cards', {
+                text: topic,
+                count
+            });
 
             if (response.success && response.data && Array.isArray(response.data.cards)) {
                 return response.data.cards;

@@ -4,7 +4,8 @@ import { createAIClient, getModelName, getAIProvider, getProviderConfig } from '
 
 interface GenerateCardsRequest {
     text: string;
-    granularity: 'fine' | 'recommended' | 'coarse';
+    granularity?: 'fine' | 'recommended' | 'coarse';
+    count?: number;
 }
 
 interface CardDraft {
@@ -17,7 +18,7 @@ interface CardDraft {
 export async function POST(req: NextRequest) {
     try {
         const body: GenerateCardsRequest = await req.json();
-        const { text, granularity = 'recommended' } = body;
+        const { text, granularity = 'recommended', count } = body;
 
         if (!text || !text.trim() || text.trim().length < 4) {
             return NextResponse.json(
@@ -26,12 +27,10 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Determine card count based on granularity
-        const cardCount = {
-            fine: 5,
-            recommended: 3,
-            coarse: 1
-        }[granularity];
+        // Determine card count description for prompt
+        const cardCountDesc = count
+            ? `exactly ${Math.min(Math.max(1, count), 10)}`
+            : "an appropriate number (maximum 10 based on text complexity)";
 
         // Create AI client and get model
         const provider = getAIProvider();
@@ -39,26 +38,34 @@ export async function POST(req: NextRequest) {
         const model = getModelName();
         const config = getProviderConfig(provider);
 
-        const prompt = `You are an expert flashcard creator. Generate ${cardCount} high-quality flashcards from the following text.
+        const prompt = `You are an expert flashcard creator. 
+First, detect the language of the following text. 
+Then, generate ${cardCountDesc} high-quality flashcards.
 
 Text: ${text}
+
+### MANDATORY LANGUAGE CONSTRAINTS:
+- The content MUST be in the same language as the input text above.
+- !! IF THE INPUT IS IN CHINESE, THE OUTPUT MUST BE IN SIMPLIFIED CHINESE (简体中文). !!
+- !! DO NOT USE JAPANESE KANJI IF THE INPUT IS CHINESE. !!
+- All fields (front, back, tags) must strictly adhere to the detected language.
 
 Return ONLY a JSON array (no markdown, no explanation) with this exact structure:
 [
   {
-    "front": "Clear, specific question",
-    "back": "Concise, complete answer",
+    "front": "Clear, specific question in detected language",
+    "back": "Concise, complete answer in detected language",
     "tags": ["topic1", "topic2"],
     "difficulty": "easy|medium|hard"
   }
 ]
 
 Guidelines:
-- Questions should be unambiguous and test understanding
-- Answers should be accurate and self-contained
-- Focus on key concepts, definitions, and facts
-- Use simple language
-- Assign difficulty based on concept complexity`;
+- Questions should be unambiguous and test understanding.
+- Answers should be accurate and self-contained.
+- Focus on key concepts, definitions, and facts.
+- Use simple language within the detected language.
+- Assign difficulty based on concept complexity.`;
 
         // Call AI API
         console.log('[AI Generation] Provider:', provider, 'Model:', model);

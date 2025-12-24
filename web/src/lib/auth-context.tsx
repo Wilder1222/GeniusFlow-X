@@ -89,24 +89,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             console.log('[AuthProvider] No user session, redirecting to /auth/login');
             router.push('/auth/login');
         }
+
+        // If not loading, user is logged in, and on login/signup/register page, redirect to home
+        const authPages = ['/auth/login', '/auth/signup', '/auth/register'];
+        if (!loading && user && pathname && authPages.some(route => pathname.startsWith(route))) {
+            console.log('[AuthProvider] User already logged in, redirecting to /home');
+            router.push('/home');
+        }
     }, [loading, user, pathname, router]);
 
     const handleSignIn = async (data: SignInData) => {
         const result = await signIn(data);
-        const currentUser = await getCurrentUser();
-        setUser(currentUser);
+        // The API returns the user and session in the data object
+        if (result?.user) {
+            setUser(result.user as AuthUser);
+        } else {
+            // Fallback if API changed but still returned successful
+            const currentUser = await getCurrentUser();
+            setUser(currentUser);
+        }
         return result;
     };
 
     const handleSignUp = async (data: SignUpData) => {
         const result = await signUp(data);
 
-        // 如果有 session（无需邮箱确认），获取用户信息
-        if (result?.session) {
+        // 如果返回了用户信息，直接设置
+        if (result?.user) {
+            setUser(result.user as AuthUser);
+        } else if (result?.session) {
+            // 如果只有 session，尝试获取用户信息
             const currentUser = await getCurrentUser();
             setUser(currentUser);
         }
-        // 如果没有 session（需要邮箱确认），不尝试获取用户，让用户去确认邮箱
 
         return result;
     };
