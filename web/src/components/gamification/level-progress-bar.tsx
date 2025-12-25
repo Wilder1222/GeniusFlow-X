@@ -1,44 +1,18 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import confetti from 'canvas-confetti';
-import { apiClient } from '@/lib/api-client';
+import { useGamification } from '@/lib/contexts/gamification-context';
 import styles from './level-progress-bar.module.css';
 
-interface LevelInfo {
-    xp: number;
-    level: number;
-    nextLevelXp: number;
-    currentLevelXp: number;
-    progress: number;
-}
-
 export default function LevelProgressBar() {
-    const [levelInfo, setLevelInfo] = useState<LevelInfo | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        loadLevelInfo();
-    }, []);
-
-    const loadLevelInfo = async () => {
-        try {
-            const result = await apiClient.get<{ success: boolean; data: LevelInfo }>('/api/gamification/xp');
-            if (result.success) {
-                setLevelInfo(result.data);
-            }
-        } catch (error) {
-            console.error('Failed to load level info:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { levelInfo, loading } = useGamification();
 
     const triggerLevelUpAnimation = () => {
         // 五彩纸屑动画
         const duration = 3 * 1000;
         const animationEnd = Date.now() + duration;
-        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
 
         function randomInRange(min: number, max: number) {
             return Math.random() * (max - min) + min;
@@ -67,7 +41,11 @@ export default function LevelProgressBar() {
     };
 
     if (loading || !levelInfo) {
-        return null;
+        return (
+            <div className={styles.container}>
+                <div className={styles.skeleton}></div>
+            </div>
+        );
     }
 
     const xpInCurrentLevel = levelInfo.xp - levelInfo.currentLevelXp;
@@ -81,23 +59,28 @@ export default function LevelProgressBar() {
                     <span className={styles.levelNumber}>{levelInfo.level}</span>
                 </div>
                 <div className={styles.xpInfo}>
-                    <span className={styles.xpCurrent}>{xpInCurrentLevel}</span>
+                    <span className={styles.xpCurrent}>{xpInCurrentLevel.toLocaleString()}</span>
                     <span className={styles.xpSeparator}>/</span>
-                    <span className={styles.xpTarget}>{xpNeededForNextLevel} XP</span>
+                    <span className={styles.xpTarget}>{xpNeededForNextLevel.toLocaleString()} XP</span>
                 </div>
             </div>
 
             <div className={styles.progressBarContainer}>
                 <div
                     className={styles.progressBarFill}
-                    style={{ width: `${Math.min(100, Math.max(0, levelInfo.progress))}%` }}
+                    style={{ width: `${levelInfo.progress}%` }}
                 >
                     <div className={styles.progressBarGlow}></div>
                 </div>
             </div>
 
-            <div className={styles.nextLevelInfo}>
-                下一级需要 {levelInfo.nextLevelXp} XP
+            <div className={styles.footer}>
+                <div className={styles.nextLevelInfo}>
+                    距离下一级还需 {levelInfo.nextLevelXp - levelInfo.xp} XP
+                </div>
+                <div className={styles.totalXp}>
+                    总计 {levelInfo.xp.toLocaleString()} XP
+                </div>
             </div>
 
             {/* 测试按钮 - 生产环境应移除 */}
@@ -106,7 +89,7 @@ export default function LevelProgressBar() {
                     onClick={triggerLevelUpAnimation}
                     className={styles.testButton}
                 >
-                    测试升级动画
+                    ✨
                 </button>
             )}
         </div>

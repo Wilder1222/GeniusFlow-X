@@ -1,5 +1,4 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * XP Service - Handles all XP-related operations
@@ -34,44 +33,29 @@ interface XPTransaction {
  * Formula: level = floor(sqrt(xp / 100))
  */
 export function calculateLevel(xp: number): number {
-    return Math.floor(Math.sqrt(xp / 100));
+    return Math.floor(Math.sqrt(xp / 100)) + 1;
 }
 
 /**
  * Get XP required for a specific level
  */
 export function getXPForLevel(level: number): number {
-    return level * level * 100;
+    return (level - 1) * (level - 1) * 100;
 }
 
 /**
  * Award XP to a user
  */
-export async function awardXP(transaction: XPTransaction): Promise<{
+export async function awardXP(
+    supabase: SupabaseClient,
+    transaction: XPTransaction
+): Promise<{
     success: boolean;
     newXP: number;
     newLevel: number;
     leveledUp: boolean;
 }> {
     try {
-        const cookieStore = await cookies();
-        const supabase = createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            {
-                cookies: {
-                    get(name: string) {
-                        return cookieStore.get(name)?.value;
-                    },
-                    set(name: string, value: string, options: any) {
-                        cookieStore.set({ name, value, ...options });
-                    },
-                    remove(name: string, options: any) {
-                        cookieStore.set({ name, value: '', ...options });
-                    }
-                }
-            }
-        );
 
         // Get current profile
         const { data: profile, error: profileError } = await supabase
@@ -141,6 +125,7 @@ export async function awardXP(transaction: XPTransaction): Promise<{
  * Award XP for card reviews
  */
 export async function awardReviewXP(
+    supabase: SupabaseClient,
     userId: string,
     correctCount: number,
     incorrectCount: number
@@ -149,7 +134,7 @@ export async function awardReviewXP(
         correctCount * XP_REWARDS.REVIEW_CORRECT +
         incorrectCount * XP_REWARDS.REVIEW_INCORRECT;
 
-    return awardXP({
+    return awardXP(supabase, {
         userId,
         amount: totalXP,
         reason: correctCount > incorrectCount ? 'review_correct' : 'review_incorrect',

@@ -132,7 +132,7 @@ export async function checkAndUnlockAchievements(userId: string): Promise<{
                     newlyUnlocked.push(achievement);
 
                     // Award XP for achievement
-                    await awardXP({
+                    await awardXP(supabase, {
                         userId,
                         amount: achievement.xp_reward,
                         reason: 'achievement_unlock',

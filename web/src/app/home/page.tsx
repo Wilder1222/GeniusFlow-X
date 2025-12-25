@@ -80,11 +80,9 @@ function DashboardContent() {
             <h1>欢迎回来, <span className={styles.userName}>{user?.email?.split('@')[0] || 'Learning Master'}</span> <LuRocket className={styles.rocketIcon} /></h1>
             <p>今天也是充满进步的一天，准备好开始挑战了吗？</p>
           </div>
-          {!statsLoading && profile && (
-            <div className={styles.levelWrapper}>
-              <LevelProgress xp={profile.xp} level={profile.level} />
-            </div>
-          )}
+          <div className={styles.levelWrapper}>
+            <LevelProgress />
+          </div>
         </section>
 
         {/* AI Entry Card - Main Feature */}

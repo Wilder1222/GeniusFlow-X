@@ -1,105 +1,193 @@
-.cardContainer {
+.cardWrapper {
     width: 100%;
-    max-width: 600px;
-    height: 400px;
-    /* Fixed height for consistent swipe experience */
-    perspective: 1000px;
+    max-width: 580px;
+    height: 420px;
+    margin: 0 auto;
+}
+
+.perspectiveContainer {
+    width: 100%;
+    height: 100%;
+    perspective: 2000px;
     position: relative;
     cursor: grab;
 }
 
-.cardContainer:active {
+.perspectiveContainer:active {
     cursor: grabbing;
 }
 
-.card {
-    background: var(--surface-color);
+.cardInner {
     width: 100%;
     height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.cardFront,
+.cardBack {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 24px;
     padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--glass-background);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.cardBack {
+    transform: rotateY(180deg);
+}
+
+.cardContent {
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
-    border: 1px solid var(--border-color);
-    position: absolute;
-    /* Needed for AnimatePresence stack if we were doing stack */
-    overflow: hidden;
+    width: 100%;
+    gap: 16px;
+}
+
+.tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.1);
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 12px;
 }
 
 .text {
-    font-size: 1.8rem;
-    line-height: 1.5;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.4;
     color: var(--text-primary);
-    white-space: pre-wrap;
+    text-align: center;
+    word-break: break-word;
+    max-width: 90%;
+}
+
+.cardFooter {
     width: 100%;
-}
-
-.divider {
-    width: 80%;
-    height: 2px;
-    background: var(--border-color);
-    margin: 30px 0;
-    opacity: 0.5;
-}
-
-.answer {
-    color: var(--text-secondary);
-    font-size: 1.6rem;
-}
-
-.hintOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    margin-top: 20px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    font-size: 2rem;
-    font-weight: bold;
-    color: white;
-    pointer-events: none;
-    z-index: 10;
-    opacity: 0;
 }
 
-.overlayLeft {
-    background: rgba(255, 59, 48, 0.2);
-    /* Red for Again/Hard */
-    border-radius: 20px;
-}
-
-.overlayRight {
-    background: rgba(52, 199, 89, 0.2);
-    /* Green for Good/Easy */
-    border-radius: 20px;
+.hint {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    opacity: 0.7;
 }
 
 .speakerBtn {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--fg-rgb), 0.05);
+    border: 1px solid transparent;
     color: var(--text-secondary);
-    transition: all 0.2s;
-    z-index: 20;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
 }
 
 .speakerBtn:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(var(--primary-rgb), 0.1);
     color: var(--primary-color);
-    transform: scale(1.1);
+    border-color: rgba(var(--primary-rgb), 0.2);
+    transform: scale(1.05);
 }
 
-.speakerBtn:active {
-    transform: scale(0.95);
+.speaking {
+    background: var(--primary-color) !important;
+    color: white !important;
+    box-shadow: 0 0 15px var(--primary-color);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.swipeIndicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    z-index: 50;
+    pointer-events: none;
+    text-transform: uppercase;
+}
+
+.indicatorLeft {
+    left: 20px;
+    background: #ef4444;
+    color: white;
+    transform: translateY(-50%) rotate(-10deg);
+}
+
+.indicatorRight {
+    right: 20px;
+    background: #10b981;
+    color: white;
+    transform: translateY(-50%) rotate(10deg);
+}
+
+/* Theme adaptation specifically for glassmorphism */
+[data-theme='dark'] .cardFront,
+[data-theme='dark'] .cardBack {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='classic-dark'] .cardFront,
+[data-theme='classic-dark'] .cardBack {
+    background: rgba(18, 18, 18, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 640px) {
+    .cardWrapper {
+        height: 380px;
+    }
+
+    .text {
+        font-size: 1.5rem;
+    }
 }

@@ -96,28 +96,64 @@
     }
 }
 
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
 .nextLevelInfo {
     font-size: 13px;
     opacity: 0.8;
-    text-align: center;
+    text-align: left;
+}
+
+.totalXp {
+    text-align: right;
+}
+
+.skeleton {
+    height: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
 }
 
 /* 测试按钮 */
 .testButton {
-    margin-top: 12px;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
     color: white;
-    font-size: 12px;
+    font-size: 14px;
     cursor: pointer;
     transition: all 0.2s;
+    opacity: 0.3;
 }
 
 .testButton:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* 响应式 */

@@ -133,6 +133,27 @@ Guidelines:
         });
 
         console.log('[AI Generation] Validated cards:', JSON.stringify(validatedCards));
+
+        // Award XP for AI generating cards
+        try {
+            const { createRouteClient } = await import('@/lib/supabase-server');
+            const { awardXP, XP_REWARDS } = await import('@/lib/xp-service');
+            const supabase = createRouteClient(req);
+            const { data: { user } } = await supabase.auth.getUser();
+
+            if (user) {
+                await awardXP(supabase, {
+                    userId: user.id,
+                    amount: XP_REWARDS.AI_GENERATE_CARD,
+                    reason: 'ai_generate',
+                    metadata: { cardCount: validatedCards.length }
+                });
+            }
+        } catch (xpError) {
+            console.error('[AI Generation] XP award failed:', xpError);
+            // Don't fail the primary request
+        }
+
         return successResponse({
             cards: validatedCards,
             provider,

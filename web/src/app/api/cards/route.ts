@@ -54,6 +54,16 @@ export async function POST(request: NextRequest) {
         }
 
         console.log('[API /cards] Card created', { cardId: card.id });
+
+        // Award XP for creating a card
+        const { awardXP, XP_REWARDS } = await import('@/lib/xp-service');
+        await awardXP(supabase, {
+            userId: user.id,
+            amount: XP_REWARDS.CREATE_CARD,
+            reason: 'create_card',
+            metadata: { cardId: card.id, deckId: deck_id }
+        });
+
         return NextResponse.json({ success: true, data: card });
     } catch (e: any) {
         console.error('[API /cards] Unexpected error', e);

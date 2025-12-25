@@ -1,36 +1,38 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React from 'react';
+import { useGamification } from '@/lib/contexts/gamification-context';
 import styles from './level-progress.module.css';
 
-interface LevelProgressProps {
-    xp: number;
-    level: number;
-}
+export default function LevelProgress() {
+    const { levelInfo, loading } = useGamification();
 
-// Calculate XP needed for next level
-function getXPForLevel(level: number): number {
-    return level * level * 100;
-}
+    if (loading || !levelInfo) {
+        return (
+            <div className={styles.container}>
+                <div className={styles.skeleton}></div>
+            </div>
+        );
+    }
 
-export default function LevelProgress({ xp, level }: LevelProgressProps) {
-    const currentLevelXP = getXPForLevel(level);
-    const nextLevelXP = getXPForLevel(level + 1);
-    const xpInCurrentLevel = xp - currentLevelXP;
-    const xpNeededForNextLevel = nextLevelXP - currentLevelXP;
-    const progress = (xpInCurrentLevel / xpNeededForNextLevel) * 100;
+    const { xp, level, nextLevelXp, currentLevelXp, progress } = levelInfo;
+    const xpInCurrentLevel = xp - currentLevelXp;
+    const xpNeededForNextLevel = nextLevelXp - currentLevelXp;
 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
                 <div className={styles.levelBadge}>
-                    <span className={styles.levelLabel}>Level</span>
+                    <span className={styles.levelLabel}>等级</span>
                     <span className={styles.levelNumber}>{level}</span>
                 </div>
                 <div className={styles.xpInfo}>
-                    <span className={styles.currentXP}>{xp.toLocaleString()} XP</span>
+                    <div className={styles.xpRow}>
+                        <span className={styles.currentXP}>{xpInCurrentLevel.toLocaleString()}</span>
+                        <span className={styles.xpTotal}>/ {xpNeededForNextLevel.toLocaleString()} XP</span>
+                    </div>
                     <span className={styles.nextLevel}>
-                        {(nextLevelXP - xp).toLocaleString()} to Level {level + 1}
+                        距离 Lv.{level + 1} 还差 {(nextLevelXp - xp).toLocaleString()} XP
                     </span>
                 </div>
             </div>
@@ -38,8 +40,14 @@ export default function LevelProgress({ xp, level }: LevelProgressProps) {
             <div className={styles.progressBar}>
                 <div
                     className={styles.progressFill}
-                    style={{ width: `${Math.min(progress, 100)}%` }}
-                />
+                    style={{ width: `${progress}%` }}
+                >
+                    <div className={styles.shimmer}></div>
+                </div>
+            </div>
+
+            <div className={styles.footer}>
+                <span className={styles.totalXpLabel}>总经验值: {xp.toLocaleString()} XP</span>
             </div>
         </div>
     );

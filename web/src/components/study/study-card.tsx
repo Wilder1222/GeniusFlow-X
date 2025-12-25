@@ -1,12 +1,12 @@
 'use client';
 
-import React from 'react';
-import { motion, PanInfo, useMotionValue, useTransform } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, PanInfo, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 import { Card } from '@/types/decks';
 import { Rating } from '@/lib/study';
-import styles from './study-card.module.css';
-
 import { useTTS } from '@/hooks/use-tts';
+import { LuVolume2 } from 'react-icons/lu';
+import styles from './study-card.module.css';
 
 interface StudyCardProps {
     card: Card;
@@ -18,52 +18,34 @@ interface StudyCardProps {
 }
 
 export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = true, ttsAutoPlay = false }: StudyCardProps) {
+    const { speak, isSpeaking } = useTTS();
 
+    // Swipe values
     const x = useMotionValue(0);
-    const rotate = useTransform(x, [-200, 200], [-10, 10]);
+    const rotate = useTransform(x, [-200, 200], [-15, 15]);
     const opacityLeft = useTransform(x, [-150, -50], [1, 0]);
     const opacityRight = useTransform(x, [50, 150], [0, 1]);
 
-    const { speak, cancel, isSpeaking } = useTTS();
-
-    // Auto-play when card changes or is revealed
+    // TTS Effect
     React.useEffect(() => {
         if (!ttsEnabled || !ttsAutoPlay) return;
-
-        // Determine what text to speak
-        // If not revealed: speak front
-        // If revealed: speak back (or both? Usually just the new info)
-
-        // Strategy:
-        // 1. Mount (Front): Speak Front
-        // 2. Reveal (Back): Speak Back
-
         const textToSpeak = isRevealed ? card.back : card.front;
-        // Simple clean up of HTML tags if necessary, but browser TTS usually handles text well or reads tags.
-        // Ideally strip markdown/html. For now assume plain text or simple markdown.
         speak(textToSpeak);
-
     }, [card.id, isRevealed, ttsEnabled, ttsAutoPlay, speak, card.front, card.back]);
 
-    // Handlers
     const handleSpeak = (e: React.MouseEvent) => {
         e.stopPropagation();
         const text = isRevealed ? card.back : card.front;
         speak(text);
     };
 
-
-    const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-        const threshold = 100;
+    const handleDragEnd = (event: any, info: PanInfo) => {
+        const threshold = 120;
         if (info.offset.x > threshold && isRevealed) {
-            // Swipe Right -> Good (or Easy)
             onGrade(Rating.Good);
         } else if (info.offset.x < -threshold && isRevealed) {
-            // Swipe Left -> Hard (or Again)
-            onGrade(Rating.Hard);
+            onGrade(Rating.Again);
         }
-        // If not revealed, maybe revealing on tap is better than dragging?
-        // Dragging while hidden is confusing for grading.
     };
 
     const handleClick = () => {
@@ -73,79 +55,83 @@ export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = tr
     };
 
     return (
-        <div className={styles.cardContainer}>
+        <div className={styles.cardWrapper}>
             <motion.div
-                className={styles.card}
+                className={styles.perspectiveContainer}
                 style={{ x, rotate, touchAction: 'none' }}
-                drag={isRevealed ? "x" : false} // Only drag when revealed to grade
+                drag={isRevealed ? "x" : false}
                 dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.7}
+                dragElastic={0.4}
                 onDragEnd={handleDragEnd}
                 onClick={handleClick}
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             >
-                {/* Speaker Icon */}
-                {ttsEnabled && (
-                    <button
-                        className={styles.speakerBtn}
-                        onClick={handleSpeak}
-                        title="朗读"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            style={{ opacity: isSpeaking ? 0.5 : 1 }}
-                        >
-                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                        </svg>
-                    </button>
-                )}
-
-                {/* Overlays for swipe feedback */}
-                {isRevealed && (
-                    <>
+                {/* Swipe Feedback Overlays */}
+                <AnimatePresence>
+                    {isRevealed && x.get() < -20 && (
                         <motion.div
-                            className={`${styles.hintOverlay} ${styles.overlayLeft}`}
+                            className={`${styles.swipeIndicator} ${styles.indicatorLeft}`}
                             style={{ opacity: opacityLeft }}
                         >
-                            Hard / Again
+                            忘记
                         </motion.div>
+                    )}
+                    {isRevealed && x.get() > 20 && (
                         <motion.div
-                            className={`${styles.hintOverlay} ${styles.overlayRight}`}
+                            className={`${styles.swipeIndicator} ${styles.indicatorRight}`}
                             style={{ opacity: opacityRight }}
                         >
-                            Good / Easy
+                            记得
                         </motion.div>
-                    </>
-                )}
+                    )}
+                </AnimatePresence>
 
-                <motion.div layout className={styles.text}>
-                    {card.front}
-                </motion.div>
-
-                {isRevealed && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        transition={{ duration: 0.3 }}
-                        style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-                    >
-                        <div className={styles.divider} />
-                        <div className={`${styles.text} ${styles.answer}`}>
-                            {card.back}
+                <motion.div
+                    className={styles.cardInner}
+                    animate={{ rotateY: isRevealed ? 180 : 0 }}
+                    transition={{
+                        type: 'spring',
+                        stiffness: 260,
+                        damping: 20
+                    }}
+                >
+                    {/* FRONT FACE */}
+                    <div className={styles.cardFront}>
+                        <div className={styles.cardContent}>
+                            <div className={styles.tag}>问题</div>
+                            <div className={styles.text}>{card.front}</div>
                         </div>
-                    </motion.div>
-                )}
+                        <div className={styles.cardFooter}>
+                            <span className={styles.hint}>点击卡片显示答案</span>
+                        </div>
+                        {ttsEnabled && (
+                            <button
+                                className={`${styles.speakerBtn} ${isSpeaking ? styles.speaking : ''}`}
+                                onClick={handleSpeak}
+                            >
+                                <LuVolume2 />
+                            </button>
+                        )}
+                    </div>
+
+                    {/* BACK FACE */}
+                    <div className={styles.cardBack}>
+                        <div className={styles.cardContent}>
+                            <div className={styles.tag}>答案</div>
+                            <div className={styles.text}>{card.back}</div>
+                        </div>
+                        <div className={styles.cardFooter}>
+                            <span className={styles.hint}>左右滑动卡片快速评分</span>
+                        </div>
+                        {ttsEnabled && (
+                            <button
+                                className={`${styles.speakerBtn} ${isSpeaking ? styles.speaking : ''}`}
+                                onClick={handleSpeak}
+                            >
+                                <LuVolume2 />
+                            </button>
+                        )}
+                    </div>
+                </motion.div>
             </motion.div>
         </div>
     );

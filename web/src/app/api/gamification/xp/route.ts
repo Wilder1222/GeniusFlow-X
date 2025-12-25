@@ -8,14 +8,14 @@ import { AppError, ErrorCode } from '@/lib/errors';
  * Formula: level = floor(sqrt(xp / 100))
  */
 function calculateLevel(xp: number): number {
-    return Math.floor(Math.sqrt(xp / 100));
+    return Math.floor(Math.sqrt(xp / 100)) + 1;
 }
 
 /**
  * Calculate XP needed for next level
  */
 function xpForNextLevel(currentLevel: number): number {
-    return (currentLevel + 1) * (currentLevel + 1) * 100;
+    return currentLevel * currentLevel * 100;
 }
 
 /**
@@ -105,8 +105,8 @@ export async function POST(req: NextRequest) {
             leveledUp,
             xpGained: amount,
             nextLevelXp: xpForNextLevel(newLevel),
-            currentLevelXp: newLevel * newLevel * 100,
-            progress: ((newXp - (newLevel * newLevel * 100)) / ((newLevel + 1) * (newLevel + 1) * 100 - newLevel * newLevel * 100)) * 100
+            currentLevelXp: (newLevel - 1) * (newLevel - 1) * 100,
+            progress: ((newXp - ((newLevel - 1) * (newLevel - 1) * 100)) / (newLevel * newLevel * 100 - (newLevel - 1) * (newLevel - 1) * 100)) * 100
         });
 
     } catch (error: any) {
@@ -155,7 +155,7 @@ export async function GET(req: NextRequest) {
         const xp = profile.xp || 0;
         const level = profile.level || 1;
         const nextLevelXp = xpForNextLevel(level);
-        const currentLevelXp = level * level * 100;
+        const currentLevelXp = (level - 1) * (level - 1) * 100;
         const progress = ((xp - currentLevelXp) / (nextLevelXp - currentLevelXp)) * 100;
 
         return successResponse({

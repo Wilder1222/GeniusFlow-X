@@ -53,90 +53,330 @@
     font-size: 1.6rem;
 }
 
-.controls {
-    margin-top: 40px;
+.studyWrapper {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
     display: flex;
-    gap: 16px;
-    justify-content: center;
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: 40px;
+    flex-direction: column;
+    min-height: calc(100vh - 200px);
+    gap: 32px;
 }
 
-.revealBtn {
-    background: var(--primary-color);
-    color: white;
-    font-size: 1.2rem;
-    font-weight: 600;
-    padding: 16px 48px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
-    transition: transform 0.1s;
+.studyHeader {
     width: 100%;
 }
 
-.revealBtn:active {
-    transform: scale(0.98);
+.progressSection {
+    background: var(--glass-background);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 20px 24px;
 }
 
-.gradeBtn {
-    flex: 1;
-    padding: 16px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: white;
-}
-
-.again {
-    background: #FF3B30;
-}
-
-.hard {
-    background: #FF9500;
-}
-
-.good {
-    background: #34C759;
-}
-
-.easy {
-    background: #007AFF;
-}
-
-.gradeBtn:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.header {
-    text-align: center;
-    margin-bottom: 20px;
-    color: var(--text-secondary);
+.progressHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 12px;
+}
+
+.label {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 
 .stats {
-    font-size: 0.9rem;
-    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
 }
 
-.emptyState {
+.stats svg {
+    color: var(--primary-color);
+}
+
+.progressBar {
+    height: 6px;
+    background: rgba(var(--fg-rgb), 0.05);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), #f06595);
+    border-radius: 100px;
+}
+
+.remaining {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    opacity: 0.6;
+    text-align: right;
+}
+
+.cardContainer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.cardMotion {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.actionContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 40px;
+}
+
+.revealAction {
+    width: 100%;
+    max-width: 300px;
+    background: var(--primary-color);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 16px 32px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.3);
+    transition: all 0.3s ease;
+}
+
+.revealAction:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(var(--primary-rgb), 0.4);
+    filter: brightness(1.1);
+}
+
+.gradeGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.gradeBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    background: var(--glass-background);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+.btnLabel {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.btnDesc {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+.again {
+    border-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.again:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+}
+
+.hard {
+    border-color: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.hard:hover {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: #f59e0b;
+}
+
+.good {
+    border-color: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.good:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: #3b82f6;
+}
+
+.easy {
+    border-color: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.easy:hover {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: #10b981;
+}
+
+/* Finish State */
+.finishContainer {
+    max-width: 600px;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.finishCard {
+    background: var(--glass-background);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 32px;
+    padding: 60px 40px;
     text-align: center;
-    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.emptyState h2 {
+.finishIcon {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: 24px;
+}
+
+.finishTitle {
     font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.finishSubtitle {
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+}
+
+.xpSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.xpGained {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary-color);
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.levelUpBadge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #ffd700, #ffa500);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+}
+
+.backBtn {
+    background: var(--fg-color);
+    color: var(--bg-color);
+    padding: 14px 40px;
+    border-radius: 16px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.backBtn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+.achievementSection {
+    width: 100%;
+}
+
+.sectionTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
     margin-bottom: 16px;
+    text-align: center;
+}
+
+.achievementGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.achievementCard {
+    background: var(--glass-background);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.aIcon {
+    font-size: 1.5rem;
+}
+
+.aName {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.aXp {
+    font-size: 0.8rem;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+@media (max-width: 640px) {
+    .gradeGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .finishCard {
+        padding: 40px 20px;
+    }
+
+    .finishTitle {
+        font-size: 1.5rem;
+    }
 }
 
 .xpReward {
@@ -179,6 +419,7 @@
         transform: translateY(-10px);
     }
 }
+
 .achievementsUnlocked {
     margin-top: 24px;
     padding: 20px;

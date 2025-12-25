@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
         // Run XP award and profile fetch in parallel
         const [xpResult, profileResult] = await Promise.all([
-            awardReviewXP(user.id, correctCount, incorrectCount),
+            awardReviewXP(supabase, user.id, correctCount, incorrectCount),
             supabase
                 .from('profiles')
                 .select('last_study_date, current_streak, longest_streak')
