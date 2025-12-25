@@ -1,44 +1,54 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import {
     LuSparkles,
     LuX,
-    LuChevronLeft,
     LuCheck,
     LuLoader,
     LuPlus,
     LuSave,
-    LuArrowRight,
     LuArrowLeft,
-    LuBook
+    LuBook,
+    LuFileText,
+    LuUpload
 } from 'react-icons/lu';
 import styles from './ai-generator-modal.module.css';
 import { aiService, GeneratedCard } from '@/lib/ai-service';
+import { AI_DOMAINS, AIDomain, getDomainConfig } from '@/lib/ai-domains';
 import { getUserDecks } from '@/lib/decks';
 import { useAuth } from '@/lib/auth-context';
 import { apiClient } from '@/lib/api-client';
-import { useRouter } from 'next/navigation';
 import { Deck } from '@/types/decks';
+import { MarkdownContent } from '@/components/common/markdown-content';
 
 interface AIGeneratorModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess?: (deckId: string) => void;
-    // Props for backward compatibility / deck-specific context
     deckId?: string;
     onCardsAdded?: () => void;
 }
 
 type Step = 'input' | 'generating' | 'preview';
+type SourceType = 'text' | 'file';
 
 export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAdded }: AIGeneratorModalProps) {
     const { user } = useAuth();
     const [step, setStep] = useState<Step>('input');
+    const [selectedDomain, setSelectedDomain] = useState<AIDomain>('general');
+    const [sourceType, setSourceType] = useState<SourceType>('text');
     const [topic, setTopic] = useState('');
     const [generatedCards, setGeneratedCards] = useState<GeneratedCard[]>([]);
     const [userDecks, setUserDecks] = useState<Deck[]>([]);
+
+    // File upload state
+    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+    const [extractedText, setExtractedText] = useState('');
+    const [isExtracting, setIsExtracting] = useState(false);
+    const [extractError, setExtractError] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Save options
     const [saveMode, setSaveMode] = useState<'existing' | 'new'>('new');
@@ -51,11 +61,15 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
     useEffect(() => {
         if (isOpen) {
             setStep('input');
+            setSelectedDomain('general'); // 默认选择通用
+            setSourceType('text');
             setTopic('');
             setGeneratedCards([]);
             setNewDeckTitle('');
+            setUploadedFile(null);
+            setExtractedText('');
+            setExtractError('');
 
-            // If generated within a specific deck context
             if (deckId) {
                 setSaveMode('existing');
                 setSelectedDeckId(deckId);
@@ -78,22 +92,78 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
         }
     };
 
+    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploadedFile(file);
+        setExtractError('');
+        setIsExtracting(true);
+
+        try {
+            const result = await aiService.extractFromFile(file);
+            setExtractedText(result.text);
+            setTopic(result.text.slice(0, 500));
+        } catch (error: any) {
+            setExtractError(error.message || '文件提取失败');
+            setExtractedText('');
+        } finally {
+            setIsExtracting(false);
+        }
+    };
+
+    const handleFileDrop = async (e: React.DragEvent) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (!file) return;
+
+        const allowedTypes = ['.pdf', '.docx', '.txt'];
+        const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+        if (!allowedTypes.includes(ext)) {
+            setExtractError('不支持的文件格式，请上传 PDF、DOCX 或 TXT 文件');
+            return;
+        }
+
+        setUploadedFile(file);
+        setExtractError('');
+        setIsExtracting(true);
+
+        try {
+            const result = await aiService.extractFromFile(file);
+            setExtractedText(result.text);
+            setTopic(result.text.slice(0, 500));
+        } catch (error: any) {
+            setExtractError(error.message || '文件提取失败');
+            setExtractedText('');
+        } finally {
+            setIsExtracting(false);
+        }
+    };
+
     const handleGenerate = async () => {
-        if (!topic.trim()) return;
+        const textToGenerate = sourceType === 'file' ? extractedText : topic;
+        if (!textToGenerate.trim()) return;
 
         setStep('generating');
         try {
             const countParam = cardCount === 'auto' ? undefined : cardCount;
-            const cards = await aiService.generateFlashcards(topic, countParam);
+            const cards = await aiService.generateFlashcards({
+                topic: textToGenerate,
+                count: countParam,
+                domain: selectedDomain,
+                sourceType
+            });
             setGeneratedCards(cards);
             if (!deckId) {
-                setNewDeckTitle(topic); // Default new deck title to topic only if not in deck context
+                const domainConfig = getDomainConfig(selectedDomain);
+                setNewDeckTitle(sourceType === 'file' && uploadedFile
+                    ? uploadedFile.name.replace(/\.[^.]+$/, '')
+                    : `${domainConfig.name} - ${topic.slice(0, 20)}`);
             }
             setStep('preview');
         } catch (error: any) {
             console.error('Generation failed:', error);
             setStep('input');
-            // Show specific error message from backend if available
             const errorMessage = error.message || '生成失败，请稍后重试';
             alert(errorMessage);
         }
@@ -108,11 +178,10 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
         try {
             let targetDeckId = selectedDeckId;
 
-            // 1. Create Deck if needed
             if (saveMode === 'new') {
                 const response = await apiClient.post<any>('/api/decks', {
                     title: newDeckTitle,
-                    description: `Generated by AI for topic: ${topic}`
+                    description: `Generated by AI for topic: ${topic.slice(0, 100)}`
                 });
 
                 if (!response.success || !response.data) {
@@ -121,7 +190,6 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                 targetDeckId = response.data.id;
             }
 
-            // 2. Add Cards in batch
             if (!targetDeckId) throw new Error('Target deck ID is missing');
 
             const batchResponse = await apiClient.post<any>('/api/cards/batch', {
@@ -137,7 +205,6 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                 throw new Error(batchResponse.error?.message || 'Failed to save cards');
             }
 
-            // 3. Success callbacks
             if (onSuccess) onSuccess(targetDeckId);
             if (onCardsAdded) onCardsAdded();
 
@@ -151,6 +218,13 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
         }
     };
 
+    const goBack = () => {
+        if (step === 'preview') setStep('input');
+    };
+
+    const domainConfig = getDomainConfig(selectedDomain);
+    const canGenerate = sourceType === 'text' ? topic.trim().length > 0 : extractedText.length > 0;
+
     if (!isOpen) return null;
 
     return createPortal(
@@ -159,12 +233,8 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                 {/* Header */}
                 <div className={styles.header}>
                     <div className={styles.headerTitle}>
-                        {step !== 'input' && (
-                            <button
-                                onClick={() => setStep('input')}
-                                className={styles.backBtn}
-                                title="返回"
-                            >
+                        {step === 'preview' && (
+                            <button onClick={goBack} className={styles.backBtn} title="返回">
                                 <LuArrowLeft size={20} />
                             </button>
                         )}
@@ -180,65 +250,153 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
 
                 {/* Body */}
                 <div className={styles.body}>
+                    {/* Input Step - Combined with Domain Selection */}
                     {step === 'input' && (
                         <div className={styles.inputStep}>
-                            <h4 className={styles.stepTitle}>你想学习什么？</h4>
-                            <p className={styles.stepDesc}>输入主题、概念或书籍名称，AI 将为你提取核心知识点。</p>
-                            <div className={styles.inputWrapper}>
-                                <input
-                                    type="text"
-                                    value={topic}
-                                    onChange={(e) => setTopic(e.target.value)}
-                                    placeholder="例如：光合作用原理、React Hooks、二战历史..."
-                                    className={styles.topicInput}
-                                    autoFocus
-                                    onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
-                                />
+                            {/* Domain Tags - Compact */}
+                            <div className={styles.domainTagsSection}>
+                                <span className={styles.domainTagsLabel}>选择领域：</span>
+                                <div className={styles.domainTags}>
+                                    {AI_DOMAINS.map(domain => (
+                                        <button
+                                            key={domain.id}
+                                            className={`${styles.domainTag} ${selectedDomain === domain.id ? styles.domainTagActive : ''}`}
+                                            onClick={() => setSelectedDomain(domain.id)}
+                                            style={{ '--domain-color': domain.color } as React.CSSProperties}
+                                        >
+                                            <span>{domain.icon}</span>
+                                            <span>{domain.name}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Source Type Tabs */}
+                            <div className={styles.sourceTabs}>
+                                <button
+                                    className={`${styles.sourceTab} ${sourceType === 'text' ? styles.active : ''}`}
+                                    onClick={() => setSourceType('text')}
+                                >
+                                    <LuFileText size={16} />
+                                    文本输入
+                                </button>
+                                <button
+                                    className={`${styles.sourceTab} ${sourceType === 'file' ? styles.active : ''}`}
+                                    onClick={() => setSourceType('file')}
+                                >
+                                    <LuUpload size={16} />
+                                    上传文件
+                                </button>
+                            </div>
+
+                            {/* Text Input */}
+                            {sourceType === 'text' && (
+                                <>
+                                    <div className={styles.inputWrapper}>
+                                        <textarea
+                                            value={topic}
+                                            onChange={(e) => setTopic(e.target.value)}
+                                            placeholder={`输入主题或粘贴内容，例如：${domainConfig.suggestions[0]}...`}
+                                            className={styles.topicTextarea}
+                                            autoFocus
+                                        />
+                                    </div>
+                                    <div className={styles.suggestions}>
+                                        <span>推荐：</span>
+                                        {domainConfig.suggestions.map(t => (
+                                            <button key={t} onClick={() => setTopic(t)} className={styles.tag}>{t}</button>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+
+                            {/* File Upload */}
+                            {sourceType === 'file' && (
+                                <>
+                                    <div
+                                        className={`${styles.uploadArea} ${uploadedFile ? styles.hasFile : ''}`}
+                                        onDragOver={(e) => e.preventDefault()}
+                                        onDrop={handleFileDrop}
+                                        onClick={() => fileInputRef.current?.click()}
+                                    >
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            accept=".pdf,.docx,.txt"
+                                            onChange={handleFileSelect}
+                                            style={{ display: 'none' }}
+                                        />
+                                        {isExtracting ? (
+                                            <div className={styles.uploadLoading}>
+                                                <LuLoader className={styles.spinner} size={32} />
+                                                <span>正在提取文本...</span>
+                                            </div>
+                                        ) : uploadedFile ? (
+                                            <div className={styles.uploadedFileInfo}>
+                                                <LuFileText size={32} />
+                                                <span className={styles.fileName}>{uploadedFile.name}</span>
+                                                <span className={styles.fileSize}>
+                                                    {extractedText ? `${extractedText.length} 字符` : '提取中...'}
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <div className={styles.uploadPrompt}>
+                                                <LuUpload size={32} />
+                                                <span>拖拽文件到此处，或点击上传</span>
+                                                <span className={styles.uploadHint}>支持 PDF、DOCX、TXT 格式</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {extractError && <p className={styles.errorText}>{extractError}</p>}
+                                    {extractedText && (
+                                        <div className={styles.extractedPreview}>
+                                            <span className={styles.previewLabel}>提取内容预览：</span>
+                                            <p>{extractedText.slice(0, 200)}...</p>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+
+                            {/* Card Count & Generate */}
+                            <div className={styles.generateActions}>
+                                <div className={styles.countSelector}>
+                                    <span className={styles.selectorLabel}>数量：</span>
+                                    <div className={styles.countButtons}>
+                                        {(['auto', 3, 5, 10] as const).map(count => (
+                                            <button
+                                                key={count}
+                                                onClick={() => setCardCount(count)}
+                                                className={`${styles.countBtn} ${cardCount === count ? styles.countBtnActive : ''}`}
+                                            >
+                                                {count === 'auto' ? '自动' : `${count}张`}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                                 <button
                                     onClick={handleGenerate}
-                                    disabled={!topic.trim()}
+                                    disabled={!canGenerate}
                                     className={styles.primaryBtn}
                                 >
                                     <LuSparkles size={18} />
                                     <span>开始生成</span>
                                 </button>
                             </div>
-
-                            <div className={styles.countSelectorWrapper}>
-                                <div className={styles.countSelector}>
-                                    <span className={styles.selectorLabel}>生成数量：</span>
-                                    <div className={styles.countButtons}>
-                                        {['auto', 3, 5, 10].map(count => (
-                                            <button
-                                                key={count}
-                                                onClick={() => setCardCount(count as any)}
-                                                className={`${styles.countBtn} ${cardCount === count ? styles.countBtnActive : ''}`}
-                                            >
-                                                {count === 'auto' ? '自动' : `${count} 张`}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={styles.suggestions}>
-                                <span>热门尝试：</span>
-                                {['商务英语', 'Python 基础', '心理学效应', '世界地理'].map(t => (
-                                    <button key={t} onClick={() => setTopic(t)} className={styles.tag}>{t}</button>
-                                ))}
-                            </div>
                         </div>
                     )}
 
+                    {/* Generating Step */}
                     {step === 'generating' && (
                         <div className={styles.generatingStep}>
                             <div className={styles.loaderWrapper}>
                                 <LuLoader size={48} className={styles.spinner} />
                             </div>
                             <h4>正在深入分析知识网络...</h4>
-                            <p>AI 正在为你整理 "{topic}" 的核心考点</p>
+                            <p>AI 正在为你整理 "{domainConfig.name}" 领域的核心考点</p>
                         </div>
                     )}
 
+                    {/* Preview Step */}
                     {step === 'preview' && (
                         <div className={styles.previewStep}>
                             <div className={styles.previewHeader}>
@@ -247,7 +405,6 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                     已生成 {generatedCards.length} 张卡片
                                 </h4>
 
-                                {/* Only show save options if NOT locked to a deck */}
                                 {!deckId && (
                                     <div className={styles.saveOptions}>
                                         <div className={styles.toggleGroup}>
@@ -268,7 +425,6 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                 )}
                             </div>
 
-                            {/* Cards List */}
                             <div className={styles.cardsList}>
                                 {generatedCards.map((card, i) => (
                                     <div key={i} className={styles.miniCard}>
@@ -279,13 +435,14 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                         <div className={styles.divider} />
                                         <div className={styles.cardBack}>
                                             <span className={styles.label}>A</span>
-                                            <p>{card.back}</p>
+                                            <div className={styles.cardBackContent}>
+                                                <MarkdownContent content={card.back} />
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
-                            {/* Save Form */}
                             <div className={styles.saveForm}>
                                 {saveMode === 'new' ? (
                                     <input
@@ -300,7 +457,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                         value={selectedDeckId}
                                         onChange={(e) => setSelectedDeckId(e.target.value)}
                                         className={styles.saveSelect}
-                                        disabled={!!deckId} // Disable selection if locked to a deck
+                                        disabled={!!deckId}
                                     >
                                         <option value="">选择一个牌组...</option>
                                         {userDecks.map(d => (

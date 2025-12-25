@@ -24,7 +24,7 @@ export const Header: React.FC<HeaderProps> = ({
         { label: 'Home', href: '/home', icon: '🏠' },
         { label: 'Decks', href: '/decks', icon: '🗂️' },
         { label: 'Stats', href: '/stats', icon: '📊' },
-        { label: 'Pricing', href: '/pricing', icon: '💎' },
+        // { label: 'Pricing', href: '/pricing', icon: '💎' },
     ];
 
     return (
@@ -50,9 +50,9 @@ export const Header: React.FC<HeaderProps> = ({
                                 {item.label}
                             </Link>
                         ))}
-                        <Link href="/add" className={styles.navItem}>
+                        {/* <Link href="/add" className={styles.navItem}>
                             Add
-                        </Link>
+                        </Link> */}
                     </div>
                 </nav>
 

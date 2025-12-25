@@ -6,6 +6,7 @@ import { Card } from '@/types/decks';
 import { Rating } from '@/lib/study';
 import { useTTS } from '@/hooks/use-tts';
 import { LuVolume2 } from 'react-icons/lu';
+import { MarkdownContent } from '@/components/common/markdown-content';
 import styles from './study-card.module.css';
 
 interface StudyCardProps {
@@ -118,7 +119,9 @@ export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = tr
                     <div className={styles.cardBack}>
                         <div className={styles.cardContent}>
                             <div className={styles.tag}>答案</div>
-                            <div className={styles.text}>{card.back}</div>
+                            <div className={styles.text}>
+                                <MarkdownContent content={card.back} />
+                            </div>
                         </div>
                         <div className={styles.cardFooter}>
                             <span className={styles.hint}>左右滑动卡片快速评分</span>

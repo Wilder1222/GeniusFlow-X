@@ -3,11 +3,14 @@ import { successResponse, errorResponse } from '@/lib/api-response';
 import { createAIClient, getModelName, getAIProvider, getProviderConfig } from '@/lib/ai-config';
 import { createRouteClient } from '@/lib/supabase-server';
 import { getMembershipStatus, incrementAIUsage } from '@/lib/membership';
+import { buildDomainPrompt, AIDomain } from '@/lib/ai-domains';
 
 interface GenerateCardsRequest {
     text: string;
     granularity?: 'fine' | 'recommended' | 'coarse';
     count?: number;
+    domain?: AIDomain;
+    sourceType?: 'text' | 'file';
 }
 
 interface CardDraft {
@@ -20,7 +23,7 @@ interface CardDraft {
 export async function POST(req: NextRequest) {
     try {
         const body: GenerateCardsRequest = await req.json();
-        const { text, granularity = 'recommended', count } = body;
+        const { text, granularity = 'recommended', count, domain = 'general', sourceType = 'text' } = body;
 
         if (!text || !text.trim() || text.trim().length < 4) {
             return NextResponse.json(
@@ -48,45 +51,15 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Determine card count description for prompt
-        const cardCountDesc = count
-            ? `exactly ${Math.min(Math.max(1, count), 10)}`
-            : "an appropriate number (maximum 10 based on text complexity)";
+        // Build domain-specific prompt
+        const prompt = buildDomainPrompt(domain, text, count);
+        console.log('[AI Generation] Domain:', domain, 'Source:', sourceType);
 
         // Create AI client and get model
         const provider = getAIProvider();
         const client = createAIClient(provider);
         const model = getModelName();
         const config = getProviderConfig(provider);
-
-        const prompt = `You are an expert flashcard creator. 
-First, detect the language of the following text. 
-Then, generate ${cardCountDesc} high-quality flashcards.
-
-Text: ${text}
-
-### MANDATORY LANGUAGE CONSTRAINTS:
-- The content MUST be in the same language as the input text above.
-- !! IF THE INPUT IS IN CHINESE, THE OUTPUT MUST BE IN SIMPLIFIED CHINESE (简体中文). !!
-- !! DO NOT USE JAPANESE KANJI IF THE INPUT IS CHINESE. !!
-- All fields (front, back, tags) must strictly adhere to the detected language.
-
-Return ONLY a JSON array (no markdown, no explanation) with this exact structure:
-[
-  {
-    "front": "Clear, specific question in detected language",
-    "back": "Concise, complete answer in detected language",
-    "tags": ["topic1", "topic2"],
-    "difficulty": "easy|medium|hard"
-  }
-]
-
-Guidelines:
-- Questions should be unambiguous and test understanding.
-- Answers should be accurate and self-contained.
-- Focus on key concepts, definitions, and facts.
-- Use simple language within the detected language.
-- Assign difficulty based on concept complexity.`;
 
         // Call AI API
         console.log('[AI Generation] Provider:', provider, 'Model:', model);
@@ -101,7 +74,7 @@ Guidelines:
             model: model,
             messages: [{ role: 'user', content: prompt }],
             temperature: 0.7,
-            max_tokens: 1500
+            max_tokens: 4000
         });
 
         const responseText = completion.choices[0]?.message?.content;
@@ -116,21 +89,69 @@ Guidelines:
             // Remove markdown code blocks if present
             let cleanJson = responseText.trim();
 
-            // Remove ```json ... ``` or ``` ... ``` blocks
-            if (cleanJson.startsWith('```')) {
+            // Remove ```json ... ``` or ``` ... ``` blocks (handle multiline)
+            const codeBlockMatch = cleanJson.match(/```(?:json)?\s*([\s\S]*?)```/);
+            if (codeBlockMatch) {
+                cleanJson = codeBlockMatch[1].trim();
+            } else if (cleanJson.startsWith('```')) {
+                // Fallback: remove opening and closing markers
                 cleanJson = cleanJson
-                    .replace(/^```(?:json)?\s*\n?/i, '')  // Remove opening ```json or ```
-                    .replace(/\n?```\s*$/i, '')           // Remove closing ```
+                    .replace(/^```(?:json)?[\s\n]*/i, '')
+                    .replace(/[\s\n]*```$/i, '')
                     .trim();
             }
 
-            console.log('[AI Generation] Cleaned JSON:', cleanJson);
-            cards = JSON.parse(cleanJson);
+            // Find JSON array that contains objects (starts with [{ and ends with }])
+            const objectArrayMatch = cleanJson.match(/\[\s*\{[\s\S]*\}\s*\]/);
+            if (objectArrayMatch) {
+                cleanJson = objectArrayMatch[0];
+            }
+
+            console.log('[AI Generation] Cleaned JSON length:', cleanJson.length);
+
+            // Try parsing, with fallback for common issues
+            try {
+                cards = JSON.parse(cleanJson);
+            } catch (parseError) {
+                console.log('[AI Generation] First parse failed, attempting fix...');
+                // Try to fix common JSON issues:
+                // 1. Replace smart quotes with regular quotes
+                let fixedJson = cleanJson
+                    .replace(/[""]/g, '"')
+                    .replace(/['']/g, "'");
+
+                // 2. Try to extract individual card objects and rebuild array
+                const cardMatches = fixedJson.match(/\{[^{}]*"front"[^{}]*"back"[^{}]*\}/g);
+                if (cardMatches && cardMatches.length > 0) {
+                    console.log('[AI Generation] Extracted', cardMatches.length, 'cards via regex');
+                    cards = cardMatches.map(cardStr => {
+                        // Extract fields using regex
+                        const frontMatch = cardStr.match(/"front"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+                        const backMatch = cardStr.match(/"back"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+                        const tagsMatch = cardStr.match(/"tags"\s*:\s*\[(.*?)\]/);
+                        const diffMatch = cardStr.match(/"difficulty"\s*:\s*"(\w+)"/);
+
+                        if (!frontMatch || !backMatch) {
+                            throw new Error('Could not extract front/back from card');
+                        }
+
+                        return {
+                            front: frontMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n'),
+                            back: backMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n'),
+                            tags: tagsMatch ? tagsMatch[1].split(',').map(t => t.trim().replace(/"/g, '')) : [],
+                            difficulty: (diffMatch?.[1] || 'medium') as 'easy' | 'medium' | 'hard'
+                        };
+                    });
+                } else {
+                    throw parseError;
+                }
+            }
+
             console.log('[AI Generation] Parsed cards count:', cards.length);
         } catch (e) {
             console.error('[AI Generation] Failed to parse AI response:', responseText);
             console.error('[AI Generation] Parse error:', e);
-            throw new Error('AI returned invalid JSON format');
+            throw new Error('AI返回格式无效，请重试');
         }
 
         // Validate structure
