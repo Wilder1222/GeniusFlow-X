@@ -12,7 +12,7 @@
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--color-border-light);
     border-radius: 28px;
-    padding: 5px 10px;
+    padding: 6px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -36,19 +36,43 @@
     transform: none;
 }
 
+.avatarWrapper {
+    position: relative;
+    width: 24px;
+    height: 24px;
+}
+
 .avatar {
     width: 24px;
     height: 24px;
     border-radius: 50%;
     background: var(--gradient-welcome);
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffffff;
-    font-size: 12px;
     transition: all 0.3s ease;
-    box-shadow: 0 1px 4px rgba(255, 107, 107, 0.2);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    position: relative;
+    border: 1.5px solid rgba(255, 255, 255, 0.82);
+}
+
+.proIndicator {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ffd60a;
+    color: #000;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--settings-panel-bg);
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .avatarImg {
@@ -111,17 +135,17 @@
 }
 
 .avatarLarge {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: var(--gradient-welcome);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    font-size: 14px;
     flex-shrink: 0;
     overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.82);
 }
 
 .userDetails {
@@ -129,14 +153,43 @@
     min-width: 0;
 }
 
+.nameAndBadge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+    overflow: hidden;
+}
+
 .userName {
     font-size: 0.8rem;
     font-weight: 600;
     color: var(--settings-text-primary);
-    margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.proBadge,
+.freeBadge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+.proBadge {
+    color: #ffffff;
+    background: linear-gradient(135deg, #f06595 0%, #ff6b6b 100%);
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.freeBadge {
+    color: var(--settings-text-secondary);
+    background: var(--settings-hover-bg);
+    border: 1px solid var(--settings-divider);
 }
 
 .userEmail {

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { LuUser, LuSettings, LuEye, LuMoon, LuSun, LuMonitor, LuLogOut, LuChevronRight } from 'react-icons/lu';
+import { LuUser, LuSettings, LuEye, LuMoon, LuSun, LuMonitor, LuLogOut, LuChevronRight, LuCrown as Crown } from 'react-icons/lu';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { useTheme } from '@/lib/theme-context';
@@ -15,8 +15,8 @@ export default function UserSettingsPanel() {
     const panelRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
 
-    const avatarUrl = profile?.avatar_url;
-    const displayName = profile?.display_name || profile?.username;
+    const avatarUrl = profile?.avatarUrl;
+    const displayName = profile?.displayName || profile?.username || user?.email?.split('@')[0] || 'User';
 
     if (!user) return null;
 
@@ -75,11 +75,18 @@ export default function UserSettingsPanel() {
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label="User settings"
             >
-                <div className={styles.avatar}>
-                    {avatarUrl ? (
-                        <img src={avatarUrl} alt="Avatar" className={styles.avatarImg} />
-                    ) : (
-                        <LuUser size={20} />
+                <div className={styles.avatarWrapper}>
+                    <div className={styles.avatar}>
+                        {avatarUrl ? (
+                            <img src={avatarUrl} alt="Avatar" className={styles.avatarImg} />
+                        ) : (
+                            <LuUser size={14} strokeWidth={2.5} />
+                        )}
+                    </div>
+                    {profile?.membershipTier === 'pro' && (
+                        <div className={styles.proIndicator}>
+                            <Crown size={8} />
+                        </div>
                     )}
                 </div>
             </button>
@@ -97,11 +104,16 @@ export default function UserSettingsPanel() {
                         {avatarUrl ? (
                             <img src={avatarUrl} alt="Avatar" className={styles.avatarImg} />
                         ) : (
-                            <LuUser size={16} />
+                            <LuUser size={18} />
                         )}
                     </div>
                     <div className={styles.userDetails}>
-                        <div className={styles.userName}>{displayName || user.email?.split('@')[0] || 'User'}</div>
+                        <div className={styles.nameAndBadge}>
+                            <div className={styles.userName}>{displayName || user.email?.split('@')[0] || 'User'}</div>
+                            <span className={profile?.membershipTier === 'pro' ? styles.proBadge : styles.freeBadge}>
+                                {profile?.membershipTier === 'pro' ? 'PRO' : 'FREE'}
+                            </span>
+                        </div>
                         <div className={styles.userEmail}>{user.email}</div>
                     </div>
                 </div>
@@ -111,6 +123,11 @@ export default function UserSettingsPanel() {
                     <Link href="/settings" className={styles.menuItem} onClick={() => setIsOpen(false)}>
                         <LuSettings size={12} />
                         <span>Account preferences</span>
+                        <LuChevronRight size={12} className={styles.chevron} />
+                    </Link>
+                    <Link href="/pricing" className={styles.menuItem} onClick={() => setIsOpen(false)}>
+                        <Crown size={12} className="text-yellow-500" />
+                        <span>Pro Plan</span>
                         <LuChevronRight size={12} className={styles.chevron} />
                     </Link>
                     <button className={styles.menuItem}>

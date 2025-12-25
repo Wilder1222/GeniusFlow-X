@@ -15,7 +15,7 @@
 .title {
     font-size: 2rem;
     font-weight: 700;
-    color: #1d1d1f;
+    color: var(--color-text-primary);
     margin: 0;
 }
 
@@ -98,7 +98,7 @@
 .loading {
     text-align: center;
     padding: 60px 20px;
-    color: #86868b;
+    color: var(--color-text-secondary);
     font-size: 16px;
 }
 
@@ -106,7 +106,7 @@
     display: inline-block;
     width: 40px;
     height: 40px;
-    border: 3px solid #f3f3f3;
+    border: 3px solid var(--color-border-light);
     border-top: 3px solid #007AFF;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -127,20 +127,20 @@
 .emptyState {
     text-align: center;
     padding: 80px 20px;
-    background: #f5f5f7;
+    background: var(--color-surface-secondary);
     border-radius: 16px;
     margin-top: 20px;
 }
 
 .emptyState h3 {
     font-size: 1.5rem;
-    color: #1d1d1f;
+    color: var(--color-text-primary);
     margin: 0 0 12px 0;
 }
 
 .emptyState p {
     font-size: 1rem;
-    color: #86868b;
+    color: var(--color-text-secondary);
     margin: 0 0 24px 0;
 }
 

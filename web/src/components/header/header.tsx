@@ -24,6 +24,7 @@ export const Header: React.FC<HeaderProps> = ({
         { label: 'Home', href: '/home', icon: '🏠' },
         { label: 'Decks', href: '/decks', icon: '🗂️' },
         { label: 'Stats', href: '/stats', icon: '📊' },
+        { label: 'Pricing', href: '/pricing', icon: '💎' },
     ];
 
     return (

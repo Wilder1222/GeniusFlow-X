@@ -5,11 +5,15 @@ import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { getCurrentUser, signIn, signUp, signOut, type AuthUser, type SignInData, type SignUpData } from '@/lib/auth';
 import type { Session } from '@supabase/supabase-js';
+import type { Profile } from '@/types/profile';
 
-interface UserProfile {
-    avatar_url: string | null;
-    display_name: string | null;
+// Local interface for UserProfile used in AuthContext
+interface UserProfile extends Omit<Partial<Profile>, 'id' | 'avatarUrl' | 'displayName' | 'username' | 'membershipTier'> {
+    id: string;
+    avatarUrl: string | null;
+    displayName: string | null;
     username: string | null;
+    membershipTier: 'free' | 'pro' | string;
 }
 
 interface AuthContextType {
@@ -37,12 +41,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             try {
                 const { data, error } = await supabase
                     .from('profiles')
-                    .select('avatar_url, display_name, username')
+                    .select('id, avatar_url, display_name, username, membership_tier')
                     .eq('id', userId)
                     .maybeSingle();
 
                 if (!error && data) {
-                    setProfile(data);
+                    setProfile({
+                        id: data.id || userId,
+                        avatarUrl: data.avatar_url,
+                        displayName: data.display_name,
+                        username: data.username,
+                        membershipTier: data.membership_tier || 'free'
+                    } as UserProfile);
                 }
             } catch (err) {
                 console.error('[AuthProvider] Error fetching profile:', err);

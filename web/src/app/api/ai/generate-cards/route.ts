@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { successResponse, errorResponse } from '@/lib/api-response';
 import { createAIClient, getModelName, getAIProvider, getProviderConfig } from '@/lib/ai-config';
+import { createRouteClient } from '@/lib/supabase-server';
+import { getMembershipStatus, incrementAIUsage } from '@/lib/membership';
 
 interface GenerateCardsRequest {
     text: string;
@@ -24,6 +26,25 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(
                 errorResponse('INPUT_INVALID, Text must be at least 4 characters'),
                 { status: 400 }
+            );
+        }
+
+        // 1. Check membership status and limits
+        const supabase = createRouteClient(req);
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            return NextResponse.json(
+                errorResponse('Unauthorized'),
+                { status: 401 }
+            );
+        }
+
+        const status = await getMembershipStatus(supabase, user.id);
+        if (!status.canGenerate) {
+            return NextResponse.json(
+                errorResponse(`LIMIT_EXCEEDED, Daily AI generation limit reached (${status.limit}). Upgrade to Pro for 200 daily generations.`),
+                { status: 403 }
             );
         }
 
@@ -134,21 +155,16 @@ Guidelines:
 
         console.log('[AI Generation] Validated cards:', JSON.stringify(validatedCards));
 
-        // Award XP for AI generating cards
+        // 3. Increment usage count and Award XP
         try {
-            const { createRouteClient } = await import('@/lib/supabase-server');
+            await incrementAIUsage(supabase, user.id);
             const { awardXP, XP_REWARDS } = await import('@/lib/xp-service');
-            const supabase = createRouteClient(req);
-            const { data: { user } } = await supabase.auth.getUser();
-
-            if (user) {
-                await awardXP(supabase, {
-                    userId: user.id,
-                    amount: XP_REWARDS.AI_GENERATE_CARD,
-                    reason: 'ai_generate',
-                    metadata: { cardCount: validatedCards.length }
-                });
-            }
+            await awardXP(supabase, {
+                userId: user.id,
+                amount: XP_REWARDS.AI_GENERATE_CARD,
+                reason: 'ai_generate',
+                metadata: { cardCount: validatedCards.length }
+            });
         } catch (xpError) {
             console.error('[AI Generation] XP award failed:', xpError);
             // Don't fail the primary request

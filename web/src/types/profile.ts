@@ -13,6 +13,9 @@ export interface Profile {
     avatarUrl: string | null;
     bio: string | null;
     isPublic: boolean;          // 资料是否公开
+    membershipTier: 'free' | 'pro';
+    aiGenerationCount: number;
+    lastAiReset: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -94,6 +97,9 @@ export interface ProfileRow {
     avatar_url: string | null;
     bio: string | null;
     is_public: boolean;
+    membership_tier: 'free' | 'pro';
+    ai_generation_count: number;
+    last_ai_reset: string;
     created_at: string;
     updated_at: string;
 }
@@ -135,6 +141,9 @@ export function profileFromRow(row: ProfileRow): Profile {
         avatarUrl: row.avatar_url,
         bio: row.bio,
         isPublic: row.is_public,
+        membershipTier: row.membership_tier || 'free',
+        aiGenerationCount: row.ai_generation_count || 0,
+        lastAiReset: row.last_ai_reset || row.created_at,
         createdAt: row.created_at,
         updatedAt: row.updated_at,
     };
