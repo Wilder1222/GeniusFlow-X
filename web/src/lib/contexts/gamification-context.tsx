@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { useAuth } from '@/lib/auth-context';
 import { apiClient } from '@/lib/api-client';
 import { useAchievements } from './achievement-context';
+import { calculateLevel, xpForNextLevel, getXPForLevel } from '@/lib/xp-service';
 
 interface LevelInfo {
     xp: number;
@@ -80,10 +81,10 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
             if (!prev) return null;
             const newXp = prev.xp + amount;
 
-            // Formula sync with backend: level = floor(sqrt(xp / 100)) + 1
-            const newLevel = Math.floor(Math.sqrt(newXp / 100)) + 1;
-            const currentLevelXp = (newLevel - 1) * (newLevel - 1) * 100;
-            const nextLevelXp = newLevel * newLevel * 100;
+            // Formula sync with backend
+            const newLevel = calculateLevel(newXp);
+            const currentLevelXp = getXPForLevel(newLevel);
+            const nextLevelXp = xpForNextLevel(newLevel);
             const progress = ((newXp - currentLevelXp) / (nextLevelXp - currentLevelXp)) * 100;
 
             return {

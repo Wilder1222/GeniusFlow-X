@@ -223,7 +223,7 @@ export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
             value: activity?.today || 0,
             target: 50,
             icon: <LuActivity />,
-            color: '#ff6b6b', // Coral
+            color: '#20c997', // Green
             unit: '张'
         },
         {
@@ -231,7 +231,7 @@ export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
             value: summary?.studyTime || 0,
             target: 60,
             icon: <LuClock />,
-            color: '#f06595', // Pink
+            color: '#339af0', // Blue
             unit: 'm'
         },
         {
@@ -239,7 +239,7 @@ export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
             value: learning?.averageAccuracy || 0,
             target: 100,
             icon: <LuTarget />,
-            color: '#cc5de8', // Purple
+            color: '#fcc419', // Gold
             unit: '%'
         }
     ];
@@ -249,21 +249,21 @@ export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
             label: '当前连胜',
             value: streak?.currentStreak || 0,
             icon: <LuFlame />,
-            color: '#ff6b6b',
+            color: '#20c997',
             unit: '天'
         },
         {
             label: '最高纪录',
             value: streak?.longestStreak || 0,
             icon: <LuTrophy />,
-            color: '#f06595',
+            color: '#339af0',
             unit: '天'
         },
         {
             label: '总卡片数',
             value: summary?.totalCards || 0,
             icon: <LuBrain />,
-            color: '#cc5de8',
+            color: '#fcc419',
             unit: '张'
         }
     ];

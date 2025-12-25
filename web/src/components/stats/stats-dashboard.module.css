@@ -70,7 +70,6 @@
 .zapIcon {
     font-size: 24px;
     color: #ff6b6b;
-    filter: drop-shadow(0 0 10px rgba(255, 107, 107, 0.6));
 }
 
 .title {
@@ -150,18 +149,18 @@
 }
 
 .indicatorCard:nth-child(1) {
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border-color: rgba(255, 107, 107, 0.15);
+    background: linear-gradient(135deg, rgba(32, 201, 151, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: rgba(32, 201, 151, 0.15);
 }
 
 .indicatorCard:nth-child(2) {
-    background: linear-gradient(135deg, rgba(240, 101, 149, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border-color: rgba(240, 101, 149, 0.15);
+    background: linear-gradient(135deg, rgba(51, 154, 240, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: rgba(51, 154, 240, 0.15);
 }
 
 .indicatorCard:nth-child(3) {
-    background: linear-gradient(135deg, rgba(204, 93, 232, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border-color: rgba(204, 93, 232, 0.15);
+    background: linear-gradient(135deg, rgba(252, 196, 25, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: rgba(252, 196, 25, 0.15);
 }
 
 .indicatorCard::before {
@@ -184,9 +183,7 @@
 }
 
 .indicatorCard:hover {
-    box-shadow:
-        0 16px 48px rgba(0, 0, 0, 0.2),
-        0 0 40px rgba(255, 107, 107, 0.1);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
 }
 
 .ringContainer {
@@ -206,7 +203,8 @@
 
 .ringTrack {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.08);
+    stroke: var(--accent-color);
+    opacity: 0.15;
     stroke-width: 8;
 }
 
@@ -216,13 +214,11 @@
     stroke-width: 8;
     stroke-linecap: round;
     stroke-dasharray: 213;
-    filter: drop-shadow(0 0 8px var(--accent-color)) drop-shadow(0 0 16px var(--accent-color));
 }
 
 .ringIcon {
     position: absolute;
     font-size: 24px;
-    filter: drop-shadow(0 0 10px currentColor);
 }
 
 .indicatorInfo {
@@ -280,18 +276,18 @@
 }
 
 .statCard:nth-child(1) {
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border-color: rgba(255, 107, 107, 0.12);
+    background: linear-gradient(135deg, rgba(32, 201, 151, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: rgba(32, 201, 151, 0.12);
 }
 
 .statCard:nth-child(2) {
-    background: linear-gradient(135deg, rgba(240, 101, 149, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border-color: rgba(240, 101, 149, 0.12);
+    background: linear-gradient(135deg, rgba(51, 154, 240, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: rgba(51, 154, 240, 0.12);
 }
 
 .statCard:nth-child(3) {
-    background: linear-gradient(135deg, rgba(204, 93, 232, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border-color: rgba(204, 93, 232, 0.12);
+    background: linear-gradient(135deg, rgba(252, 196, 25, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: rgba(252, 196, 25, 0.12);
 }
 
 .statCard:hover {
@@ -313,7 +309,6 @@
 
 .statCard:hover .statIcon {
     transform: scale(1.1);
-    filter: drop-shadow(0 0 8px currentColor);
 }
 
 .statContent {
@@ -475,40 +470,35 @@
 
 :global([data-theme="light"]) .indicatorCard:nth-child(1),
 :global(:root:not([data-theme])) .indicatorCard:nth-child(1) {
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.08) 0%, rgba(255, 255, 255, 0.5) 100%);
-    border-color: rgba(255, 107, 107, 0.12);
+    background: linear-gradient(135deg, rgba(32, 201, 151, 0.08) 0%, rgba(255, 255, 255, 0.5) 100%);
+    border-color: rgba(32, 201, 151, 0.12);
 }
 
 :global([data-theme="light"]) .indicatorCard:nth-child(2),
 :global(:root:not([data-theme])) .indicatorCard:nth-child(2) {
-    background: linear-gradient(135deg, rgba(240, 101, 149, 0.08) 0%, rgba(255, 255, 255, 0.5) 100%);
-    border-color: rgba(240, 101, 149, 0.12);
+    background: linear-gradient(135deg, rgba(51, 154, 240, 0.08) 0%, rgba(255, 255, 255, 0.5) 100%);
+    border-color: rgba(51, 154, 240, 0.12);
 }
 
 :global([data-theme="light"]) .indicatorCard:nth-child(3),
 :global(:root:not([data-theme])) .indicatorCard:nth-child(3) {
-    background: linear-gradient(135deg, rgba(204, 93, 232, 0.08) 0%, rgba(255, 255, 255, 0.5) 100%);
-    border-color: rgba(204, 93, 232, 0.12);
-}
-
-:global([data-theme="light"]) .statCard,
-:global(:root:not([data-theme])) .statCard {
-    border-color: rgba(0, 0, 0, 0.05);
+    background: linear-gradient(135deg, rgba(252, 196, 25, 0.08) 0%, rgba(255, 255, 255, 0.5) 100%);
+    border-color: rgba(252, 196, 25, 0.12);
 }
 
 :global([data-theme="light"]) .statCard:nth-child(1),
 :global(:root:not([data-theme])) .statCard:nth-child(1) {
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%);
+    background: linear-gradient(135deg, rgba(32, 201, 151, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%);
 }
 
 :global([data-theme="light"]) .statCard:nth-child(2),
 :global(:root:not([data-theme])) .statCard:nth-child(2) {
-    background: linear-gradient(135deg, rgba(240, 101, 149, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%);
+    background: linear-gradient(135deg, rgba(51, 154, 240, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%);
 }
 
 :global([data-theme="light"]) .statCard:nth-child(3),
 :global(:root:not([data-theme])) .statCard:nth-child(3) {
-    background: linear-gradient(135deg, rgba(204, 93, 232, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%);
+    background: linear-gradient(135deg, rgba(252, 196, 25, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%);
 }
 
 :global([data-theme="light"]) .ringTrack,

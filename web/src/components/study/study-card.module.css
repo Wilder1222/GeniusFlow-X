@@ -1,6 +1,6 @@
 .cardWrapper {
     width: 100%;
-    max-width: 580px;
+    max-width: 750px;
     height: 420px;
     margin: 0 auto;
 }
@@ -43,7 +43,8 @@
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .cardBack {
@@ -172,14 +173,14 @@
 /* Theme adaptation specifically for glassmorphism */
 [data-theme='dark'] .cardFront,
 [data-theme='dark'] .cardBack {
-    background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 [data-theme='classic-dark'] .cardFront,
 [data-theme='classic-dark'] .cardBack {
-    background: rgba(18, 18, 18, 0.8);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(18, 18, 18, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 @media (max-width: 640px) {

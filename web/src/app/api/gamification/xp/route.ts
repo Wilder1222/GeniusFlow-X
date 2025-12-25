@@ -3,20 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { successResponse, errorResponse } from '@/lib/api-response';
 import { AppError, ErrorCode } from '@/lib/errors';
 
-/**
- * Calculate level from total XP
- * Formula: level = floor(sqrt(xp / 100))
- */
-function calculateLevel(xp: number): number {
-    return Math.floor(Math.sqrt(xp / 100)) + 1;
-}
-
-/**
- * Calculate XP needed for next level
- */
-function xpForNextLevel(currentLevel: number): number {
-    return currentLevel * currentLevel * 100;
-}
+import { calculateLevel, xpForNextLevel, getXPForLevel } from '@/lib/xp-service';
 
 /**
  * POST /api/gamification/xp
@@ -105,8 +92,8 @@ export async function POST(req: NextRequest) {
             leveledUp,
             xpGained: amount,
             nextLevelXp: xpForNextLevel(newLevel),
-            currentLevelXp: (newLevel - 1) * (newLevel - 1) * 100,
-            progress: ((newXp - ((newLevel - 1) * (newLevel - 1) * 100)) / (newLevel * newLevel * 100 - (newLevel - 1) * (newLevel - 1) * 100)) * 100
+            currentLevelXp: getXPForLevel(newLevel),
+            progress: ((newXp - getXPForLevel(newLevel)) / (xpForNextLevel(newLevel) - getXPForLevel(newLevel))) * 100
         });
 
     } catch (error: any) {
@@ -153,9 +140,10 @@ export async function GET(req: NextRequest) {
         }
 
         const xp = profile.xp || 0;
-        const level = profile.level || 1;
+        // Derive level from XP to ensure consistency if DB column is stale
+        const level = calculateLevel(xp);
         const nextLevelXp = xpForNextLevel(level);
-        const currentLevelXp = (level - 1) * (level - 1) * 100;
+        const currentLevelXp = getXPForLevel(level);
         const progress = ((xp - currentLevelXp) / (nextLevelXp - currentLevelXp)) * 100;
 
         return successResponse({

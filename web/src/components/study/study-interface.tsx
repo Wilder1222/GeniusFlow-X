@@ -7,6 +7,7 @@ import { Rating } from '@/lib/study';
 import { getSettings } from '@/lib/settings';
 import { apiClient } from '@/lib/api-client';
 import { StudyCard } from './study-card';
+import { useGamification } from '@/lib/contexts/gamification-context';
 import { CheckCircle, X, ChevronLeft, Zap, Trophy } from 'lucide-react';
 import styles from './study-interface.module.css';
 
@@ -16,6 +17,7 @@ interface StudyInterfaceProps {
 }
 
 export function StudyInterface({ cards, onGrade }: StudyInterfaceProps) {
+    const { refreshLevelInfo, awardXPLocally } = useGamification();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isRevealed, setIsRevealed] = useState(false);
     const [finished, setFinished] = useState(false);
@@ -56,6 +58,8 @@ export function StudyInterface({ cards, onGrade }: StudyInterfaceProps) {
 
             if (data.success) {
                 setXpResult(data.data);
+                // Refresh global gamification state
+                refreshLevelInfo();
             }
         } catch (error) {
             console.error('Failed to complete session:', error);
@@ -135,10 +139,23 @@ export function StudyInterface({ cards, onGrade }: StudyInterfaceProps) {
     const currentCard = cards[currentIndex];
     const progress = ((currentIndex) / cards.length) * 100;
 
-    const handleReveal = () => setIsRevealed(true);
+    const toggleReveal = () => setIsRevealed(prev => !prev);
 
     const handleGrade = async (rating: Rating) => {
-        if (rating === Rating.Good || rating === Rating.Easy) {
+        const isCorrect = rating === Rating.Good || rating === Rating.Easy;
+        const xpAmount = isCorrect ? 10 : 5;
+
+        // 1. Immediate UI update
+        awardXPLocally(xpAmount);
+
+        // 2. Persistent backend update (fire and forget for performance)
+        apiClient.post('/api/gamification/xp', {
+            amount: xpAmount,
+            reason: isCorrect ? 'review_correct' : 'review_incorrect',
+            metadata: { cardId: currentCard.id, rating }
+        }).catch(err => console.error('Failed to sync XP per card:', err));
+
+        if (isCorrect) {
             setStats(prev => ({ ...prev, correct: prev.correct + 1 }));
         } else {
             setStats(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
@@ -158,78 +175,80 @@ export function StudyInterface({ cards, onGrade }: StudyInterfaceProps) {
 
     return (
         <div className={styles.studyWrapper}>
-            <div className={styles.studyHeader}>
-                <div className={styles.progressSection}>
-                    <div className={styles.progressHeader}>
-                        <span className={styles.label}>学习进度</span>
-                        <span className={styles.stats}>
-                            <CheckCircle size={18} /> {stats.correct} &nbsp;
-                            <X size={18} /> {stats.incorrect}
-                        </span>
-                    </div>
-                    <div className={styles.progressBar}>
-                        <motion.div
-                            className={styles.progressFill}
-                            initial={{ width: 0 }}
-                            animate={{ width: `${progress}%` }}
-                        />
-                    </div>
-                    <div className={styles.remaining}>
-                        还剩 {cards.length - currentIndex} 张卡片
+            <div className={styles.glassWrapper}>
+                <div className={styles.studyHeader}>
+                    <div className={styles.progressSection}>
+                        <div className={styles.progressHeader}>
+                            <span className={styles.label}>学习进度</span>
+                            <span className={styles.stats}>
+                                <CheckCircle size={18} /> {stats.correct} &nbsp;
+                                <X size={18} /> {stats.incorrect}
+                            </span>
+                        </div>
+                        <div className={styles.progressBar}>
+                            <motion.div
+                                className={styles.progressFill}
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progress}%` }}
+                            />
+                        </div>
+                        <div className={styles.remaining}>
+                            还剩 {cards.length - currentIndex} 张卡片
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div className={styles.cardContainer}>
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={currentCard.id}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className={styles.cardMotion}
-                    >
-                        <StudyCard
-                            card={currentCard}
-                            isRevealed={isRevealed}
-                            onReveal={handleReveal}
-                            onGrade={handleGrade}
-                            ttsEnabled={ttsSettings.enabled}
-                            ttsAutoPlay={ttsSettings.autoPlay}
-                        />
-                    </motion.div>
-                </AnimatePresence>
-            </div>
+                <div className={styles.cardContainer}>
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={currentCard.id}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className={styles.cardMotion}
+                        >
+                            <StudyCard
+                                card={currentCard}
+                                isRevealed={isRevealed}
+                                onReveal={toggleReveal}
+                                onGrade={handleGrade}
+                                ttsEnabled={ttsSettings.enabled}
+                                ttsAutoPlay={ttsSettings.autoPlay}
+                            />
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
 
-            <div className={styles.actionContainer}>
-                {!isRevealed ? (
-                    <motion.button
-                        className={styles.revealAction}
-                        onClick={handleReveal}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                    >
-                        显示答案
-                    </motion.button>
-                ) : (
-                    <div className={styles.gradeGrid}>
-                        {gradeButtons.map((btn, i) => (
-                            <motion.button
-                                key={i}
-                                className={`${styles.gradeBtn} ${btn.class}`}
-                                onClick={() => handleGrade(btn.rating)}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.05 }}
-                                whileHover={{ y: -5 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                <span className={styles.btnLabel}>{btn.label}</span>
-                                <span className={styles.btnDesc}>{btn.sub}</span>
-                            </motion.button>
-                        ))}
-                    </div>
-                )}
+                <div className={styles.actionContainer}>
+                    {!isRevealed ? (
+                        <motion.button
+                            className={styles.revealAction}
+                            onClick={toggleReveal}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                        >
+                            显示答案
+                        </motion.button>
+                    ) : (
+                        <div className={styles.gradeGrid}>
+                            {gradeButtons.map((btn, i) => (
+                                <motion.button
+                                    key={i}
+                                    className={`${styles.gradeBtn} ${btn.class}`}
+                                    onClick={() => handleGrade(btn.rating)}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.05 }}
+                                    whileHover={{ y: -5 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    <span className={styles.btnLabel}>{btn.label}</span>
+                                    <span className={styles.btnDesc}>{btn.sub}</span>
+                                </motion.button>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

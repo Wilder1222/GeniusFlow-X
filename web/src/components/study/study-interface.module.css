@@ -55,12 +55,41 @@
 
 .studyWrapper {
     width: 100%;
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - 200px);
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.glassWrapper {
+    background: var(--glass-background);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 40px;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
     gap: 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add a subtle glow to the wrapper */
+.glassWrapper::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(var(--primary-rgb), 0.05) 0%, transparent 70%);
+    pointer-events: none;
 }
 
 .studyHeader {
@@ -168,7 +197,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     width: 100%;
-    max-width: 600px;
+    max-width: 800px;
 }
 
 .gradeBtn {
@@ -176,69 +205,76 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    padding: 12px;
-    border-radius: 16px;
-    border: 1px solid transparent;
+    padding: 16px;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
     cursor: pointer;
-    background: var(--glass-background);
-    backdrop-filter: blur(8px);
-    transition: all 0.3s ease;
+    background: rgba(var(--fg-rgb), 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gradeBtn:hover {
+    transform: translateY(-5px);
+    background: rgba(var(--fg-rgb), 0.08);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .btnLabel {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 700;
 }
 
 .btnDesc {
-    font-size: 0.75rem;
-    opacity: 0.7;
+    font-size: 0.8rem;
+    opacity: 0.6;
     font-weight: 500;
 }
 
 .again {
-    border-color: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.3);
     color: #ef4444;
 }
 
 .again:hover {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.2);
 }
 
 .hard {
-    border-color: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.3);
     color: #f59e0b;
 }
 
 .hard:hover {
-    background: rgba(245, 158, 11, 0.1);
-    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.15);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2);
 }
 
 .good {
-    border-color: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
     color: #3b82f6;
 }
 
 .good:hover {
-    background: rgba(59, 130, 246, 0.1);
-    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.15);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
 }
 
 .easy {
-    border-color: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.3);
     color: #10b981;
 }
 
 .easy:hover {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.15);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
 }
 
 /* Finish State */
 .finishContainer {
-    max-width: 600px;
+    max-width: 800px;
     margin: 40px auto;
     display: flex;
     flex-direction: column;
@@ -455,4 +491,32 @@
 .achievementXP {
     color: #667eea;
     font-weight: 600;
+}
+
+/* Dark Theme Contrast Enhancements */
+[data-theme='dark'] .glassWrapper,
+[data-theme='dark'] .progressSection,
+[data-theme='dark'] .finishCard,
+[data-theme='dark'] .achievementCard,
+[data-theme='dark'] .gradeBtn {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme='classic-dark'] .glassWrapper,
+[data-theme='classic-dark'] .progressSection,
+[data-theme='classic-dark'] .finishCard,
+[data-theme='classic-dark'] .achievementCard,
+[data-theme='classic-dark'] .gradeBtn {
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Ensure grade buttons have better base visibility on dark backgrounds */
+[data-theme='dark'] .gradeBtn,
+[data-theme='classic-dark'] .gradeBtn {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .gradeBtn:hover,
+[data-theme='classic-dark'] .gradeBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
 }

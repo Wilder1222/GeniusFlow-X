@@ -30,17 +30,24 @@ interface XPTransaction {
 
 /**
  * Calculate level from XP
- * Formula: level = floor(sqrt(xp / 100))
+ * Formula: level = floor(sqrt(xp / 100)) + 1
  */
 export function calculateLevel(xp: number): number {
-    return Math.floor(Math.sqrt(xp / 100)) + 1;
+    return Math.floor(Math.sqrt(Math.max(0, xp) / 100)) + 1;
 }
 
 /**
- * Get XP required for a specific level
+ * Get XP required for a specific level TO BECOME that level
  */
 export function getXPForLevel(level: number): number {
     return (level - 1) * (level - 1) * 100;
+}
+
+/**
+ * Get the target XP needed to reach the NEXT level from a given level
+ */
+export function xpForNextLevel(currentLevel: number): number {
+    return currentLevel * currentLevel * 100;
 }
 
 /**

@@ -31,21 +31,16 @@ export async function POST(req: NextRequest) {
             return errorResponse(new Error('Invalid request: counts cannot be negative'));
         }
 
-        // Run XP award and profile fetch in parallel
-        const [xpResult, profileResult] = await Promise.all([
-            awardReviewXP(supabase, user.id, correctCount, incorrectCount),
-            supabase
-                .from('profiles')
-                .select('last_study_date, current_streak, longest_streak')
-                .eq('id', user.id)
-                .single()
-        ]);
+        // Fetch profile for streak logic
+        const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('last_study_date, current_streak, longest_streak')
+            .eq('id', user.id)
+            .single();
 
-        if (!xpResult.success) {
-            return errorResponse(new Error('Failed to award XP'));
+        if (profileError) {
+            return errorResponse(new Error('Failed to fetch profile for streak update'));
         }
-
-        const profile = profileResult.data;
         const today = new Date().toISOString().split('T')[0];
 
         // Update streak if needed
@@ -79,11 +74,18 @@ export async function POST(req: NextRequest) {
         // Check achievements
         const achievementResult = await checkAndUnlockAchievements(user.id);
 
+        // Get final stats for response
+        const { data: finalProfile } = await supabase
+            .from('profiles')
+            .select('xp, level')
+            .eq('id', user.id)
+            .single();
+
         return successResponse({
             xpGained: correctCount * 10 + incorrectCount * 5,
-            newXP: xpResult.newXP,
-            newLevel: xpResult.newLevel,
-            leveledUp: xpResult.leveledUp,
+            newXP: finalProfile?.xp || 0,
+            newLevel: finalProfile?.level || 1,
+            leveledUp: false, // We'll rely on the frontend or a separate check if needed
             totalCards: correctCount + incorrectCount,
             achievements: {
                 unlocked: achievementResult.unlockedAchievements.map(a => ({

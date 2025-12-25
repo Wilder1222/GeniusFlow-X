@@ -49,7 +49,7 @@ export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = tr
     };
 
     const handleClick = () => {
-        if (!isRevealed && onReveal) {
+        if (onReveal) {
             onReveal();
         }
     };
@@ -60,6 +60,7 @@ export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = tr
                 className={styles.perspectiveContainer}
                 style={{ x, rotate, touchAction: 'none' }}
                 drag={isRevealed ? "x" : false}
+                dragListener={isRevealed}
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.4}
                 onDragEnd={handleDragEnd}
