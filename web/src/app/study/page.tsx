@@ -5,11 +5,13 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { MainLayout } from '@/components';
 import { StudyInterface } from '@/components/study/study-interface';
 import { getDueCards, gradeCard, Rating } from '@/lib/study';
+import { useToast } from '@/lib/contexts/toast-context';
 import { Card } from '@/types/decks';
 
 function StudyContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
+    const toast = useToast();
     const deckId = searchParams.get('deck');
 
     const [cards, setCards] = useState<Card[]>([]);
@@ -27,7 +29,7 @@ function StudyContent() {
             setCards(data);
         } catch (error) {
             console.error('Failed to load due cards:', error);
-            alert('加载失败');
+            toast.error('加载失败');
         } finally {
             setLoading(false);
         }
@@ -39,7 +41,7 @@ function StudyContent() {
             // Optionally logs or stats updates here
         } catch (error) {
             console.error('Grading failed:', error);
-            alert('评分提交失败，请重试');
+            toast.error('评分提交失败，请重试');
         }
     };
 

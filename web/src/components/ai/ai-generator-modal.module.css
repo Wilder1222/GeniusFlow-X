@@ -78,6 +78,19 @@
     color: var(--color-text-primary);
 }
 
+.usageBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background: var(--color-surface-hover);
+    border: 1px solid var(--color-border-medium);
+    border-radius: 999px;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-left: auto;
+    font-weight: 500;
+}
+
 .backBtn {
     background: transparent;
     border: none;
@@ -774,14 +787,35 @@
 .saveInput,
 .saveSelect {
     flex: 1;
-    padding: 0.8rem 1rem;
+    padding: 0.5rem 0.75rem;
     border: 1px solid var(--color-border-medium);
     border-radius: var(--radius-md);
     background: var(--color-background-secondary);
     color: var(--color-text-primary);
     font-size: var(--font-size-base);
+    line-height: normal;
     outline: none;
     transition: border-color var(--transition-fast);
+}
+
+.saveSelect {
+    min-width: 200px;
+    padding-right: 2.5rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.saveSelect option {
+    padding: 0.75rem 1rem;
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
 }
 
 .saveInput:focus,
@@ -816,6 +850,73 @@
     color: var(--color-text-secondary);
     transform: none;
     box-shadow: none;
+}
+
+/* Save Section - Unified layout */
+.saveSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg,
+            rgba(var(--color-brand-rgb), 0.03) 0%,
+            var(--color-surface-secondary) 100%);
+    border: 1px solid var(--color-border-medium);
+    border-radius: var(--radius-lg);
+    margin-top: 0.5rem;
+}
+
+.saveSection::before {
+    content: "💾 保存到";
+    display: block;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+
+.saveRow {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.saveRowLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.saveRowContent {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.saveRowContent .saveInput,
+.saveRowContent .saveSelect {
+    flex: 1;
+    min-width: 0;
+    height: 42px;
+}
+
+.saveRowContent .saveSelect {
+    cursor: pointer;
+    font-weight: 500;
+    min-width: 200px;
+    flex: 1;
+}
+
+.saveRowContent .saveBtn {
+    flex-shrink: 0;
+    padding: 0.6rem 1.25rem;
+    font-size: var(--font-size-sm);
+    height: 40px;
 }
 
 @keyframes spin {
@@ -868,4 +969,174 @@
         width: 100%;
         justify-content: center;
     }
+}
+
+/* Mode Tabs */
+.modeTabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0 2rem;
+    border-bottom: 1px solid var(--color-border-medium);
+}
+
+.modeTab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.modeTab:hover {
+    color: var(--color-text-primary);
+}
+
+.modeTab.active {
+    color: var(--color-brand-primary);
+    border-bottom-color: var(--color-brand-primary);
+}
+
+/* Resume Interview Intro */
+.resumeIntro {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.resumeIntro h4 {
+    font-size: var(--font-size-xl);
+    margin-bottom: 0.5rem;
+    color: var(--color-text-primary);
+}
+
+.resumeIntro p {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+/* Card Header with Regenerate Button */
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed var(--color-border-light);
+}
+
+.cardIndex {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    font-weight: 600;
+}
+
+.regenerateBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-surface-hover);
+    border: 1px solid var(--color-border-medium);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.regenerateBtn:hover:not(:disabled) {
+    background: var(--color-brand-primary);
+    border-color: var(--color-brand-primary);
+    color: white;
+}
+
+.regenerateBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.miniCard.regenerating {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Spinning animation */
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Resume Suggestions */
+.resumeSuggestions {
+    background: var(--color-surface-secondary);
+    border: 1px solid var(--color-border-medium);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.resumeSuggestions h5 {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.resumeSuggestions ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.resumeSuggestions li {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+/* Continue Section */
+.continueSection {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.continueBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-background-secondary);
+    border: 2px dashed var(--color-border-medium);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.continueBtn:hover:not(:disabled) {
+    border-color: var(--color-brand-primary);
+    color: var(--color-brand-primary);
+    background: var(--color-surface-hover);
+}
+
+.continueBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }

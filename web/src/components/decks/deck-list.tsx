@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Deck } from '@/types/decks';
 import { apiClient } from '@/lib/api-client';
+import { useToast } from '@/lib/contexts/toast-context';
+import { formatApiError } from '@/lib/error-handler';
 import ConfirmDialog from '@/components/ui/confirm-dialog';
 import styles from './deck-list.module.css';
 
@@ -15,6 +17,7 @@ interface DeckListProps {
 
 export function DeckList({ decks, onCreateClick, onDeckDeleted }: DeckListProps) {
     const router = useRouter();
+    const toast = useToast();
     const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; deck: Deck | null }>({
         isOpen: false,
         deck: null
@@ -44,7 +47,7 @@ export function DeckList({ decks, onCreateClick, onDeckDeleted }: DeckListProps)
             }
         } catch (error: any) {
             console.error('Delete deck error:', error);
-            alert('删除失败：' + error.message);
+            toast.error(formatApiError(error));
         }
     };
 

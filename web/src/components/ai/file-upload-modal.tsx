@@ -3,6 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { apiClient } from '@/lib/api-client';
+import { useToast } from '@/lib/contexts/toast-context';
 import styles from './file-upload-modal.module.css';
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 type FileType = 'pdf' | 'txt' | 'docx' | 'unknown';
 
 export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenerated }: Props) {
+    const toast = useToast();
     const [file, setFile] = useState<File | null>(null);
     const [extractedText, setExtractedText] = useState('');
     const [loading, setLoading] = useState(false);
@@ -36,7 +38,7 @@ export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenera
 
         const fileType = getFileType(selectedFile.name);
         if (fileType === 'unknown') {
-            alert('不支持的文件格式，请上传 PDF、TXT 或 DOCX 文件');
+            toast.error('不支持的文件格式，请上传 PDF、TXT 或 DOCX 文件');
             return;
         }
 
@@ -64,12 +66,12 @@ export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenera
                     setExtractedText(data.data.text);
                     setStep('preview');
                 } else {
-                    alert('文件解析失败: ' + (data.error || '未知错误'));
+                    toast.error('文件解析失败: ' + (data.error || '未知错误'));
                 }
             }
         } catch (error) {
             console.error('File processing error:', error);
-            alert('文件处理失败');
+            toast.error('文件处理失败');
         } finally {
             setLoading(false);
         }
@@ -101,11 +103,11 @@ export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenera
                 onCardsGenerated(result.data.cards.length);
                 onClose();
             } else {
-                alert('生成失败');
+                toast.error('生成失败');
             }
         } catch (error) {
             console.error('Generate error:', error);
-            alert('生成失败');
+            toast.error('生成失败');
         } finally {
             setGenerating(false);
         }

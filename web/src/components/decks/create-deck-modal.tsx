@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useToast } from '@/lib/contexts/toast-context';
 import styles from './create-deck-modal.module.css';
 
 interface CreateDeckModalProps {
@@ -10,6 +11,7 @@ interface CreateDeckModalProps {
 }
 
 export function CreateDeckModal({ isOpen, onClose, onSubmit }: CreateDeckModalProps) {
+    const toast = useToast();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [isPublic, setIsPublic] = useState(false);
@@ -31,7 +33,7 @@ export function CreateDeckModal({ isOpen, onClose, onSubmit }: CreateDeckModalPr
             onClose();
         } catch (error) {
             console.error('Create deck failed:', error);
-            alert('创建失败，请重试');
+            toast.error('创建失败，请重试');
         } finally {
             setLoading(false);
         }

@@ -9,6 +9,8 @@ import EditCardModal from '@/components/cards/edit-card-modal';
 import EditDeckModal from '@/components/decks/edit-deck-modal';
 import CardMediaDisplay from '@/components/cards/card-media-display';
 import { useAuth } from '@/lib/auth-context';
+import { useToast } from '@/lib/contexts/toast-context';
+import { formatApiError } from '@/lib/error-handler';
 import { apiClient } from '@/lib/api-client';
 import { cardsToMarkdown, downloadMarkdown } from '@/lib/markdown-parser';
 import { getDeckById } from '@/lib/decks';
@@ -20,6 +22,7 @@ export default function DeckDetailPage() {
     const params = useParams();
     const router = useRouter();
     const { user } = useAuth();
+    const toast = useToast();
     const deckId = params.id as string;
 
     const [deck, setDeck] = useState<Deck | null>(null);
@@ -107,7 +110,7 @@ export default function DeckDetailPage() {
             setNewBack('');
         } catch (error) {
             console.error('Error adding card:', error);
-            alert('添加失败');
+            toast.error('添加失败');
         } finally {
             setSubmitting(false);
         }
@@ -115,7 +118,7 @@ export default function DeckDetailPage() {
 
     const handleExportMarkdown = () => {
         if (cards.length === 0) {
-            alert('没有卡片可导出');
+            toast.warning('没有卡片可导出');
             return;
         }
 
@@ -127,7 +130,7 @@ export default function DeckDetailPage() {
         const filename = `${deck?.title || 'deck'}_${new Date().toISOString().split('T')[0]}.md`;
         downloadMarkdown(markdown, filename);
 
-        alert(`已导出 ${cards.length} 张卡片到 ${filename}`);
+        toast.success(`已导出 ${cards.length} 张卡片到 ${filename}`);
     };
 
     // Batch selection handlers
@@ -151,7 +154,7 @@ export default function DeckDetailPage() {
             newSelected.delete(cardId);
         } else {
             if (newSelected.size >= 100) {
-                alert('最多只能同时选择 100 张卡片');
+                toast.warning('最多只能同时选择 100 张卡片');
                 return;
             }
             newSelected.add(cardId);
@@ -161,7 +164,7 @@ export default function DeckDetailPage() {
 
     const handleDeleteSelected = () => {
         if (selectedCards.size === 0) {
-            alert('请先选择要删除的卡片');
+            toast.warning('请先选择要删除的卡片');
             return;
         }
         setShowDeleteDialog(true);
@@ -179,7 +182,7 @@ export default function DeckDetailPage() {
             setShowDeleteDialog(false);
         } catch (error: any) {
             console.error('Delete error:', error);
-            alert('删除失败：' + error.message);
+            toast.error(formatApiError(error));
         }
     };
 

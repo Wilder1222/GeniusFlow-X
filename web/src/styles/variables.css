@@ -182,6 +182,29 @@
   --heatmap-medium: rgba(16, 185, 129, 0.6);
   --heatmap-high: rgba(5, 150, 105, 0.8);
   --heatmap-very-high: #059669;
+
+  /* --- Toast Notification System --- */
+  --toast-bg: rgba(255, 255, 255, 0.95);
+  --toast-border: rgba(0, 0, 0, 0.08);
+  --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --toast-text: #1d1d1f;
+  --toast-text-secondary: #86868b;
+
+  --toast-success-bg: rgba(52, 199, 89, 0.12);
+  --toast-success-border: rgba(52, 199, 89, 0.3);
+  --toast-success-icon: #34c759;
+
+  --toast-error-bg: rgba(255, 59, 48, 0.12);
+  --toast-error-border: rgba(255, 59, 48, 0.3);
+  --toast-error-icon: #ff3b30;
+
+  --toast-warning-bg: rgba(255, 149, 0, 0.12);
+  --toast-warning-border: rgba(255, 149, 0, 0.3);
+  --toast-warning-icon: #ff9500;
+
+  --toast-info-bg: rgba(0, 122, 255, 0.12);
+  --toast-info-border: rgba(0, 122, 255, 0.3);
+  --toast-info-icon: #007aff;
 }
 
 /* --- Dark Mode --- */
@@ -243,6 +266,29 @@
   --heatmap-medium: rgba(16, 185, 129, 0.5);
   --heatmap-high: rgba(5, 150, 105, 0.7);
   --heatmap-very-high: #059669;
+
+  /* Toast Notification System - Dark */
+  --toast-bg: rgba(26, 26, 62, 0.95);
+  --toast-border: rgba(255, 255, 255, 0.1);
+  --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 60px rgba(102, 126, 234, 0.1);
+  --toast-text: #f5f5f7;
+  --toast-text-secondary: #a1a1a6;
+
+  --toast-success-bg: rgba(48, 209, 88, 0.15);
+  --toast-success-border: rgba(48, 209, 88, 0.4);
+  --toast-success-icon: #30d158;
+
+  --toast-error-bg: rgba(255, 69, 58, 0.15);
+  --toast-error-border: rgba(255, 69, 58, 0.4);
+  --toast-error-icon: #ff453a;
+
+  --toast-warning-bg: rgba(255, 159, 10, 0.15);
+  --toast-warning-border: rgba(255, 159, 10, 0.4);
+  --toast-warning-icon: #ff9f0a;
+
+  --toast-info-bg: rgba(10, 132, 255, 0.15);
+  --toast-info-border: rgba(10, 132, 255, 0.4);
+  --toast-info-icon: #0a84ff;
 }
 
 /* --- Classic Dark Mode --- */
@@ -303,6 +349,29 @@
   --heatmap-medium: rgba(16, 185, 129, 0.5);
   --heatmap-high: rgba(5, 150, 105, 0.7);
   --heatmap-very-high: #059669;
+
+  /* Toast Notification System - Classic Dark */
+  --toast-bg: rgba(30, 30, 30, 0.95);
+  --toast-border: rgba(255, 255, 255, 0.08);
+  --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 255, 255, 0.02);
+  --toast-text: #f5f5f7;
+  --toast-text-secondary: #a1a1a6;
+
+  --toast-success-bg: rgba(48, 209, 88, 0.15);
+  --toast-success-border: rgba(48, 209, 88, 0.35);
+  --toast-success-icon: #30d158;
+
+  --toast-error-bg: rgba(255, 69, 58, 0.15);
+  --toast-error-border: rgba(255, 69, 58, 0.35);
+  --toast-error-icon: #ff453a;
+
+  --toast-warning-bg: rgba(255, 149, 0, 0.15);
+  --toast-warning-border: rgba(255, 149, 0, 0.35);
+  --toast-warning-icon: #ff9500;
+
+  --toast-info-bg: rgba(10, 132, 255, 0.15);
+  --toast-info-border: rgba(10, 132, 255, 0.35);
+  --toast-info-icon: #0a84ff;
 }
 
 /* --- Settings Panel Theme Variables --- */

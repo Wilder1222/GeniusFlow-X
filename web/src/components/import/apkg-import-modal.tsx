@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { parseApkg, ApkgImportResult } from '@/lib/apkg-parser';
 import { apiClient } from '@/lib/api-client';
+import { useToast } from '@/lib/contexts/toast-context';
+import { formatApiError } from '@/lib/error-handler';
 import styles from './apkg-import-modal.module.css';
 
 interface ApkgImportModalProps {
@@ -12,6 +14,7 @@ interface ApkgImportModalProps {
 }
 
 export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImportModalProps) {
+    const toast = useToast();
     const [file, setFile] = useState<File | null>(null);
     const [parsing, setParsing] = useState(false);
     const [preview, setPreview] = useState<ApkgImportResult | null>(null);
@@ -25,7 +28,7 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
         if (selectedFile && selectedFile.name.endsWith('.apkg')) {
             setFile(selectedFile);
         } else {
-            alert('请选择有效的 .apkg 文件');
+            toast.warning('请选择有效的 .apkg 文件');
         }
     };
 
@@ -39,7 +42,7 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
             setStep('preview');
         } catch (error: any) {
             console.error('Parse error:', error);
-            alert('解析失败：' + error.message);
+            toast.error(formatApiError(error));
         } finally {
             setParsing(false);
         }
@@ -65,12 +68,12 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
                 throw new Error(data.error?.message || '导入失败');
             }
 
-            alert(`成功导入 ${data.data.cards_imported} 张卡片到卡组「${preview.deckName}」！`);
+            toast.success(`成功导入 ${data.data.cards_imported} 张卡片到卡组「${preview.deckName}」！`);
             onImportComplete(preview.deckName, preview.cards);
             handleClose();
         } catch (error: any) {
             console.error('Import error:', error);
-            alert('导入失败：' + error.message);
+            toast.error(formatApiError(error));
         } finally {
             setImporting(false);
         }

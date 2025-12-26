@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/types/decks';
 import ImageUpload from '@/components/media/image-upload';
 import { deleteImage } from '@/lib/media';
+import { useToast } from '@/lib/contexts/toast-context';
+import { formatApiError } from '@/lib/error-handler';
 import styles from './edit-card-modal.module.css';
 
 interface EditCardModalProps {
@@ -22,6 +24,7 @@ interface EditCardModalProps {
 }
 
 export default function EditCardModal({ isOpen, card, userId, deckId, onClose, onSave }: EditCardModalProps) {
+    const toast = useToast();
     const [front, setFront] = useState('');
     const [back, setBack] = useState('');
     const [tags, setTags] = useState('');
@@ -43,7 +46,7 @@ export default function EditCardModal({ isOpen, card, userId, deckId, onClose, o
 
     const handleSave = async () => {
         if (!front.trim() || !back.trim()) {
-            alert('正面和背面不能为空');
+            toast.warning('正面和背面不能为空');
             return;
         }
 
@@ -73,7 +76,7 @@ export default function EditCardModal({ isOpen, card, userId, deckId, onClose, o
             onClose();
         } catch (error: any) {
             console.error('Save error:', error);
-            alert('保存失败：' + error.message);
+            toast.error(formatApiError(error));
         } finally {
             setSaving(false);
         }

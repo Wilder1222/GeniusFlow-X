@@ -100,8 +100,93 @@ export const aiService = {
             console.error('File extraction error:', error);
             throw error;
         }
+    },
+
+    /**
+     * Analyze resume and generate interview cards
+     */
+    analyzeResume: async (resumeText: string, batchIndex: number = 0): Promise<{
+        suggestions: string[];
+        interviewCards: GeneratedCard[];
+        hasMore: boolean;
+        nextBatchIndex: number;
+    }> => {
+        try {
+            const response = await apiClient.post<any>('/api/ai/analyze-resume', {
+                resumeText,
+                batchIndex
+            });
+
+            if (response.success && response.data) {
+                return {
+                    suggestions: response.data.suggestions || [],
+                    interviewCards: response.data.interviewCards || [],
+                    hasMore: response.data.hasMore || false,
+                    nextBatchIndex: response.data.nextBatchIndex || batchIndex + 1
+                };
+            }
+
+            throw new Error(response.error?.message || 'Failed to analyze resume');
+        } catch (error) {
+            console.error('Resume analysis error:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Regenerate a single card (consumes 1 AI usage)
+     */
+    regenerateCard: async (originalCard: { front: string; back: string }, context?: string, instruction?: string): Promise<GeneratedCard> => {
+        try {
+            const response = await apiClient.post<any>('/api/ai/regenerate-card', {
+                originalCard,
+                context,
+                instruction
+            });
+
+            if (response.success && response.data?.card) {
+                return response.data.card;
+            }
+
+            throw new Error(response.error?.message || 'Failed to regenerate card');
+        } catch (error) {
+            console.error('Card regeneration error:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Get current AI usage status for the user
+     */
+    getUsageStatus: async (): Promise<AIUsageStatus> => {
+        try {
+            const response = await apiClient.get<any>('/api/ai/usage');
+
+            if (response.success && response.data) {
+                return {
+                    tier: response.data.tier || 'free',
+                    limit: response.data.limit || 10,
+                    used: response.data.used || 0,
+                    remaining: response.data.remaining || 0,
+                    canGenerate: response.data.canGenerate !== false
+                };
+            }
+
+            return { tier: 'free', limit: 10, used: 0, remaining: 10, canGenerate: true };
+        } catch (error) {
+            console.error('Get usage status error:', error);
+            return { tier: 'free', limit: 10, used: 0, remaining: 10, canGenerate: true };
+        }
     }
 };
+
+export interface AIUsageStatus {
+    tier: 'free' | 'pro';
+    limit: number;
+    used: number;
+    remaining: number;
+    canGenerate: boolean;
+}
 
 // Backward compatible wrapper
 export const generateFlashcards = (topic: string, count?: number) =>

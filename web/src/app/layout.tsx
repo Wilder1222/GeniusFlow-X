@@ -4,6 +4,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import { ThemeProvider } from "@/lib/theme-context";
 import { AchievementProvider } from "@/lib/contexts/achievement-context";
 import { GamificationProvider } from "@/lib/contexts/gamification-context";
+import { ToastProvider } from "@/lib/contexts/toast-context";
 import ErrorBoundary from "@/components/ui/error-boundary";
 
 export const metadata: Metadata = {
@@ -30,7 +31,9 @@ export default function RootLayout({
             <AuthProvider>
               <AchievementProvider>
                 <GamificationProvider>
-                  {children}
+                  <ToastProvider>
+                    {children}
+                  </ToastProvider>
                 </GamificationProvider>
               </AchievementProvider>
             </AuthProvider>

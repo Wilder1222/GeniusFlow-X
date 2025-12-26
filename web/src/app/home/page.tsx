@@ -7,6 +7,7 @@ import LevelProgress from '@/components/gamification/level-progress';
 import StatsDashboard from '@/components/stats/stats-dashboard';
 import { apiClient } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth-context';
+import { useToast } from '@/lib/contexts/toast-context';
 import Link from 'next/link';
 import { LuPlay, LuPlus, LuLayoutDashboard, LuHistory, LuRocket } from 'react-icons/lu';
 import { CreateDeckModal } from '@/components/decks/create-deck-modal';
@@ -20,6 +21,7 @@ import styles from './page.module.css';
 // Inner component that uses Stats Context
 function DashboardContent() {
   const { user } = useAuth();
+  const toast = useToast();
   const { streak: profile, loading: statsLoading } = useStats();
   const [recentDecks, setRecentDecks] = useState<Deck[]>([]);
   const [decksLoading, setDecksLoading] = useState(true);
@@ -61,7 +63,7 @@ function DashboardContent() {
       router.push(`/decks/${newDeck.id}`);
     } catch (error) {
       console.error('Failed to create deck:', error);
-      alert('创建失败，请重试');
+      toast.error('创建失败，请重试');
     }
   };
 

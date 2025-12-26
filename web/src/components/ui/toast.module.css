@@ -1,0 +1,199 @@
+/* ===================================================
+   Toast Notification Component
+   GeniusFlow-X Design System
+   =================================================== */
+
+.container {
+    position: fixed;
+    top: var(--space-6);
+    right: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    z-index: 9999;
+    pointer-events: none;
+    max-width: 420px;
+    width: calc(100vw - var(--space-12));
+}
+
+.toast {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--toast-bg);
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
+    border: 1px solid var(--toast-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--toast-shadow);
+    pointer-events: auto;
+    animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.toast.exiting {
+    animation: slideOut 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+/* Type-specific styles */
+.toast.success {
+    background: var(--toast-success-bg);
+    border-color: var(--toast-success-border);
+}
+
+.toast.error {
+    background: var(--toast-error-bg);
+    border-color: var(--toast-error-border);
+}
+
+.toast.warning {
+    background: var(--toast-warning-bg);
+    border-color: var(--toast-warning-border);
+}
+
+.toast.info {
+    background: var(--toast-info-bg);
+    border-color: var(--toast-info-border);
+}
+
+/* Icon container */
+.iconContainer {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toast.success .iconContainer {
+    color: var(--toast-success-icon);
+}
+
+.toast.error .iconContainer {
+    color: var(--toast-error-icon);
+}
+
+.toast.warning .iconContainer {
+    color: var(--toast-warning-icon);
+}
+
+.toast.info .iconContainer {
+    color: var(--toast-info-icon);
+}
+
+/* Content */
+.content {
+    flex: 1;
+    min-width: 0;
+}
+
+.message {
+    color: var(--toast-text);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-normal);
+    word-wrap: break-word;
+    margin: 0;
+}
+
+/* Close button */
+.closeButton {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--toast-text-secondary);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    padding: 0;
+    margin-top: 2px;
+}
+
+.closeButton:hover {
+    color: var(--toast-text);
+    background: var(--color-surface-hover);
+}
+
+/* Progress bar */
+.progressBar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    animation: shrink linear forwards;
+}
+
+.toast.success .progressBar {
+    background: var(--toast-success-icon);
+}
+
+.toast.error .progressBar {
+    background: var(--toast-error-icon);
+}
+
+.toast.warning .progressBar {
+    background: var(--toast-warning-icon);
+}
+
+.toast.info .progressBar {
+    background: var(--toast-info-icon);
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+@keyframes shrink {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+    .container {
+        right: var(--space-4);
+        left: var(--space-4);
+        top: var(--space-4);
+        max-width: none;
+        width: auto;
+    }
+
+    .toast {
+        padding: var(--space-3);
+    }
+}

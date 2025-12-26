@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { MainLayout } from '@/components';
 import { useAuth } from '@/lib/auth-context';
 import { useTheme } from '@/lib/theme-context';
+import { useToast } from '@/lib/contexts/toast-context';
+import { formatApiError } from '@/lib/error-handler';
 import { getProfile, updateProfile, uploadAvatar } from '@/lib/profile';
 import { getSettings, updateSettings } from '@/lib/settings';
 import { updatePassword } from '@/lib/auth';
@@ -31,6 +33,7 @@ type SettingsTab = 'profile' | 'account' | 'learning' | 'appearance';
 export default function SettingsPage() {
     const { user } = useAuth();
     const { theme, setTheme } = useTheme();
+    const toast = useToast();
     const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -96,10 +99,10 @@ export default function SettingsPage() {
                 username,
                 bio
             });
-            alert('个人资料已更新');
+            toast.success('个人资料已更新');
         } catch (error: any) {
             console.error('Update profile error:', error);
-            alert('更新失败: ' + error.message);
+            toast.error(formatApiError(error));
         } finally {
             setSaving(false);
         }
@@ -113,10 +116,10 @@ export default function SettingsPage() {
         try {
             const url = await uploadAvatar(file);
             setAvatarUrl(url);
-            alert('头像已更新');
+            toast.success('头像已更新');
         } catch (error: any) {
             console.error('Upload avatar error:', error);
-            alert('上传失败: ' + error.message);
+            toast.error(formatApiError(error));
         } finally {
             setSaving(false);
         }
@@ -133,10 +136,10 @@ export default function SettingsPage() {
                 ttsEnabled,
                 ttsAutoPlay
             });
-            alert('学习设置已保存');
+            toast.success('学习设置已保存');
         } catch (error: any) {
             console.error('Update settings error:', error);
-            alert('保存失败: ' + error.message);
+            toast.error(formatApiError(error));
         } finally {
             setSaving(false);
         }
@@ -145,19 +148,19 @@ export default function SettingsPage() {
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (newPassword !== confirmPassword) {
-            alert('两次输入的密码不一致');
+            toast.warning('两次输入的密码不一致');
             return;
         }
 
         setSaving(true);
         try {
             await updatePassword(newPassword);
-            alert('密码已更新');
+            toast.success('密码已更新');
             setNewPassword('');
             setConfirmPassword('');
         } catch (error: any) {
             console.error('Change password error:', error);
-            alert('更新失败: ' + error.message);
+            toast.error(formatApiError(error));
         } finally {
             setSaving(false);
         }

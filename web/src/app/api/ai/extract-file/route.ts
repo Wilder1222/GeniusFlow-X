@@ -36,6 +36,12 @@ export async function POST(req: NextRequest) {
             return errorResponse(new AppError('No file provided', ErrorCode.INVALID_INPUT, 400));
         }
 
+        // Check file size (10MB limit)
+        const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+        if (file.size > MAX_FILE_SIZE) {
+            return errorResponse(new AppError('文件大小超过10MB限制', ErrorCode.INVALID_INPUT, 400));
+        }
+
         const filename = file.name.toLowerCase();
         let extractedText = '';
 

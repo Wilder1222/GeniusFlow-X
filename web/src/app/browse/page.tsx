@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { MainLayout } from '@/components';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
+import { useToast } from '@/lib/contexts/toast-context';
+import { formatApiError } from '@/lib/error-handler';
 import styles from './browse.module.css';
 
 interface Card {
@@ -28,6 +30,7 @@ interface BrowseResponse {
 
 export default function BrowsePage() {
     const router = useRouter();
+    const toast = useToast();
     const [cards, setCards] = useState<Card[]>([]);
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(1);
@@ -117,15 +120,15 @@ export default function BrowsePage() {
             });
 
             if (data.success) {
-                alert(`成功删除 ${data.data.deleted} 张卡片`);
+                toast.success(`成功删除 ${data.data.deleted} 张卡片`);
                 deselectAll();
                 loadCards();
             } else {
-                alert('删除失败：' + data.error?.message);
+                toast.error(formatApiError(data));
             }
         } catch (error) {
             console.error('Batch delete error:', error);
-            alert('删除失败');
+            toast.error(formatApiError(error));
         }
     };
 

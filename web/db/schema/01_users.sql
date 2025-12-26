@@ -10,8 +10,12 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     avatar_url TEXT,
     bio TEXT,
     user_code TEXT UNIQUE, -- 9位数字用户码
+    membership_tier TEXT DEFAULT 'free',
+    ai_generation_count INTEGER DEFAULT 0,
+    last_ai_reset TIMESTAMPTZ DEFAULT NOW(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT membership_tier_check CHECK (membership_tier IN ('free', 'pro'))
 );
 
 -- 用户设置表

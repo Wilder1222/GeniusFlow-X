@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Deck } from '@/types/decks';
+import { useToast } from '@/lib/contexts/toast-context';
+import { formatApiError } from '@/lib/error-handler';
 import styles from './edit-deck-modal.module.css';
 
 interface EditDeckModalProps {
@@ -12,6 +14,7 @@ interface EditDeckModalProps {
 }
 
 export default function EditDeckModal({ isOpen, deck, onClose, onSave }: EditDeckModalProps) {
+    const toast = useToast();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);
@@ -27,7 +30,7 @@ export default function EditDeckModal({ isOpen, deck, onClose, onSave }: EditDec
 
     const handleSave = async () => {
         if (!title.trim()) {
-            alert('卡组名称不能为空');
+            toast.warning('卡组名称不能为空');
             return;
         }
 
@@ -41,7 +44,7 @@ export default function EditDeckModal({ isOpen, deck, onClose, onSave }: EditDec
             onClose();
         } catch (error: any) {
             console.error('Save error:', error);
-            alert('保存失败：' + error.message);
+            toast.error(formatApiError(error));
         } finally {
             setSaving(false);
         }

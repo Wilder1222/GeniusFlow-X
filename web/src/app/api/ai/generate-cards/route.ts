@@ -78,15 +78,30 @@ export async function POST(req: NextRequest) {
         });
 
         const responseText = completion.choices[0]?.message?.content;
-        console.log('[AI Generation] Response:', responseText);
+        console.log('[AI Generation] Response retrieved');
         if (!responseText) {
             throw new Error('Empty response from AI');
         }
 
-        // Parse JSON response
+        // 3. Increment usage count immediately after successful LLM response
+        try {
+            await incrementAIUsage(supabase, user.id);
+            const { awardXP, XP_REWARDS } = await import('@/lib/xp-service');
+            await awardXP(supabase, {
+                userId: user.id,
+                amount: XP_REWARDS.AI_GENERATE_CARD,
+                reason: 'ai_generate',
+                metadata: { sourceType }
+            });
+        } catch (xpError) {
+            console.error('[AI Generation] Usage/XP award failed:', xpError);
+            // Don't fail the primary request
+        }
+
+        // 4. Parse JSON response
         let cards: CardDraft[];
         try {
-            // Remove markdown code blocks if present
+            // ... parsing logic ...
             let cleanJson = responseText.trim();
 
             // Remove ```json ... ``` or ``` ... ``` blocks (handle multiline)
@@ -176,20 +191,6 @@ export async function POST(req: NextRequest) {
 
         console.log('[AI Generation] Validated cards:', JSON.stringify(validatedCards));
 
-        // 3. Increment usage count and Award XP
-        try {
-            await incrementAIUsage(supabase, user.id);
-            const { awardXP, XP_REWARDS } = await import('@/lib/xp-service');
-            await awardXP(supabase, {
-                userId: user.id,
-                amount: XP_REWARDS.AI_GENERATE_CARD,
-                reason: 'ai_generate',
-                metadata: { cardCount: validatedCards.length }
-            });
-        } catch (xpError) {
-            console.error('[AI Generation] XP award failed:', xpError);
-            // Don't fail the primary request
-        }
 
         return successResponse({
             cards: validatedCards,

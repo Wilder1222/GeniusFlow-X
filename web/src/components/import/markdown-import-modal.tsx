@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { parseMarkdownToCards } from '@/lib/markdown-parser';
 import { apiClient } from '@/lib/api-client';
+import { useToast } from '@/lib/contexts/toast-context';
+import { formatApiError } from '@/lib/error-handler';
 import styles from './markdown-import-modal.module.css';
 
 interface MarkdownImportModalProps {
@@ -13,6 +15,7 @@ interface MarkdownImportModalProps {
 }
 
 export function MarkdownImportModal({ isOpen, onClose, deckId, onImportComplete }: MarkdownImportModalProps) {
+    const toast = useToast();
     const [markdownText, setMarkdownText] = useState('');
     const [preview, setPreview] = useState<Array<{ front: string; back: string }>>([]);
     const [importing, setImporting] = useState(false);
@@ -38,12 +41,12 @@ export function MarkdownImportModal({ isOpen, onClose, deckId, onImportComplete 
                 }))
             });
             const successCount = data.data?.length || 0;
-            alert(`成功导入 ${successCount} 张卡片！`);
+            toast.success(`成功导入 ${successCount} 张卡片！`);
             onImportComplete();
             handleClose();
         } catch (error: any) {
             console.error('Import error:', error);
-            alert('导入失败：' + error.message);
+            toast.error(formatApiError(error));
         } finally {
             setImporting(false);
         }
