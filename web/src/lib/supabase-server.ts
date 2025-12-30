@@ -95,8 +95,11 @@ export function cachedResponse<T>(
     data: T,
     maxAge: number = 60,
     staleWhileRevalidate: number = 300
-): NextResponse<T> {
-    return NextResponse.json(data, {
+): NextResponse<{ success: true; data: T }> {
+    return NextResponse.json({
+        success: true,
+        data
+    }, {
         headers: {
             'Cache-Control': `private, max-age=${maxAge}, stale-while-revalidate=${staleWhileRevalidate}`
         }

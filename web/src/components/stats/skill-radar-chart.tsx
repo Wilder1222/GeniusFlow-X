@@ -118,9 +118,9 @@ export default function SkillRadarChart() {
                             name="能力值"
                             dataKey="value"
                             stroke="var(--primary-color)"
-                            strokeWidth={2}
+                            strokeWidth={3}
                             fill="var(--primary-color)"
-                            fillOpacity={0.2}
+                            fillOpacity={0.35}
                             dot={<CustomDot />}
                             isAnimationActive={true}
                             animationDuration={1500}

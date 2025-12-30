@@ -47,11 +47,12 @@ export default function RetentionChart() {
 
     const CHART_COLOR = LANDING_COLORS.purple; // Purple for retention trend
 
+    // Rating Colors based on Study Card design
     const DIFFICULTY_COLORS = {
-        again: LANDING_COLORS.coral,     // 再来 - Coral
-        hard: LANDING_COLORS.pink,       // 困难 - Pink
-        good: LANDING_COLORS.purple,     // 良好 - Purple
-        easy: LANDING_COLORS.lavender    // 简单 - Lavender
+        again: '#ff6b6b',     // 忘记 - Red
+        hard: '#ffc93c',      // 困难 - Orange/Yellow
+        good: '#5eb5ef',      // 一般 - Blue
+        easy: '#4ecdc4'       // 简单 - Green/Teal
     };
 
     const CustomLegend = (props: any) => {
@@ -66,7 +67,7 @@ export default function RetentionChart() {
                             borderRadius: '50%',
                             backgroundColor: entry.color
                         }}></div>
-                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>{entry.value}</span>
+                        <span style={{ fontSize: '12px', color: 'var(--chart-text-secondary)', fontWeight: 500 }}>{entry.value}</span>
                     </div>
                 ))}
             </div>
@@ -97,11 +98,17 @@ export default function RetentionChart() {
             <div className={styles.chartSection}>
                 <h3 className={styles.chartTitle}>30天留存率趋势</h3>
                 <ResponsiveContainer width="100%" height={240}>
-                    <ComposedChart data={data.chartData}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--grid-color, rgba(0,0,0,0.05))" />
+                    <AreaChart data={data.chartData}>
+                        <defs>
+                            <linearGradient id="colorRetention" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor={CHART_COLOR} stopOpacity={0.4} />
+                                <stop offset="95%" stopColor={CHART_COLOR} stopOpacity={0.05} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
                         <XAxis
                             dataKey="date"
-                            tick={{ fontSize: 11, fill: 'var(--text-secondary)' }}
+                            tick={{ fontSize: 11, fill: 'var(--chart-text-secondary)' }}
                             tickFormatter={(value) => {
                                 const date = new Date(value);
                                 return `${date.getMonth() + 1}/${date.getDate()}`;
@@ -111,49 +118,34 @@ export default function RetentionChart() {
                             dy={10}
                         />
                         <YAxis
-                            tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }}
+                            tick={{ fontSize: 11, fill: 'var(--chart-text-secondary)' }}
                             domain={[0, 100]}
-                            label={{ value: '留存率 (%)', angle: -90, position: 'insideLeft', fill: 'var(--color-text-secondary)', fontSize: 11 }}
+                            label={{ value: '留存率 (%)', angle: -90, position: 'insideLeft', fill: 'var(--chart-text-secondary)', fontSize: 11 }}
                             axisLine={false}
                             tickLine={false}
                         />
                         <Tooltip
-                            cursor={{ stroke: 'rgba(129, 236, 236, 0.2)', strokeWidth: 2 }}
                             contentStyle={{
-                                background: 'var(--tooltip-bg, rgba(255, 255, 255, 0.95))',
+                                background: 'var(--chart-tooltip-bg)',
                                 border: 'none',
                                 borderRadius: '12px',
                                 padding: '8px 12px',
-                                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)'
+                                boxShadow: 'var(--chart-tooltip-shadow)'
                             }}
-                            formatter={(value: any, name: any) => {
-                                if (name === '留存率') return `${value}%`;
-                                return value;
-                            }}
+                            formatter={(value: any) => `${value}%`}
                         />
                         <Legend content={<CustomLegend />} />
                         <Area
                             type="monotone"
                             dataKey="rate"
-                            fill={CHART_COLOR}
-                            fillOpacity={0.15}
-                            stroke="none"
-                            legendType="none"
-                            animationBegin={0}
-                            animationDuration={1500}
-                        />
-                        <Line
-                            type="monotone"
-                            dataKey="rate"
                             stroke={CHART_COLOR}
-                            strokeWidth={6}
-                            dot={{ r: 5, fill: CHART_COLOR, strokeWidth: 3, stroke: '#fff' }}
-                            activeDot={{ r: 8, strokeWidth: 0, fill: CHART_COLOR }}
+                            strokeWidth={3}
+                            fill="url(#colorRetention)"
                             name="留存率"
                             animationBegin={0}
                             animationDuration={1500}
                         />
-                    </ComposedChart>
+                    </AreaChart>
                 </ResponsiveContainer>
             </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useStats } from '@/lib/contexts/stats-context';
 import styles from './study-trend-chart.module.css';
 
@@ -57,12 +57,15 @@ export default function StudyTrendChart() {
         lavender: '#a18cd1'    // Lavender (Card 4)
     };
 
-    const DISTRIBUTION_COLORS = {
-        again: LANDING_COLORS.coral,     // 再来 - Coral
-        hard: LANDING_COLORS.pink,       // 困难 - Pink
-        good: LANDING_COLORS.purple,     // 良好 - Purple
-        easy: LANDING_COLORS.lavender    // 简单 - Lavender
+    // Rating Colors based on Study Card design
+    const RATING_COLORS = {
+        again: '#ff6b6b',     // 忘记 - Red
+        hard: '#ffc93c',      // 困难 - Orange/Yellow
+        good: '#5eb5ef',      // 一般 - Blue
+        easy: '#4ecdc4'       // 简单 - Green/Teal
     };
+
+    const DISTRIBUTION_COLORS = RATING_COLORS;
 
     // 准备饼图数据
     const pieData = Object.entries(data.ratingDistribution).map(([key, value]) => ({
@@ -86,7 +89,7 @@ export default function StudyTrendChart() {
                             borderRadius: '50%',
                             backgroundColor: entry.color
                         }}></div>
-                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>{entry.value}</span>
+                        <span style={{ fontSize: '12px', color: 'var(--chart-text-secondary)', fontWeight: 500 }}>{entry.value}</span>
                     </div>
                 ))}
             </div>
@@ -101,11 +104,21 @@ export default function StudyTrendChart() {
             <div className={styles.chartSection}>
                 <h3 className={styles.chartTitle}>每日复习数量</h3>
                 <ResponsiveContainer width="100%" height={240}>
-                    <BarChart data={data.dailyReviews} barGap={4}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--grid-color, rgba(0,0,0,0.05))" />
+                    <AreaChart data={data.dailyReviews}>
+                        <defs>
+                            <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor={LANDING_COLORS.coral} stopOpacity={0.4} />
+                                <stop offset="95%" stopColor={LANDING_COLORS.coral} stopOpacity={0.05} />
+                            </linearGradient>
+                            <linearGradient id="colorCorrect" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor={LANDING_COLORS.pink} stopOpacity={0.4} />
+                                <stop offset="95%" stopColor={LANDING_COLORS.pink} stopOpacity={0.05} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
                         <XAxis
                             dataKey="date"
-                            tick={{ fontSize: 11, fill: 'var(--text-secondary)' }}
+                            tick={{ fontSize: 11, fill: 'var(--chart-text-secondary)' }}
                             tickFormatter={(value) => {
                                 const date = new Date(value);
                                 return `${date.getMonth() + 1}/${date.getDate()}`;
@@ -115,40 +128,41 @@ export default function StudyTrendChart() {
                             dy={10}
                         />
                         <YAxis
-                            tick={{ fontSize: 11, fill: 'var(--text-secondary)' }}
+                            tick={{ fontSize: 11, fill: 'var(--chart-text-secondary)' }}
                             axisLine={false}
                             tickLine={false}
                         />
                         <Tooltip
-                            cursor={{ fill: 'transparent' }}
                             contentStyle={{
-                                background: 'var(--tooltip-bg, rgba(255, 255, 255, 0.95))',
+                                background: 'var(--chart-tooltip-bg)',
                                 border: 'none',
                                 borderRadius: '12px',
                                 padding: '8px 12px',
-                                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)'
+                                boxShadow: 'var(--chart-tooltip-shadow)'
                             }}
                         />
                         <Legend content={<CustomLegend />} />
-                        <Bar
+                        <Area
+                            type="monotone"
                             dataKey="count"
-                            fill={LANDING_COLORS.coral}
+                            stroke={LANDING_COLORS.coral}
+                            strokeWidth={3}
+                            fill="url(#colorCount)"
                             name="总复习"
-                            radius={[8, 8, 8, 8]}
-                            barSize={18}
                             animationBegin={0}
                             animationDuration={1200}
                         />
-                        <Bar
+                        <Area
+                            type="monotone"
                             dataKey="correct"
-                            fill={LANDING_COLORS.pink}
+                            stroke={LANDING_COLORS.pink}
+                            strokeWidth={3}
+                            fill="url(#colorCorrect)"
                             name="正确"
-                            radius={[8, 8, 8, 8]}
-                            barSize={18}
                             animationBegin={200}
                             animationDuration={1200}
                         />
-                    </BarChart>
+                    </AreaChart>
                 </ResponsiveContainer>
             </div>
 
@@ -156,11 +170,17 @@ export default function StudyTrendChart() {
             <div className={styles.chartSection}>
                 <h3 className={styles.chartTitle}>正确率变化趋势</h3>
                 <ResponsiveContainer width="100%" height={240}>
-                    <LineChart data={data.accuracyTrend}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--grid-color, rgba(0,0,0,0.05))" />
+                    <AreaChart data={data.accuracyTrend}>
+                        <defs>
+                            <linearGradient id="colorAccuracy" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor={LANDING_COLORS.purple} stopOpacity={0.4} />
+                                <stop offset="95%" stopColor={LANDING_COLORS.purple} stopOpacity={0.05} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
                         <XAxis
                             dataKey="date"
-                            tick={{ fontSize: 11, fill: 'var(--text-secondary)' }}
+                            tick={{ fontSize: 11, fill: 'var(--chart-text-secondary)' }}
                             tickFormatter={(value: string) => {
                                 const date = new Date(value);
                                 return `${date.getMonth() + 1}/${date.getDate()}`;
@@ -170,34 +190,33 @@ export default function StudyTrendChart() {
                             dy={10}
                         />
                         <YAxis
-                            tick={{ fontSize: 11, fill: 'var(--text-secondary)' }}
+                            tick={{ fontSize: 11, fill: 'var(--chart-text-secondary)' }}
                             domain={[0, 100]}
                             axisLine={false}
                             tickLine={false}
                         />
                         <Tooltip
                             contentStyle={{
-                                background: 'var(--tooltip-bg, rgba(255, 255, 255, 0.95))',
+                                background: 'var(--chart-tooltip-bg)',
                                 border: 'none',
                                 borderRadius: '12px',
                                 padding: '8px 12px',
-                                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)'
+                                boxShadow: 'var(--chart-tooltip-shadow)'
                             }}
                             formatter={(value: any) => `${value}%`}
                         />
                         <Legend content={<CustomLegend />} />
-                        <Line
+                        <Area
                             type="monotone"
                             dataKey="accuracy"
                             stroke={LANDING_COLORS.purple}
-                            strokeWidth={6}
-                            dot={{ r: 5, fill: LANDING_COLORS.purple, strokeWidth: 3, stroke: '#fff' }}
-                            activeDot={{ r: 8, strokeWidth: 0, fill: LANDING_COLORS.purple }}
+                            strokeWidth={3}
+                            fill="url(#colorAccuracy)"
                             name="正确率"
                             animationBegin={0}
                             animationDuration={1500}
                         />
-                    </LineChart>
+                    </AreaChart>
                 </ResponsiveContainer>
             </div>
 
@@ -230,10 +249,25 @@ export default function StudyTrendChart() {
                                 </Pie>
                                 <Tooltip
                                     contentStyle={{
-                                        background: 'var(--tooltip-bg, rgba(255, 255, 255, 0.95))',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
+                                        background: 'var(--chart-tooltip-bg, rgba(26, 26, 62, 0.95))',
+                                        border: '1px solid var(--chart-tooltip-border, rgba(255, 255, 255, 0.1))',
+                                        borderRadius: '14px',
+                                        padding: '12px 16px',
+                                        boxShadow: 'var(--chart-tooltip-shadow, 0 8px 32px rgba(0, 0, 0, 0.3))',
+                                        backdropFilter: 'blur(12px)',
+                                    }}
+                                    itemStyle={{
+                                        color: 'var(--chart-text, #f5f5f7)',
+                                        fontSize: '14px',
+                                        fontWeight: 600,
+                                    }}
+                                    formatter={(value: any, name: any, props: any) => {
+                                        const labels: Record<string, string> = { again: '忘记', hard: '困难', good: '良好', easy: '简单' };
+                                        const color = DISTRIBUTION_COLORS[props.payload.name as keyof typeof DISTRIBUTION_COLORS];
+                                        return [
+                                            <span key="v" style={{ color, fontWeight: 700, fontSize: '16px' }}>{value}</span>,
+                                            labels[props.payload.name] || props.payload.name
+                                        ];
                                     }}
                                 />
                             </PieChart>

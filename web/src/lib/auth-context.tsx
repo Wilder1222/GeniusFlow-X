@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { getCurrentUser, signIn, signUp, signOut, type AuthUser, type SignInData, type SignUpData } from '@/lib/auth';
@@ -36,8 +36,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
 
+    const lastFetchedUserIdRef = useRef<string | null>(null);
+
     useEffect(() => {
         const fetchProfile = async (userId: string) => {
+            // Skip if we already fetched for this user or fetch is in progress
+            if (lastFetchedUserIdRef.current === userId) return;
+            lastFetchedUserIdRef.current = userId;
+
             try {
                 const { data, error } = await supabase
                     .from('profiles')
@@ -56,29 +62,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 }
             } catch (err) {
                 console.error('[AuthProvider] Error fetching profile:', err);
+                // Reset ref if error occurs to allow retry if needed
+                lastFetchedUserIdRef.current = null;
             }
         };
 
-        // 获取初始会话
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session);
-            if (session?.user) {
-                setUser(session.user as AuthUser);
-                fetchProfile(session.user.id);
-            }
-            setLoading(false);
-        });
-
-        // 监听认证状态变化
+        // Listen for auth state changes which also triggers on initial mount
         const {
             data: { subscription },
         } = supabase.auth.onAuthStateChange((_event, session) => {
+            console.log(`[AuthProvider] Auth state change: ${_event}`, session?.user?.id);
+
+            // Only update if session has actually changed to avoid redundant renders
             setSession(session);
             setUser(session?.user as AuthUser || null);
+
             if (session?.user) {
                 fetchProfile(session.user.id);
             } else {
                 setProfile(null);
+                lastFetchedUserIdRef.current = null;
             }
             setLoading(false);
         });

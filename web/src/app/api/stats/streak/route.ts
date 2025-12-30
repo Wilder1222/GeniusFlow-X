@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { createRouteClient } from '@/lib/supabase-server';
 import { successResponse, errorResponse } from '@/lib/api-response';
+import { createRouteClient, cachedResponse } from '@/lib/supabase-server';
 import { AppError, ErrorCode } from '@/lib/errors';
 
 export async function GET(req: NextRequest) {
@@ -24,22 +24,22 @@ export async function GET(req: NextRequest) {
         }
 
         if (!profile) {
-            return successResponse({
+            return cachedResponse({
                 xp: 0,
                 level: 1,
                 currentStreak: 0,
                 longestStreak: 0,
                 lastStudyDate: null
-            });
+            }, 1);
         }
 
-        return successResponse({
+        return cachedResponse({
             xp: profile.xp || 0,
             level: profile.level || 1,
             currentStreak: profile.current_streak || 0,
             longestStreak: profile.longest_streak || 0,
             lastStudyDate: profile.last_study_date
-        });
+        }, 1);
     } catch (error: any) {
         return errorResponse(error);
     }

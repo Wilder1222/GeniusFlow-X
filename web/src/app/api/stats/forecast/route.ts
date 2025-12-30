@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
-import { successResponse, errorResponse } from '@/lib/api-response';
+import { errorResponse } from '@/lib/api-response';
+import { cachedResponse } from '@/lib/supabase-server';
 import { AppError, ErrorCode } from '@/lib/errors';
 
 /**
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest) {
             return errorResponse(new AppError('Unauthorized', ErrorCode.UNAUTHORIZED, 401));
         }
 
-        // 获取用户的所有卡组
+        // Create two parallel requests: one for user decks, one for the user object (already done but for consistency)
         const { data: userDecks } = await supabase
             .from('decks')
             .select('id')
@@ -38,28 +39,28 @@ export async function GET(req: NextRequest) {
         const deckIds = userDecks?.map(d => d.id) || [];
 
         if (deckIds.length === 0) {
-            return successResponse({
+            return cachedResponse({
                 forecast: [],
                 totalDue: 0,
                 estimatedMinutes: 0
-            });
+            }, 1);
         }
 
-        // 获取所有卡片及其下次复习时间
+        // Fetch all cards for these decks
         const { data: cards } = await supabase
             .from('cards')
             .select('next_review_at, state')
             .in('deck_id', deckIds);
 
         if (!cards || cards.length === 0) {
-            return successResponse({
+            return cachedResponse({
                 forecast: [],
                 totalDue: 0,
                 estimatedMinutes: 0
-            });
+            }, 1);
         }
 
-        // 预测未来7天每天的待复习卡片数
+        // ... processing logic remains same ...
         const forecast = [];
         const now = new Date();
         let totalDue = 0;
@@ -69,7 +70,6 @@ export async function GET(req: NextRequest) {
             const dateStr = date.toISOString().split('T')[0];
             const nextDateStr = new Date(date.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-            // 统计该天到期的卡片
             const dueCards = cards.filter(card => {
                 if (!card.next_review_at) return false;
                 const reviewDate = card.next_review_at.split('T')[0];
@@ -79,7 +79,6 @@ export async function GET(req: NextRequest) {
             const count = dueCards.length;
             totalDue += count;
 
-            // 按状态分类
             const byState = {
                 new: dueCards.filter(c => c.state === 'new').length,
                 learning: dueCards.filter(c => c.state === 'learning').length,
@@ -87,21 +86,16 @@ export async function GET(req: NextRequest) {
                 relearning: dueCards.filter(c => c.state === 'relearning').length
             };
 
-            forecast.push({
-                date: dateStr,
-                count,
-                byState
-            });
+            forecast.push({ date: dateStr, count, byState });
         }
 
-        // 估算学习时长（平均每张卡30秒）
         const estimatedMinutes = Math.round((totalDue * 30) / 60);
 
-        return successResponse({
+        return cachedResponse({
             forecast,
             totalDue,
             estimatedMinutes
-        });
+        }, 1);
 
     } catch (error: any) {
         console.error('[Forecast] Error:', error);

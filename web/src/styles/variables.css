@@ -176,6 +176,15 @@
   --chart-card-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1);
   --chart-card-glow: 0 0 0 transparent;
 
+  /* Radar Chart - Light Theme */
+  --radar-grid: rgba(0, 0, 0, 0.12);
+  --radar-fill: rgba(102, 126, 234, 0.25);
+  --radar-stroke: #667eea;
+  --primary-color: #667eea;
+
+  /* Radial Chart - Light Theme */
+  --radial-track-bg: rgba(0, 0, 0, 0.06);
+
   /* Heatmap (Green Theme) - Light */
   --heatmap-empty: #ebedf0;
   --heatmap-low: rgba(52, 211, 153, 0.4);
@@ -260,6 +269,15 @@
   --chart-card-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 80px rgba(102, 126, 234, 0.2);
   --chart-card-glow: 0 0 40px rgba(102, 126, 234, 0.15);
 
+  /* Radar Chart - Dark Theme */
+  --radar-grid: rgba(255, 255, 255, 0.15);
+  --radar-fill: rgba(102, 126, 234, 0.35);
+  --radar-stroke: #818cf8;
+  --primary-color: #818cf8;
+
+  /* Radial Chart - Dark Theme */
+  --radial-track-bg: rgba(255, 255, 255, 0.08);
+
   /* Heatmap (Green Theme) - Dark */
   --heatmap-empty: rgba(255, 255, 255, 0.05);
   --heatmap-low: rgba(52, 211, 153, 0.3);
@@ -342,6 +360,15 @@
   --chart-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 255, 255, 0.02);
   --chart-card-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 60px rgba(255, 255, 255, 0.04);
   --chart-card-glow: 0 0 30px rgba(255, 255, 255, 0.03);
+
+  /* Radar Chart - Classic Dark Theme */
+  --radar-grid: rgba(255, 255, 255, 0.12);
+  --radar-fill: rgba(129, 140, 248, 0.3);
+  --radar-stroke: #a5b4fc;
+  --primary-color: #a5b4fc;
+
+  /* Radial Chart - Classic Dark Theme */
+  --radial-track-bg: rgba(255, 255, 255, 0.06);
 
   /* Heatmap (Green Theme) - Classic Dark */
   --heatmap-empty: rgba(255, 255, 255, 0.05);
