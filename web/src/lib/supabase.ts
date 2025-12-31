@@ -21,14 +21,7 @@ export const supabase = createBrowserClient(
             persistSession: hasCredentials,
             detectSessionInUrl: hasCredentials,
             flowType: 'pkce', // Use PKCE flow for better security
-        },
-        cookieOptions: {
-            name: 'sb-auth-token',
-            maxAge: 60 * 60 * 24 * 7, // 7 days
-            domain: undefined,
-            path: '/',
-            sameSite: 'lax',
-        },
+        }
     }
 );
 

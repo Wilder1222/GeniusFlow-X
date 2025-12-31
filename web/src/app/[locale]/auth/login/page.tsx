@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useRouter, Link } from '@/i18n/navigation';
 import { Button, Input } from '@/components';
 import { LoadingModal } from '@/components/ui/loading-modal';
@@ -11,6 +11,7 @@ import { LanguageSwitcher } from '@/components/common/language-switcher';
 import styles from './auth.module.css';
 
 export default function LoginPage() {
+    const locale = useLocale();
     const router = useRouter();
     const { signIn } = useAuth();
     const [email, setEmail] = useState('');
@@ -45,7 +46,7 @@ export default function LoginPage() {
         try {
             setLoading(true);
             setLoadingMessage(t('redirectingGoogle'));
-            await signInWithGoogle();
+            await signInWithGoogle(locale);
         } catch (err: any) {
             setError(err.message || t('googleFailed'));
             setLoading(false);
@@ -56,7 +57,7 @@ export default function LoginPage() {
         try {
             setLoading(true);
             setLoadingMessage(t('redirectingGitHub'));
-            await signInWithGitHub();
+            await signInWithGitHub(locale);
         } catch (err: any) {
             setError(err.message || t('githubFailed'));
             setLoading(false);

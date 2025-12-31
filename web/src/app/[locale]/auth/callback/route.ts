@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-export async function GET(request: Request) {
-    const { searchParams, origin } = new URL(request.url);
-    const code = searchParams.get('code');
-    // if "next" is in param, use it as the redirect URL
-    const next = searchParams.get('next') ?? '/home';
+export async function GET(request: Request, { params }: { params: Promise<{ locale: string }> }) {
+    const requestUrl = new URL(request.url);
+    const code = requestUrl.searchParams.get('code');
+    const { locale } = await params;
+    const origin = requestUrl.origin;
+
+    // Default redirect to home in the current locale
+    const next = requestUrl.searchParams.get('next') || `/${locale}/home`;
 
     if (code) {
         const cookieStore = await cookies();
@@ -15,14 +18,18 @@ export async function GET(request: Request) {
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
             {
                 cookies: {
-                    get(name: string) {
-                        return cookieStore.get(name)?.value;
+                    getAll() {
+                        return cookieStore.getAll();
                     },
-                    set(name: string, value: string, options: CookieOptions) {
-                        cookieStore.set({ name, value, ...options });
-                    },
-                    remove(name: string, options: CookieOptions) {
-                        cookieStore.delete({ name, ...options });
+                    setAll(cookiesToSet) {
+                        try {
+                            cookiesToSet.forEach(({ name, value, options }) =>
+                                cookieStore.set(name, value, options)
+                            );
+                        } catch (error) {
+                            // This can be ignored if you have middleware refreshing user sessions.
+                            console.error('Error setting cookies in callback:', error);
+                        }
                     },
                 },
             }
@@ -31,12 +38,13 @@ export async function GET(request: Request) {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
 
         if (!error) {
-            return NextResponse.redirect(`${origin}${next}`);
-        } else {
-            console.error('OAuth callback error:', error.message);
+            // Success! Redirect to the destination
+            return NextResponse.redirect(`${origin}${next.startsWith('/') ? next : `/${next}`}`);
         }
+
+        console.error('OAuth exchange error:', error.message);
     }
 
-    // Return the user to an error page with instructions
-    return NextResponse.redirect(`${origin}/auth/login?error=oauth_conversion_failed`);
+    // Default error redirect
+    return NextResponse.redirect(`${origin}/${locale}/auth/login?error=oauth_conversion_failed`);
 }

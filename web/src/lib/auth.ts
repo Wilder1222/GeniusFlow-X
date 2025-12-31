@@ -134,11 +134,11 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
 /**
  * Google OAuth 登录
  */
-export async function signInWithGoogle() {
+export async function signInWithGoogle(locale: string = 'en') {
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            redirectTo: `${window.location.origin}/auth/callback`,
+            redirectTo: `${window.location.origin}/${locale}/auth/callback`,
         },
     });
 
@@ -149,11 +149,11 @@ export async function signInWithGoogle() {
 /**
  * GitHub OAuth 登录
  */
-export async function signInWithGitHub() {
+export async function signInWithGitHub(locale: string = 'en') {
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-            redirectTo: `${window.location.origin}/auth/callback`,
+            redirectTo: `${window.location.origin}/${locale}/auth/callback`,
         },
     });
 

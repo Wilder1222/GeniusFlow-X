@@ -7,63 +7,33 @@ import { routing } from './i18n/routing'
 const intlMiddleware = createIntlMiddleware(routing)
 
 export async function middleware(request: NextRequest) {
-    // First, handle i18n routing
-    const intlResponse = intlMiddleware(request)
+    // 1. First, handle i18n routing
+    const response = intlMiddleware(request);
 
-    // Clone the response to add Supabase session handling
-    let response = intlResponse || NextResponse.next({
-        request: {
-            headers: request.headers,
-        },
-    })
-
+    // 2. Create Supabase client for session refreshing
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
             cookies: {
-                get(name: string) {
-                    return request.cookies.get(name)?.value
+                getAll() {
+                    return request.cookies.getAll();
                 },
-                set(name: string, value: string, options: CookieOptions) {
-                    request.cookies.set({
-                        name,
-                        value,
-                        ...options,
-                    })
-                    // Update the response with the cookie
-                    response.cookies.set({
-                        name,
-                        value,
-                        ...options,
-                    })
-                },
-                remove(name: string, options: CookieOptions) {
-                    request.cookies.set({
-                        name,
-                        value: '',
-                        ...options,
-                    })
-                    response.cookies.set({
-                        name,
-                        value: '',
-                        ...options,
-                    })
+                setAll(cookiesToSet) {
+                    cookiesToSet.forEach(({ name, value, options }) => {
+                        request.cookies.set(name, value);
+                        response.cookies.set(name, value, options);
+                    });
                 },
             },
         }
-    )
+    );
 
-    // Refresh session to extend expiry
-    // This ensures that active users don't get logged out
-    const { data: { session } } = await supabase.auth.getSession()
+    // 3. Refresh session to extend expiry
+    // This is important for SSR to work correctly
+    await supabase.auth.getUser();
 
-    if (session) {
-        // Session exists, refresh it to extend the expiry
-        await supabase.auth.refreshSession()
-    }
-
-    return response
+    return response;
 }
 
 export const config = {
