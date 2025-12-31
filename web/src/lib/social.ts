@@ -19,9 +19,9 @@ export async function followUser(targetUserId: string): Promise<Follow> {
     // In reality we just need to know it succeeded
     return {
         id: 'temp-id',
-        follower_id: '',
-        following_id: '',
-        created_at: new Date().toISOString()
+        followerId: '',
+        followingId: '',
+        createdAt: new Date().toISOString()
     };
 }
 
