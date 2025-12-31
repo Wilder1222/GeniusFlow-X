@@ -44,6 +44,11 @@
     height: 64px;
 }
 
+.navbarScrolled {
+    background: transparent;
+    box-shadow: none;
+}
+
 
 
 /* Logo Card - Left (Matches .branding from Application Header) */
@@ -1164,13 +1169,13 @@
 
 [data-theme="dark"] .navbarScrolled,
 .dark .navbarScrolled {
-    background: rgba(26, 26, 62, 0.98);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    background: transparent;
+    box-shadow: none;
 }
 
 [data-theme="classic-dark"] .navbarScrolled {
-    background: rgba(18, 18, 18, 0.98);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    background: transparent;
+    box-shadow: none;
 }
 
 [data-theme="dark"] .logo,

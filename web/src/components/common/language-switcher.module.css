@@ -2,8 +2,27 @@
     display: flex;
     gap: 4px;
     background: var(--color-surface-secondary);
-    border-radius: 8px;
-    padding: 2px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--color-border-light);
+    border-radius: 12px;
+    padding: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Variants */
+.ghost {
+    background: transparent;
+    backdrop-filter: none;
+    border-color: transparent;
+}
+
+.floating {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 100;
+    box-shadow: var(--shadow-lg);
 }
 
 .localeBtn {
@@ -11,19 +30,29 @@
     border: none;
     background: transparent;
     color: var(--color-text-secondary);
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.02em;
 }
 
 .localeBtn:hover {
     color: var(--color-text-primary);
-    background: var(--color-surface-tertiary);
+    background: var(--color-surface-hover);
 }
 
 .localeBtn.active {
-    background: var(--color-primary);
+    background: var(--primary-color);
     color: white;
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb, 102, 126, 234), 0.25);
+}
+
+/* Mobile Adaptation */
+@media (max-width: 640px) {
+    .localeBtn {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
 }

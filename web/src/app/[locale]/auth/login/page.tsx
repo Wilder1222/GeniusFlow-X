@@ -7,6 +7,7 @@ import { Button, Input } from '@/components';
 import { LoadingModal } from '@/components/ui/loading-modal';
 import { useAuth } from '@/lib/auth-context';
 import { signInWithGoogle, signInWithGitHub } from '@/lib/auth';
+import { LanguageSwitcher } from '@/components/common/language-switcher';
 import styles from './auth.module.css';
 
 export default function LoginPage() {
@@ -64,6 +65,7 @@ export default function LoginPage() {
 
     return (
         <div className={styles.container}>
+            <LanguageSwitcher variant="floating" />
             <LoadingModal isOpen={loading} message={loadingMessage} />
             <div className={styles.card}>
                 <h1 className={styles.title}>

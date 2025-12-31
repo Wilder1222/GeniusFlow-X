@@ -7,6 +7,7 @@ import { StudyInterface } from '@/components/study/study-interface';
 import { getDueCards, gradeCard, Rating } from '@/lib/study';
 import { useToast } from '@/lib/contexts/toast-context';
 import { Card } from '@/types/decks';
+import { LanguageSwitcher } from '@/components/common/language-switcher';
 
 function StudyContent() {
     const searchParams = useSearchParams();
@@ -47,7 +48,8 @@ function StudyContent() {
 
     return (
         <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ padding: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <LanguageSwitcher variant="ghost" />
                 <button
                     onClick={() => router.back()}
                     style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: 'var(--text-secondary)' }}

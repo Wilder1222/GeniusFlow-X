@@ -5,7 +5,12 @@ import { useRouter, usePathname } from 'next/navigation';
 import { routing, Locale } from '@/i18n/routing';
 import styles from './language-switcher.module.css';
 
-export function LanguageSwitcher() {
+export interface LanguageSwitcherProps {
+    variant?: 'default' | 'ghost' | 'floating';
+    className?: string;
+}
+
+export function LanguageSwitcher({ variant = 'default', className = '' }: LanguageSwitcherProps) {
     const locale = useLocale();
     const router = useRouter();
     const pathname = usePathname();
@@ -24,14 +29,20 @@ export function LanguageSwitcher() {
         router.push(segments.join('/'));
     };
 
+    const containerClasses = [
+        styles.switcher,
+        styles[variant],
+        className
+    ].filter(Boolean).join(' ');
+
     return (
-        <div className={styles.switcher}>
+        <div className={containerClasses}>
             {routing.locales.map((l) => (
                 <button
                     key={l}
                     onClick={() => switchLocale(l)}
                     className={`${styles.localeBtn} ${l === locale ? styles.active : ''}`}
-                    aria-label={`Switch to ${l === 'en' ? 'English' : '中文'}`}
+                    aria-label={l === 'en' ? 'Switch to English' : '切换至中文'}
                 >
                     {l === 'en' ? 'EN' : 'ZH'}
                 </button>
