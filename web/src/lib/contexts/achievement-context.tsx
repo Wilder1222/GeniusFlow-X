@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface Achievement {
     id: string;
@@ -52,6 +53,8 @@ import styles from './achievement-toast.module.css';
 import { useEffect } from 'react';
 
 function AchievementToast({ achievement, onClose }: { achievement: Achievement; onClose: () => void }) {
+    const t = useTranslations('Achievements');
+
     useEffect(() => {
         const timer = setTimeout(() => {
             onClose();
@@ -78,7 +81,7 @@ function AchievementToast({ achievement, onClose }: { achievement: Achievement; 
                     <span className={styles.icon}>{achievement.icon}</span>
                 </div>
                 <div className={styles.content}>
-                    <div className={styles.label}>🏆 达成成就！</div>
+                    <div className={styles.label}>{t('unlocked')}</div>
                     <div className={styles.name}>{achievement.name}</div>
                     <div className={styles.reward}>+{achievement.xp_reward} XP</div>
                 </div>

@@ -28,6 +28,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     const { showAchievement } = useAchievements();
     const [levelInfo, setLevelInfo] = useState<LevelInfo | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isChecking, setIsChecking] = useState(false);
 
     const loadLevelInfo = useCallback(async () => {
         if (!user) {
@@ -54,7 +55,8 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
 
     // Check for achievements periodically or after XP gain
     const checkAchievements = useCallback(async () => {
-        if (!user) return;
+        if (!user || isChecking) return;
+        setIsChecking(true);
         try {
             const result = await apiClient.post<any>('/api/achievements/check', {});
             if (result.success && result.data.newlyUnlocked?.length > 0) {
@@ -71,8 +73,10 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
             }
         } catch (error) {
             console.error('[GamificationContext] Achievement check failed:', error);
+        } finally {
+            setIsChecking(false);
         }
-    }, [user, showAchievement, loadLevelInfo]);
+    }, [user, isChecking, showAchievement, loadLevelInfo]);
 
     const awardXPLocally = useCallback((amount: number) => {
         if (!levelInfo) return;

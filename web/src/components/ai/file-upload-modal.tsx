@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { useDropzone } from 'react-dropzone';
 import { apiClient } from '@/lib/api-client';
 import { useToast } from '@/lib/contexts/toast-context';
@@ -16,6 +17,7 @@ interface Props {
 type FileType = 'pdf' | 'txt' | 'docx' | 'unknown';
 
 export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenerated }: Props) {
+    const t = useTranslations('FileUpload');
     const toast = useToast();
     const [file, setFile] = useState<File | null>(null);
     const [extractedText, setExtractedText] = useState('');
@@ -38,7 +40,7 @@ export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenera
 
         const fileType = getFileType(selectedFile.name);
         if (fileType === 'unknown') {
-            toast.error('不支持的文件格式，请上传 PDF、TXT 或 DOCX 文件');
+            toast.error(t('supportedFormatHint'));
             return;
         }
 
@@ -66,16 +68,16 @@ export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenera
                     setExtractedText(data.data.text);
                     setStep('preview');
                 } else {
-                    toast.error('文件解析失败: ' + (data.error || '未知错误'));
+                    toast.error(t('parseFailed', { error: data.error || t('unknownError') }));
                 }
             }
         } catch (error) {
             console.error('File processing error:', error);
-            toast.error('文件处理失败');
+            toast.error(t('processFailed'));
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [t]);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
@@ -103,11 +105,11 @@ export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenera
                 onCardsGenerated(result.data.cards.length);
                 onClose();
             } else {
-                toast.error('生成失败');
+                toast.error(t('generateFailed'));
             }
         } catch (error) {
             console.error('Generate error:', error);
-            toast.error('生成失败');
+            toast.error(t('generateFailed'));
         } finally {
             setGenerating(false);
         }
@@ -125,7 +127,7 @@ export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenera
         <div className={styles.overlay} onClick={onClose}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.header}>
-                    <h2 className={styles.title}>📄 从文件生成卡片</h2>
+                    <h2 className={styles.title}>📄 {t('title')}</h2>
                     <button className={styles.closeButton} onClick={onClose}>×</button>
                 </div>
 
@@ -139,15 +141,15 @@ export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenera
                             {loading ? (
                                 <div className={styles.loading}>
                                     <span className={styles.spinner}></span>
-                                    正在解析文件...
+                                    {t('extracting')}
                                 </div>
                             ) : (
                                 <>
                                     <div className={styles.uploadIcon}>📁</div>
                                     <p className={styles.uploadText}>
-                                        {isDragActive ? '放开以上传文件' : '拖拽文件到这里，或点击选择'}
+                                        {isDragActive ? t('dragDropActive') : t('dragDropHint')}
                                     </p>
-                                    <p className={styles.uploadHint}>支持 PDF、TXT、DOCX，最大 10MB</p>
+                                    <p className={styles.uploadHint}>{t('supportedFormatHint')}</p>
                                 </>
                             )}
                         </div>
@@ -158,32 +160,32 @@ export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenera
                             <div className={styles.fileInfo}>
                                 <span className={styles.fileName}>📄 {file?.name}</span>
                                 <button className={styles.changeButton} onClick={handleReset}>
-                                    更换文件
+                                    {t('changeFile')}
                                 </button>
                             </div>
 
                             <div className={styles.textPreview}>
-                                <label className={styles.previewLabel}>提取的文本内容</label>
+                                <label className={styles.previewLabel}>{t('extractedContent')}</label>
                                 <textarea
                                     className={styles.previewTextarea}
                                     value={extractedText}
                                     onChange={(e) => setExtractedText(e.target.value)}
                                     rows={10}
                                 />
-                                <p className={styles.charCount}>{extractedText.length} 字符</p>
+                                <p className={styles.charCount}>{t('charCount', { count: extractedText.length })}</p>
                             </div>
 
                             <div className={styles.countSelector}>
-                                <label>生成卡片数量:</label>
+                                <label>{t('generateCount')}</label>
                                 <select
                                     value={cardCount}
                                     onChange={(e) => setCardCount(Number(e.target.value))}
                                     className={styles.countSelect}
                                 >
-                                    <option value={5}>5张</option>
-                                    <option value={10}>10张</option>
-                                    <option value={20}>20张</option>
-                                    <option value={30}>30张</option>
+                                    <option value={5}>5{t('cards')}</option>
+                                    <option value={10}>10{t('cards')}</option>
+                                    <option value={20}>20{t('cards')}</option>
+                                    <option value={30}>30{t('cards')}</option>
                                 </select>
                             </div>
 
@@ -192,7 +194,7 @@ export default function FileUploadModal({ isOpen, onClose, deckId, onCardsGenera
                                 onClick={handleGenerate}
                                 disabled={generating || !extractedText.trim()}
                             >
-                                {generating ? '正在生成...' : `🤖 AI生成 ${cardCount} 张卡片`}
+                                {generating ? t('generating') : t('aiGenerate', { count: cardCount })}
                             </button>
                         </div>
                     )}

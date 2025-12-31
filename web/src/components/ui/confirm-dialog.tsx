@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import styles from './confirm-dialog.module.css';
 
 interface ConfirmDialogProps {
@@ -20,13 +21,14 @@ export default function ConfirmDialog({
     title,
     message,
     details,
-    confirmText = '确认',
-    cancelText = '取消',
+    confirmText,
+    cancelText,
     variant = 'warning',
     onConfirm,
     onCancel
 }: ConfirmDialogProps) {
     const [isProcessing, setIsProcessing] = useState(false);
+    const t = useTranslations('ConfirmDialog');
 
     if (!isOpen) return null;
 
@@ -67,14 +69,14 @@ export default function ConfirmDialog({
                         onClick={onCancel}
                         disabled={isProcessing}
                     >
-                        {cancelText}
+                        {cancelText || t('cancel')}
                     </button>
                     <button
                         className={`${styles.button} ${styles.confirmButton}`}
                         onClick={handleConfirm}
                         disabled={isProcessing}
                     >
-                        {isProcessing ? '处理中...' : confirmText}
+                        {isProcessing ? t('processing') : (confirmText || t('confirm'))}
                     </button>
                 </div>
             </div>

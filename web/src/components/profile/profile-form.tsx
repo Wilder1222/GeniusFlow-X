@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button, Input } from '@/components';
 import type { Profile, UpdateProfileData } from '@/types/profile';
 import { updateProfile, checkUsernameAvailable } from '@/lib/profile';
@@ -13,6 +14,8 @@ export interface ProfileFormProps {
 }
 
 export function ProfileForm({ profile, onUpdate }: ProfileFormProps) {
+    const t = useTranslations('Profile');
+    const ts = useTranslations('Settings');
     const [formData, setFormData] = useState({
         username: profile.username,
         displayName: profile.displayName || '',
@@ -48,7 +51,7 @@ export function ProfileForm({ profile, onUpdate }: ProfileFormProps) {
         setSuccess('');
 
         if (usernameStatus === 'taken') {
-            setError('用户名已被使用');
+            setError(t('usernameTaken'));
             return;
         }
 
@@ -71,14 +74,14 @@ export function ProfileForm({ profile, onUpdate }: ProfileFormProps) {
             }
 
             if (Object.keys(updateData).length === 0) {
-                setSuccess('没有需要保存的更改');
+                setSuccess(ts('noChanges'));
                 setLoading(false);
                 return;
             }
 
             const updatedProfile = await updateProfile(updateData);
             if (updatedProfile) {
-                setSuccess('资料已更新');
+                setSuccess(t('profileUpdated'));
                 onUpdate?.(updatedProfile);
             }
         } catch (err: unknown) {
@@ -91,49 +94,49 @@ export function ProfileForm({ profile, onUpdate }: ProfileFormProps) {
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>基本信息</h3>
+                <h3 className={styles.sectionTitle}>{t('basicInfo')}</h3>
 
                 <div className={styles.userIdDisplay}>
-                    <span className={styles.label}>用户 ID</span>
+                    <span className={styles.label}>{t('userId')}</span>
                     <span className={styles.value}>{profile.userId}</span>
                 </div>
 
                 <div className={styles.fieldGroup}>
                     <Input
-                        label="用户名"
+                        label={t('username')}
                         value={formData.username}
                         onChange={(e) => handleUsernameChange(e.target.value)}
-                        placeholder="3-20 个字符"
+                        placeholder={t('usernameHint')}
                         maxLength={50}
                         fullWidth
                     />
                     {usernameStatus === 'checking' && (
-                        <span className={styles.statusChecking}>检查中...</span>
+                        <span className={styles.statusChecking}>{t('checking')}</span>
                     )}
                     {usernameStatus === 'available' && formData.username !== profile.username && (
-                        <span className={styles.statusAvailable}>✓ 可用</span>
+                        <span className={styles.statusAvailable}>✓ {t('available')}</span>
                     )}
                     {usernameStatus === 'taken' && (
-                        <span className={styles.statusTaken}>✗ 已被使用</span>
+                        <span className={styles.statusTaken}>✗ {t('inUse')}</span>
                     )}
                 </div>
 
                 <Input
-                    label="显示名称"
+                    label={t('displayName')}
                     value={formData.displayName}
                     onChange={(e) => setFormData(prev => ({ ...prev, displayName: e.target.value }))}
-                    placeholder="你的显示名称"
+                    placeholder={t('displayName')}
                     maxLength={50}
                     fullWidth
                 />
 
                 <div className={styles.textareaGroup}>
-                    <label className={styles.textareaLabel}>个人简介</label>
+                    <label className={styles.textareaLabel}>{t('bio')}</label>
                     <textarea
                         className={styles.textarea}
                         value={formData.bio}
                         onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                        placeholder="介绍一下自己..."
+                        placeholder={t('bioPlaceholder')}
                         maxLength={300}
                         rows={3}
                     />
@@ -142,7 +145,7 @@ export function ProfileForm({ profile, onUpdate }: ProfileFormProps) {
             </div>
 
             <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>隐私设置</h3>
+                <h3 className={styles.sectionTitle}>{t('privacySettings')}</h3>
 
                 <label className={styles.toggleLabel}>
                     <input
@@ -151,9 +154,9 @@ export function ProfileForm({ profile, onUpdate }: ProfileFormProps) {
                         onChange={(e) => setFormData(prev => ({ ...prev, isPublic: e.target.checked }))}
                         className={styles.toggle}
                     />
-                    <span>公开我的资料</span>
+                    <span>{t('showProfile')}</span>
                     <span className={styles.toggleHint}>
-                        {formData.isPublic ? '其他用户可以查看你的资料' : '仅自己可见'}
+                        {formData.isPublic ? t('publicHint') : t('privateHint')}
                     </span>
                 </label>
             </div>
@@ -162,7 +165,7 @@ export function ProfileForm({ profile, onUpdate }: ProfileFormProps) {
             {success && <div className={styles.success}>{success}</div>}
 
             <Button type="submit" variant="primary" fullWidth disabled={loading}>
-                {loading ? '保存中...' : '保存更改'}
+                {loading ? ts('loading') : t('saveChanges')}
             </Button>
         </form>
     );

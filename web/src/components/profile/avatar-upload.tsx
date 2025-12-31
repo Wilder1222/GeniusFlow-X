@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components';
 import { uploadAvatar } from '@/lib/profile';
 import styles from './avatar-upload.module.css';
@@ -12,6 +13,7 @@ export interface AvatarUploadProps {
 }
 
 export function AvatarUpload({ currentAvatarUrl, displayName, onUpload }: AvatarUploadProps) {
+    const t = useTranslations('Profile');
     const [preview, setPreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -28,13 +30,13 @@ export function AvatarUpload({ currentAvatarUrl, displayName, onUpload }: Avatar
 
         // 验证文件类型
         if (!file.type.startsWith('image/')) {
-            setError('请选择图片文件');
+            setError(t('avatarTypeError'));
             return;
         }
 
         // 验证文件大小（最大 2MB）
         if (file.size > 2 * 1024 * 1024) {
-            setError('图片大小不能超过 2MB');
+            setError(t('avatarSizeError'));
             return;
         }
 
@@ -59,7 +61,7 @@ export function AvatarUpload({ currentAvatarUrl, displayName, onUpload }: Avatar
             const url = await uploadAvatar(file);
             onUpload?.(url);
         } catch (err: unknown) {
-            const errorMessage = err instanceof Error ? err.message : '上传失败';
+            const errorMessage = err instanceof Error ? err.message : t('avatarUploadFailed');
             setError(errorMessage);
             setPreview(null);
         } finally {
@@ -77,7 +79,7 @@ export function AvatarUpload({ currentAvatarUrl, displayName, onUpload }: Avatar
         <div className={styles.container}>
             <div className={styles.avatarWrapper} onClick={handleClick}>
                 {avatarSrc ? (
-                    <img src={avatarSrc} alt="头像" className={styles.avatar} />
+                    <img src={avatarSrc} alt={t('avatar')} className={styles.avatar} />
                 ) : (
                     <div className={styles.placeholder}>
                         {getInitials(displayName)}
@@ -85,7 +87,7 @@ export function AvatarUpload({ currentAvatarUrl, displayName, onUpload }: Avatar
                 )}
                 <div className={styles.overlay}>
                     <span className={styles.overlayIcon}>📷</span>
-                    <span className={styles.overlayText}>更换头像</span>
+                    <span className={styles.overlayText}>{t('changeAvatar')}</span>
                 </div>
                 {loading && (
                     <div className={styles.loadingOverlay}>
@@ -105,8 +107,8 @@ export function AvatarUpload({ currentAvatarUrl, displayName, onUpload }: Avatar
             {error && <p className={styles.error}>{error}</p>}
 
             <p className={styles.hint}>
-                点击上传新头像<br />
-                支持 JPG、PNG，最大 2MB
+                {t('uploadAvatar')}<br />
+                {t('uploadAvatarHint')}
             </p>
         </div>
     );

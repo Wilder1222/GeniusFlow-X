@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import confetti from 'canvas-confetti';
 import styles from './achievement-unlock-modal.module.css';
 
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export default function AchievementUnlockModal({ achievement, onClose }: Props) {
+    const t = useTranslations('Gamification');
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -79,7 +81,7 @@ export default function AchievementUnlockModal({ achievement, onClose }: Props) 
             <div className={`${styles.modal} ${isVisible ? styles.visible : ''}`} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.header}>
                     <div className={styles.badge}>🏆</div>
-                    <h2 className={styles.title}>成就解锁！</h2>
+                    <h2 className={styles.title}>{t('achievementUnlocked')}</h2>
                 </div>
 
                 <div className={styles.content}>
@@ -88,13 +90,13 @@ export default function AchievementUnlockModal({ achievement, onClose }: Props) 
                     <p className={styles.description}>{achievement.description}</p>
 
                     <div className={styles.reward}>
-                        <span className={styles.rewardLabel}>奖励</span>
+                        <span className={styles.rewardLabel}>{t('reward')}</span>
                         <span className={styles.rewardValue}>+{achievement.xp_reward} XP</span>
                     </div>
                 </div>
 
                 <button className={styles.closeButton} onClick={handleClose}>
-                    太棒了！
+                    {t('modalAction')}
                 </button>
             </div>
         </div>

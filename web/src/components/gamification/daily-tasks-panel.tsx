@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { apiClient } from '@/lib/api-client';
 import styles from './daily-tasks-panel.module.css';
 
@@ -16,6 +17,7 @@ interface DailyTask {
 }
 
 export default function DailyTasksPanel() {
+    const t = useTranslations('Gamification');
     const [tasks, setTasks] = useState<DailyTask[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -39,7 +41,9 @@ export default function DailyTasksPanel() {
     if (loading) {
         return (
             <div className={styles.container}>
-                <div className={styles.loading}>加载中...</div>
+                <div className={styles.loading}>
+                    <div className={styles.spinner}></div>
+                </div>
             </div>
         );
     }
@@ -50,9 +54,9 @@ export default function DailyTasksPanel() {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h2 className={styles.title}>📋 每日任务</h2>
+                <h2 className={styles.title}>📋 {t('dailyTasks')}</h2>
                 <div className={styles.summary}>
-                    {completedCount}/{tasks.length} 完成 · {totalXP} XP
+                    {t('taskCompleted', { count: completedCount, total: tasks.length })} · {totalXP} XP
                 </div>
             </div>
 
@@ -88,9 +92,9 @@ export default function DailyTasksPanel() {
                 })}
             </div>
 
-            {completedCount === tasks.length && (
+            {completedCount === tasks.length && tasks.length > 0 && (
                 <div className={styles.allCompleted}>
-                    🎉 今日任务全部完成！明天再来吧！
+                    {t('allCompleted')}
                 </div>
             )}
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import styles from './batch-edit-toolbar.module.css';
 
 interface Props {
@@ -24,35 +25,36 @@ export default function BatchEditToolbar({
     onResetProgress,
     onDelete
 }: Props) {
+    const t = useTranslations('Browse');
     if (selectedCount === 0) return null;
 
     return (
         <div className={styles.container}>
             <div className={styles.info}>
-                <span className={styles.count}>已选择 {selectedCount} 张卡片</span>
+                <span className={styles.count}>{t('selectedCount', { count: selectedCount })}</span>
                 {selectedCount < totalCount ? (
                     <button className={styles.selectButton} onClick={onSelectAll}>
-                        全选 ({totalCount})
+                        {t('selectAll', { count: totalCount })}
                     </button>
                 ) : (
                     <button className={styles.selectButton} onClick={onDeselectAll}>
-                        取消全选
+                        {t('deselectAll')}
                     </button>
                 )}
             </div>
 
             <div className={styles.actions}>
                 <button className={styles.actionButton} onClick={onAddTags}>
-                    🏷️ 添加标签
+                    🏷️ {t('addTags')}
                 </button>
                 <button className={styles.actionButton} onClick={onMoveDeck}>
-                    📁 移动卡组
+                    📁 {t('moveDeck')}
                 </button>
                 <button className={styles.actionButton} onClick={onResetProgress}>
-                    🔄 重置进度
+                    🔄 {t('resetProgress')}
                 </button>
                 <button className={`${styles.actionButton} ${styles.deleteButton}`} onClick={onDelete}>
-                    🗑️ 删除
+                    🗑️ {t('delete')}
                 </button>
             </div>
         </div>

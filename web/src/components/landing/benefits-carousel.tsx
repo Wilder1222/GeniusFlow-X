@@ -1,41 +1,39 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { LuZap, LuTarget, LuTrendingUp, LuSparkles } from 'react-icons/lu';
 import styles from './benefits-carousel.module.css';
 
-const benefits = [
-    {
-        Icon: LuZap,
-        title: '10倍效率提升',
-        description: 'AI辅助创建闪卡，告别繁琐的手动输入，专注于学习本身。',
-        color: '#fbbf24'
-    },
-    {
-        Icon: LuTarget,
-        title: '精准记忆',
-        description: '科学算法确保您在遗忘之前复习，大幅提高长期记忆保留率。',
-        color: '#f472b6'
-    },
-    {
-        Icon: LuTrendingUp,
-        title: '可视化进步',
-        description: '清晰的数据仪表板让您的每一点进步都清晰可见，持续保持动力。',
-        color: '#34d399'
-    },
-    {
-        Icon: LuSparkles,
-        title: '愉悦体验',
-        description: '精心设计的界面和动效，让学习成为一种享受而非负担。',
-        color: '#a78bfa'
-    }
-];
-
 export default function BenefitsCarousel() {
+    const t = useTranslations('Landing.BenefitsCarousel');
     const [activeIndex, setActiveIndex] = useState(0);
     const [statsInView, setStatsInView] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const trackRef = useRef<HTMLDivElement>(null);
+
+    const benefits = [
+        {
+            Icon: LuZap,
+            key: 'efficiency',
+            color: '#fbbf24'
+        },
+        {
+            Icon: LuTarget,
+            key: 'memory',
+            color: '#f472b6'
+        },
+        {
+            Icon: LuTrendingUp,
+            key: 'visual',
+            color: '#34d399'
+        },
+        {
+            Icon: LuSparkles,
+            key: 'experience',
+            color: '#a78bfa'
+        }
+    ];
 
     // Physics state refs
     const state = useRef({
@@ -235,8 +233,8 @@ export default function BenefitsCarousel() {
 
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <span className={styles.badge}><span>💡 为什么选择我们</span></span>
-                    <h2 className={styles.title}>学习效率的革命性提升</h2>
+                    <span className={styles.badge}><span>{t('badge')}</span></span>
+                    <h2 className={styles.title}>{t('title')}</h2>
                 </div>
 
                 <div
@@ -263,8 +261,8 @@ export default function BenefitsCarousel() {
                                 >
                                     <benefit.Icon size={36} />
                                 </div>
-                                <h3 className={styles.cardTitle}>{benefit.title}</h3>
-                                <p className={styles.cardDescription}>{benefit.description}</p>
+                                <h3 className={styles.cardTitle}>{t(`items.${benefit.key}.title`)}</h3>
+                                <p className={styles.cardDescription}>{t(`items.${benefit.key}.desc`)}</p>
                             </div>
                         ))}
                     </div>
@@ -286,21 +284,21 @@ export default function BenefitsCarousel() {
 
                 {/* Stats */}
                 <div className={`${styles.stats} ${statsInView ? styles.statsVisible : ''}`}>
-                    <div className={styles.statItem} style={{ '--delay': '0s' } as any}>
+                    <div className={styles.statItem} style={{ '--delay': '0s' } as React.CSSProperties}>
                         <div className={styles.statValue}>5x</div>
-                        <div className={styles.statLabel}>效率提升</div>
+                        <div className={styles.statLabel}>{t('stats.efficiency')}</div>
                     </div>
-                    <div className={styles.statItem} style={{ '--delay': '0.1s' } as any}>
+                    <div className={styles.statItem} style={{ '--delay': '0.1s' } as React.CSSProperties}>
                         <div className={styles.statValue}>10x</div>
-                        <div className={styles.statLabel}>生成速度提升</div>
+                        <div className={styles.statLabel}>{t('stats.speed')}</div>
                     </div>
-                    <div className={styles.statItem} style={{ '--delay': '0.2s' } as any}>
+                    <div className={styles.statItem} style={{ '--delay': '0.2s' } as React.CSSProperties}>
                         <div className={styles.statValue}>95%</div>
-                        <div className={styles.statLabel}>记忆保留率</div>
+                        <div className={styles.statLabel}>{t('stats.retention')}</div>
                     </div>
-                    <div className={styles.statItem} style={{ '--delay': '0.3s' } as any}>
+                    <div className={styles.statItem} style={{ '--delay': '0.3s' } as React.CSSProperties}>
                         <div className={styles.statValue}>50+</div>
-                        <div className={styles.statLabel}>支持语言</div>
+                        <div className={styles.statLabel}>{t('stats.languages')}</div>
                     </div>
                 </div>
             </div>

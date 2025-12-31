@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { LuUser, LuSettings, LuEye, LuMoon, LuSun, LuMonitor, LuLogOut, LuChevronRight, LuCrown as Crown } from 'react-icons/lu';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { useTheme } from '@/lib/theme-context';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import styles from './user-settings-panel.module.css';
 
 export default function UserSettingsPanel() {
@@ -14,6 +15,7 @@ export default function UserSettingsPanel() {
     const [isOpen, setIsOpen] = useState(false);
     const panelRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
+    const t = useTranslations('UserSettings');
 
     const avatarUrl = profile?.avatarUrl;
     const displayName = profile?.displayName || profile?.username || user?.email?.split('@')[0] || 'User';
@@ -60,10 +62,10 @@ export default function UserSettingsPanel() {
     }, [isOpen]);
 
     const themes = [
-        { value: 'dark' as const, label: 'Dark', icon: LuMoon },
-        { value: 'light' as const, label: 'Light', icon: LuSun },
-        { value: 'classic-dark' as const, label: 'Classic Dark', icon: LuMoon },
-        { value: 'system' as const, label: 'System', icon: LuMonitor },
+        { value: 'dark' as const, labelKey: 'dark', icon: LuMoon },
+        { value: 'light' as const, labelKey: 'light', icon: LuSun },
+        { value: 'classic-dark' as const, labelKey: 'classicDark', icon: LuMoon },
+        { value: 'system' as const, labelKey: 'system', icon: LuMonitor },
     ];
 
     return (
@@ -122,25 +124,25 @@ export default function UserSettingsPanel() {
                 <div className={styles.menuSection}>
                     <Link href="/settings" className={styles.menuItem} onClick={() => setIsOpen(false)}>
                         <LuSettings size={12} />
-                        <span>Account preferences</span>
+                        <span>{t('accountPreferences')}</span>
                         <LuChevronRight size={12} className={styles.chevron} />
                     </Link>
                     <Link href="/pricing" className={styles.menuItem} onClick={() => setIsOpen(false)}>
                         <Crown size={12} className="text-yellow-500" />
-                        <span>Pro Plan</span>
+                        <span>{t('proPlan')}</span>
                         <LuChevronRight size={12} className={styles.chevron} />
                     </Link>
                     <button className={styles.menuItem}>
                         <LuEye size={12} />
-                        <span>Feature previews</span>
+                        <span>{t('featurePreviews')}</span>
                         <LuChevronRight size={12} className={styles.chevron} />
                     </button>
                 </div>
 
                 {/* Theme Selection */}
                 <div className={styles.themeSection}>
-                    <div className={styles.sectionLabel}>Theme</div>
-                    {themes.map(({ value, label, icon: Icon }) => (
+                    <div className={styles.sectionLabel}>{t('theme')}</div>
+                    {themes.map(({ value, labelKey, icon: Icon }) => (
                         <button
                             key={value}
                             className={`${styles.themeOption} ${theme === value ? styles.themeOptionActive : ''}`}
@@ -150,7 +152,7 @@ export default function UserSettingsPanel() {
                                 {theme === value && <div className={styles.radioInner} />}
                             </div>
                             <Icon size={12} className={styles.themeIcon} />
-                            <span>{label}</span>
+                            <span>{t(labelKey)}</span>
                         </button>
                     ))}
                 </div>
@@ -159,7 +161,7 @@ export default function UserSettingsPanel() {
                 <div className={styles.logoutSection}>
                     <button className={styles.logoutBtn} onClick={handleLogout}>
                         <LuLogOut size={12} />
-                        <span>Log out</span>
+                        <span>{t('logout')}</span>
                     </button>
                 </div>
             </div>

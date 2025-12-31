@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import {
     LuBrain,
     LuChartBar,
@@ -15,66 +16,11 @@ import styles from './features-marquee.module.css';
 
 interface Feature {
     icon: React.ReactNode;
-    title: string;
-    description: string;
+    key: string;
     gradient: string;
 }
 
-const featuresRow1: Feature[] = [
-    {
-        icon: <LuBrain size={28} />,
-        title: '间隔重复',
-        description: '基于SM-2算法，在遗忘临界点复习，记忆效率提升300%',
-        gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    },
-    {
-        icon: <LuChartBar size={28} />,
-        title: '数据分析',
-        description: '详细的学习统计和热力图，追踪进步，识别薄弱环节',
-        gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    },
-    {
-        icon: <LuCloud size={28} />,
-        title: '多端同步',
-        description: '手机、平板、电脑学习进度实时同步，随时随地学习',
-        gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    },
-    {
-        icon: <LuGamepad2 size={28} />,
-        title: '游戏化激励',
-        description: '升级、徽章、连胜纪录，让学习像游戏一样有趣',
-        gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-    },
-];
-
-const featuresRow2: Feature[] = [
-    {
-        icon: <LuZap size={28} />,
-        title: '富媒体支持',
-        description: 'LaTeX公式、代码高亮、图片音频，满足各类学习需求',
-        gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-    },
-    {
-        icon: <LuSparkles size={28} />,
-        title: '专注模式',
-        description: '极简沉浸式界面，屏蔽干扰，快速进入心流状态',
-        gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-    },
-    {
-        icon: <LuShield size={28} />,
-        title: '隐私安全',
-        description: '银行级加密标准，您的数据只属于您自己',
-        gradient: 'linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)',
-    },
-    {
-        icon: <LuGlobe size={28} />,
-        title: '社区共享',
-        description: '全球学霸分享优质卡片组，覆盖数百个学科',
-        gradient: 'linear-gradient(135deg, #d299c2 0%, #fef9d7 100%)',
-    },
-];
-
-function FeatureCard({ feature }: { feature: Feature }) {
+function FeatureCard({ feature, t }: { feature: Feature; t: (key: string) => string }) {
     return (
         <div className={styles.card}>
             <div className={styles.cardGlow} style={{ background: feature.gradient }} />
@@ -82,16 +28,63 @@ function FeatureCard({ feature }: { feature: Feature }) {
                 <div className={styles.iconWrapper} style={{ background: feature.gradient }}>
                     {feature.icon}
                 </div>
-                <h3 className={styles.cardTitle}>{feature.title}</h3>
-                <p className={styles.cardDescription}>{feature.description}</p>
+                <h3 className={styles.cardTitle}>{t(`items.${feature.key}.title`)}</h3>
+                <p className={styles.cardDescription}>{t(`items.${feature.key}.desc`)}</p>
             </div>
         </div>
     );
 }
 
 export function FeaturesMarquee() {
+    const t = useTranslations('Landing.FeaturesMarquee');
     const row1Ref = useRef<HTMLDivElement>(null);
     const row2Ref = useRef<HTMLDivElement>(null);
+
+    const featuresRow1: Feature[] = [
+        {
+            icon: <LuBrain size={28} />,
+            key: 'srs',
+            gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        },
+        {
+            icon: <LuChartBar size={28} />,
+            key: 'analytics',
+            gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        },
+        {
+            icon: <LuCloud size={28} />,
+            key: 'sync',
+            gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+        },
+        {
+            icon: <LuGamepad2 size={28} />,
+            key: 'gamification',
+            gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+        },
+    ];
+
+    const featuresRow2: Feature[] = [
+        {
+            icon: <LuZap size={28} />,
+            key: 'media',
+            gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+        },
+        {
+            icon: <LuSparkles size={28} />,
+            key: 'focus',
+            gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+        },
+        {
+            icon: <LuShield size={28} />,
+            key: 'privacy',
+            gradient: 'linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)',
+        },
+        {
+            icon: <LuGlobe size={28} />,
+            key: 'community',
+            gradient: 'linear-gradient(135deg, #d299c2 0%, #fef9d7 100%)',
+        },
+    ];
 
     useEffect(() => {
         // Pause animation on hover
@@ -138,10 +131,10 @@ export function FeaturesMarquee() {
     return (
         <section id="features" className={styles.section}>
             <div className={styles.header}>
-                <span className={styles.badge}><span>✨ 核心功能</span></span>
-                <h2 className={styles.title}>为高效学习而设计</h2>
+                <span className={styles.badge}><span>{t('badge')}</span></span>
+                <h2 className={styles.title}>{t('title')}</h2>
                 <p className={styles.subtitle}>
-                    除了强大的 AI 生成能力，我们还提供全方位的学习辅助功能
+                    {t('subtitle')}
                 </p>
             </div>
 
@@ -154,7 +147,7 @@ export function FeaturesMarquee() {
                 <div className={styles.marqueeWrapper}>
                     <div ref={row1Ref} className={`${styles.marqueeTrack} ${styles.row1}`}>
                         {row1Items.map((feature, index) => (
-                            <FeatureCard key={`row1-${index}`} feature={feature} />
+                            <FeatureCard key={`row1-${index}`} feature={feature} t={t} />
                         ))}
                     </div>
                 </div>
@@ -163,7 +156,7 @@ export function FeaturesMarquee() {
                 <div className={styles.marqueeWrapper}>
                     <div ref={row2Ref} className={`${styles.marqueeTrack} ${styles.row2}`}>
                         {row2Items.map((feature, index) => (
-                            <FeatureCard key={`row2-${index}`} feature={feature} />
+                            <FeatureCard key={`row2-${index}`} feature={feature} t={t} />
                         ))}
                     </div>
                 </div>

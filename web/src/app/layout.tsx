@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
-import { AuthProvider } from "@/lib/auth-context";
-import { ThemeProvider } from "@/lib/theme-context";
-import { AchievementProvider } from "@/lib/contexts/achievement-context";
-import { GamificationProvider } from "@/lib/contexts/gamification-context";
-import { ToastProvider } from "@/lib/contexts/toast-context";
 import ErrorBoundary from "@/components/ui/error-boundary";
 
 export const metadata: Metadata = {
@@ -19,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#667eea" />
@@ -27,17 +22,7 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning>
         <ErrorBoundary>
-          <ThemeProvider>
-            <AuthProvider>
-              <AchievementProvider>
-                <GamificationProvider>
-                  <ToastProvider>
-                    {children}
-                  </ToastProvider>
-                </GamificationProvider>
-              </AchievementProvider>
-            </AuthProvider>
-          </ThemeProvider>
+          {children}
         </ErrorBoundary>
         <script
           dangerouslySetInnerHTML={{

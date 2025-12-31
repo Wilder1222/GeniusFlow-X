@@ -1,8 +1,17 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import createIntlMiddleware from 'next-intl/middleware'
+import { routing } from './i18n/routing'
+
+// Create i18n middleware
+const intlMiddleware = createIntlMiddleware(routing)
 
 export async function middleware(request: NextRequest) {
-    let response = NextResponse.next({
+    // First, handle i18n routing
+    const intlResponse = intlMiddleware(request)
+
+    // Clone the response to add Supabase session handling
+    let response = intlResponse || NextResponse.next({
         request: {
             headers: request.headers,
         },
@@ -22,11 +31,7 @@ export async function middleware(request: NextRequest) {
                         value,
                         ...options,
                     })
-                    response = NextResponse.next({
-                        request: {
-                            headers: request.headers,
-                        },
-                    })
+                    // Update the response with the cookie
                     response.cookies.set({
                         name,
                         value,
@@ -39,11 +44,6 @@ export async function middleware(request: NextRequest) {
                         value: '',
                         ...options,
                     })
-                    response = NextResponse.next({
-                        request: {
-                            headers: request.headers,
-                        },
-                    })
                     response.cookies.set({
                         name,
                         value: '',
@@ -54,7 +54,14 @@ export async function middleware(request: NextRequest) {
         }
     )
 
-    await supabase.auth.getUser()
+    // Refresh session to extend expiry
+    // This ensures that active users don't get logged out
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (session) {
+        // Session exists, refresh it to extend the expiry
+        await supabase.auth.refreshSession()
+    }
 
     return response
 }
@@ -67,7 +74,7 @@ export const config = {
          * - _next/static (static files)
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
-         * Feel free to modify this pattern to include more paths.
+         * - static assets (svg, png, jpg, etc.)
          */
         '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],

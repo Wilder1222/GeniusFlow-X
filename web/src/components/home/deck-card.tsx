@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import styles from './deck-card.module.css';
 
 interface DeckCardProps {
@@ -18,6 +19,8 @@ export const DeckCard: React.FC<DeckCardProps> = ({
     totalCount,
     gradient,
 }) => {
+    const t = useTranslations('Home');
+
     return (
         <div className={styles.card}>
             <div className={styles.header}>
@@ -33,10 +36,10 @@ export const DeckCard: React.FC<DeckCardProps> = ({
             <div className={styles.stats}>
                 <div className={styles.count}>
                     <span className={styles.dueCount}>{dueCount}</span>
-                    <span className={styles.totalCount}>Due cards</span>
+                    <span className={styles.totalCount}>{t('dueCards')}</span>
                 </div>
                 <div className={styles.count} style={{ textAlign: 'right' }}>
-                    <span className={styles.totalCount}>{totalCount} Total</span>
+                    <span className={styles.totalCount}>{t('totalCards', { count: totalCount })}</span>
                 </div>
             </div>
 
@@ -44,7 +47,7 @@ export const DeckCard: React.FC<DeckCardProps> = ({
                 className={styles.studyButton}
                 style={gradient ? { background: gradient } : undefined}
             >
-                <span>⚡</span> Study Now
+                <span>⚡</span> {t('studyNow')}
             </button>
         </div>
     );

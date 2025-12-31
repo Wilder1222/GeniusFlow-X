@@ -1,0 +1,1093 @@
+{
+    "Common": {
+        "loading": "Loading...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "delete": "Delete",
+        "edit": "Edit",
+        "create": "Create",
+        "close": "Close",
+        "back": "Back",
+        "next": "Next",
+        "submit": "Submit",
+        "search": "Search",
+        "or": "or",
+        "unknownError": "Unknown error"
+    },
+    "Landing": {
+        "nav": {
+            "home": "Home",
+            "aiDemo": "AI Demo",
+            "features": "Features",
+            "benefits": "Benefits",
+            "login": "Login",
+            "signup": "Sign Up Free",
+            "menu": "Menu"
+        },
+        "hero": {
+            "badge": "AI Powered · Conversational · Smart Learning",
+            "title": "Chat with AI",
+            "titleHighlight": "Instant Flashcards",
+            "subtitle": "Just tell the AI what you want to learn, and get professional study cards immediately. Combined with spaced repetition algorithms, master more knowledge in less time. Whether it's language learning, professional exams, or knowledge accumulation, achieve more with less effort.",
+            "cta": "🚀 Get Started Free",
+            "demo": "👀 Watch Demo"
+        },
+        "mockup": {
+            "userChat": "Help me create flashcards about photosynthesis 🌱",
+            "aiThinking": "Analyzing knowledge points...",
+            "q1": "What are the main products of photosynthesis?",
+            "q2": "What is the function of chloroplasts?",
+            "q3": "What raw materials are needed for photosynthesis?",
+            "cardCount": "✨ Generated 3 high-quality flashcards"
+        },
+        "features": {
+            "spacedRepetition": {
+                "title": "Spaced Repetition Algorithm",
+                "description": "Based on the scientific memory curve SM-2 algorithm, review at optimal times to improve memory efficiency by 3x or more."
+            },
+            "dataAnalytics": {
+                "title": "Data-Driven Learning",
+                "description": "Detailed learning statistics and visual analysis, track your progress, identify weaknesses, and continuously optimize your learning strategy."
+            },
+            "gamification": {
+                "title": "Gamification",
+                "description": "Experience points, levels, achievement badges, and streak days make learning as fun and addictive as gaming."
+            },
+            "richMedia": {
+                "title": "Rich Media Cards",
+                "description": "Support for text, images, audio, code, and more formats to create vivid and engaging study cards."
+            },
+            "cloudSync": {
+                "title": "Cloud Sync",
+                "description": "Data safely stored in the cloud, continue learning anytime, anywhere on any device, never lose progress."
+            },
+            "privacy": {
+                "title": "Privacy Protection",
+                "description": "Your learning data is completely secure. We use industry-leading encryption technology to protect your privacy."
+            }
+        },
+        "benefits": {
+            "efficiency": {
+                "title": "10x Efficiency Boost",
+                "description": "AI-assisted flashcard creation, say goodbye to tedious manual input, focus on learning itself."
+            },
+            "precision": {
+                "title": "Precise Memory",
+                "description": "Scientific algorithms ensure you review before forgetting, greatly improving long-term memory retention."
+            },
+            "visualProgress": {
+                "title": "Visual Progress",
+                "description": "Clear data dashboard makes every bit of progress visible, maintaining motivation."
+            },
+            "enjoyable": {
+                "title": "Enjoyable Experience",
+                "description": "Carefully designed interface and animations make learning a pleasure, not a burden."
+            }
+        },
+        "cta": {
+            "title": "Let AI Help You Learn Efficiently",
+            "subtitle": "Join thousands of learners and experience conversational AI flashcard generation. Completely free, no credit card required.",
+            "signup": "🚀 Sign Up Free Now",
+            "login": "Already have an account? Login"
+        },
+        "footer": {
+            "copyright": "© {year} GeniusFlow-X. All rights reserved.",
+            "features": "Features",
+            "benefits": "Benefits"
+        },
+        "AIDemo": {
+            "badge": "Core Highlights",
+            "title": "AI Conversational",
+            "titleHighlight": "Generation",
+            "subtitle": "Just describe what you want to learn, and AI instantly generates professional flashcards for you.\nNo manual input needed, efficient and accurate.",
+            "chatTitle": "AI Flashcard Assistant",
+            "status": "Online",
+            "placeholder": "Click button below to start demo",
+            "placeholderHint": "See how AI helps you generate flashcards",
+            "start": "Start Demo",
+            "restart": "Restart Demo",
+            "cardFront": "Q",
+            "cardBack": "A",
+            "clickToFlip": "Click to flip card",
+            "featuresTitle": "Powerful AI Capabilities",
+            "features": {
+                "multiFormat": {
+                    "title": "Multi-format Input",
+                    "desc": "Supports text, PDF, web links, and more"
+                },
+                "extract": {
+                    "title": "Precise Extraction",
+                    "desc": "Intelligently identifies key points to generate high-quality Q&A pairs"
+                },
+                "refine": {
+                    "title": "Instant Adjustment",
+                    "desc": "Not satisfied? Tell AI to optimize immediately"
+                },
+                "multiLang": {
+                    "title": "Multi-language Support",
+                    "desc": "Supports processing in Chinese, English, Japanese, Korean, and more"
+                }
+            },
+            "topics": {
+                "react": {
+                    "label": "React Hooks Basics",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "Generate flashcards about React Hooks"
+                        },
+                        {
+                            "role": "ai",
+                            "content": "Sure! I'll generate React Hooks flashcards for you. Analyzing core concepts..."
+                        },
+                        {
+                            "role": "ai",
+                            "content": "Generated 3 high-quality flashcards!",
+                            "cards": [
+                                {
+                                    "front": "What are React Hooks?",
+                                    "back": "React Hooks are a core feature introduced in React 16.8 that allow you to use state and other React features (like lifecycle, context) in function components without writing a class."
+                                },
+                                {
+                                    "front": "What are the common React Hooks?",
+                                    "back": "1. useState: Manage local state\n2. useEffect: Handle side effects\n3. useContext: Subscribe to Context\n4. useRef: Access DOM references"
+                                },
+                                {
+                                    "front": "What are the advantages of React Hooks?",
+                                    "back": "1. Cleaner code: Avoid class 'this' binding\n2. Flexible logic reuse: Reuse state logic via custom Hooks\n3. Separation of concerns: Split into independent functions"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "biology": {
+                    "label": "Cell Structure",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "Generate flashcards about biological cell structure"
+                        },
+                        {
+                            "role": "ai",
+                            "content": "Okay! I'll generate cell structure flashcards for you. Organizing key points..."
+                        },
+                        {
+                            "role": "ai",
+                            "content": "Generated 3 high-quality flashcards!",
+                            "cards": [
+                                {
+                                    "front": "What are the basic parts of a cell?",
+                                    "back": "Basic cell structure includes:\n1. Cell Membrane: Controls substance entry/exit\n2. Cytoplasm: Metabolic activities host\n3. Nucleus: Stores genetic info\n4. Mitochondria: Power plant\n5. Ribosomes: Protein synthesis site"
+                                },
+                                {
+                                    "front": "What are the main differences between animal and plant cells?",
+                                    "back": "Plant cells only:\n1. Cell Wall: Support and protection\n2. Chloroplasts: Photosynthesis\n3. Large Vacuole: Stores water and nutrients\n\nAnimal cells only:\n1. Centrosomes: Cell division"
+                                },
+                                {
+                                    "front": "Why are mitochondria called the 'power plant' of the cell?",
+                                    "back": "Mitochondria are the main site of aerobic respiration, releasing energy by oxidizing organic matter and converting ADP to ATP for cellular activities."
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "geography": {
+                    "label": "World Geography",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "Generate flashcards about world geography"
+                        },
+                        {
+                            "role": "ai",
+                            "content": "Sure! I'll generate world geography flashcards for you. Compiling important facts..."
+                        },
+                        {
+                            "role": "ai",
+                            "content": "Generated 3 high-quality flashcards!",
+                            "cards": [
+                                {
+                                    "front": "What are the 7 continents ordered by size?",
+                                    "back": "1. Asia (44.58M km²)\n2. Africa (30.20M km²)\n3. North America (24.22M km²)\n4. South America (17.84M km²)\n5. Antarctica (14.00M km²)\n6. Europe (10.16M km²)\n7. Oceania (8.97M km²)"
+                                },
+                                {
+                                    "front": "What is the longest river in the world?",
+                                    "back": "The Nile, about 6670 km long, flowing through East and North Africa.\n\nSecond is the Amazon (approx 6400km), third is the Yangtze (approx 6300km)."
+                                },
+                                {
+                                    "front": "What is Plate Tectonics theory?",
+                                    "back": "Plate Tectonics states the Earth's lithosphere is divided into huge plates floating on the asthenosphere. At boundaries:\n1. Collision: Forms mountains\n2. Separation: Forms rifts\n3. Sliding: Causes earthquakes"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "grammar": {
+                    "label": "English Grammar",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "Generate flashcards about English grammar rules"
+                        },
+                        {
+                            "role": "ai",
+                            "content": "Okay! I'll generate English grammar flashcards for you. Summarizing core rules..."
+                        },
+                        {
+                            "role": "ai",
+                            "content": "Generated 3 high-quality flashcards!",
+                            "cards": [
+                                {
+                                    "front": "What are the tenses in English?",
+                                    "back": "English has 12 basic tenses:\n\nPresent: Simple, Continuous, Perfect, Perfect Continuous\nPast: Simple, Continuous, Perfect, Perfect Continuous\nFuture: Simple, Continuous, Perfect, Perfect Continuous"
+                                },
+                                {
+                                    "front": "When to use Present Perfect Tense?",
+                                    "back": "Present Perfect (have/has + past participle) is used for:\n1. Past actions affecting the present\n2. Actions continuing from past to present\n3. With words like ever, never, just, already\n\ne.g., I have finished my homework."
+                                },
+                                {
+                                    "front": "Difference between 'a/an' and 'the'?",
+                                    "back": "'a/an' (Indefinite Article):\n- First mention\n- General reference\n- 'a' before consonants, 'an' before vowels\n\n'the' (Definite Article):\n- Specific/known things\n- Unique things\n- Previously mentioned things"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "promptLabel": "Try these topics:"
+        },
+        "BenefitsCarousel": {
+            "badge": "✨ Core Benefits",
+            "title": "Revolutionary Learning Efficiency",
+            "items": {
+                "efficiency": {
+                    "title": "10x Efficiency Boost",
+                    "desc": "AI-assisted flashcard creation, say goodbye to tedious manual input, focus on learning itself."
+                },
+                "memory": {
+                    "title": "Precise Memory",
+                    "desc": "Scientific algorithms ensure you review before forgetting, greatly improving long-term memory retention."
+                },
+                "visual": {
+                    "title": "Visual Progress",
+                    "desc": "Clear data dashboard makes every bit of progress visible, maintaining motivation."
+                },
+                "experience": {
+                    "title": "Enjoyable Experience",
+                    "desc": "Carefully designed interface and animations make learning a pleasure, not a burden."
+                }
+            },
+            "stats": {
+                "efficiency": "Efficiency Boost",
+                "speed": "Generation Speed",
+                "retention": "Retention Rate",
+                "languages": "Languages Supported"
+            }
+        },
+        "FeaturesMarquee": {
+            "badge": "✨ Core Features",
+            "title": "Designed for Efficient Learning",
+            "subtitle": "Beyond powerful AI generation, we provide comprehensive learning support",
+            "items": {
+                "srs": {
+                    "title": "Spaced Repetition",
+                    "desc": "Based on SM-2 algorithm, review at the forgetting curve to boost efficiency by 300%"
+                },
+                "analytics": {
+                    "title": "Data Analytics",
+                    "desc": "Detailed study stats and heatmaps to track progress and identify weak spots"
+                },
+                "sync": {
+                    "title": "Multi-device Sync",
+                    "desc": "Real-time sync across mobile, tablet, and desktop. Learn anywhere, anytime."
+                },
+                "gamification": {
+                    "title": "Gamification",
+                    "desc": "Level up, earn badges, and maintain streaks to make learning fun like a game"
+                },
+                "media": {
+                    "title": "Rich Media Support",
+                    "desc": "LaTeX formulas, code highlighting, images, and audio to meet all learning needs"
+                },
+                "focus": {
+                    "title": "Focus Mode",
+                    "desc": "Minimalist immersive interface to block distractions and enter flow state quickly"
+                },
+                "privacy": {
+                    "title": "Privacy & Security",
+                    "desc": "Bank-level encryption standards, your data belongs only to you"
+                },
+                "community": {
+                    "title": "Community Sharing",
+                    "desc": "Access high-quality decks shared by top learners across hundreds of subjects"
+                }
+            }
+        }
+    },
+    "Auth": {
+        "login": {
+            "title": "Login to <brand>GeniusFlow-X</brand>",
+            "subtitle": "Welcome back!",
+            "email": "Email",
+            "password": "Password",
+            "emailPlaceholder": "your@email.com",
+            "passwordPlaceholder": "Enter password",
+            "submit": "Login",
+            "loading": "Logging in...",
+            "redirectingGoogle": "Redirecting to Google...",
+            "redirectingGitHub": "Redirecting to GitHub...",
+            "success": "Login successful",
+            "failed": "Login failed, please check your email and password",
+            "googleFailed": "Google login failed",
+            "githubFailed": "GitHub login failed",
+            "useGoogle": "Login with Google",
+            "useGitHub": "Login with GitHub",
+            "noAccount": "Don't have an account?",
+            "signupLink": "Sign up now"
+        },
+        "signup": {
+            "title": "Sign Up for <brand>GeniusFlow-X</brand>",
+            "subtitle": "Start your learning journey!",
+            "username": "Username",
+            "usernamePlaceholder": "Choose a username",
+            "email": "Email",
+            "emailPlaceholder": "your@email.com",
+            "password": "Password",
+            "passwordPlaceholder": "At least 6 characters",
+            "confirmPassword": "Confirm Password",
+            "confirmPasswordPlaceholder": "Re-enter password",
+            "submit": "Sign Up",
+            "loading": "Signing up...",
+            "redirectingGoogle": "Redirecting to Google...",
+            "redirectingGitHub": "Redirecting to GitHub...",
+            "useGoogle": "Sign up with Google",
+            "useGitHub": "Sign up with GitHub",
+            "hasAccount": "Already have an account?",
+            "loginLink": "Login",
+            "passwordMismatch": "Passwords do not match",
+            "passwordTooShort": "Password must be at least 6 characters",
+            "failed": "Sign up failed"
+        }
+    },
+    "Home": {
+        "welcome": "Welcome back,",
+        "defaultUsername": "Learning Master",
+        "welcomeBack": "Welcome back!",
+        "todayChallenge": "Today is another day full of progress. Ready for a challenge?",
+        "recentStudy": "Recent Study",
+        "noRecentDecks": "No recent decks yet, create one now!",
+        "createFailed": "Creation failed, please try again",
+        "cardsReviewCount": "You have {count} cards ready to review today",
+        "dueCards": "Due cards",
+        "totalCards": "{count} Total",
+        "studyNow": "Study Now",
+        "aiTitle": "AI Flashcard Generation",
+        "aiDescription": "Enter any topic, AI can instantly build your exclusive knowledge base. Whether for exams or new skills, double your efficiency.",
+        "tryNow": "Try Now"
+    },
+    "QuickActions": {
+        "startReview": "Start Review",
+        "reviewDescription": "Challenge today's memory tasks",
+        "createDeck": "Create New Deck",
+        "createDescription": "Build your knowledge base",
+        "manageDeck": "Manage Decks",
+        "manageDescription": "View and optimize all content"
+    },
+    "Sidebar": {
+        "dashboard": "Dashboard",
+        "study": "Study",
+        "decks": "Decks",
+        "aiAssistant": "AI Assistant",
+        "stats": "Statistics",
+        "profile": "Profile",
+        "settings": "Settings",
+        "expand": "Expand sidebar",
+        "collapse": "Collapse sidebar"
+    },
+    "Decks": {
+        "title": "My Decks",
+        "import": "📥 Import .apkg",
+        "create": "+ New Deck",
+        "loading": "Loading...",
+        "empty": "No decks yet. Create your first deck!",
+        "cards": "cards",
+        "dueToday": "due today"
+    },
+    "Stats": {
+        "title": "📊 Learning Data Center",
+        "subtitle": "Track your learning footprint, challenge your limits",
+        "totalCards": "Total Cards",
+        "cardsLearned": "Cards Learned",
+        "reviewsToday": "Reviews Today",
+        "currentStreak": "Current Streak",
+        "days": "days",
+        "accuracy": "Accuracy",
+        "retention": "Retention Rate"
+    },
+    "AI": {
+        "title": "AI Flashcard Generator",
+        "usageRemaining": "{remaining}/{limit} uses available",
+        "flashcardMode": "Flashcard Generation",
+        "resumeMode": "Resume Interview",
+        "selectDomain": "Select Domain:",
+        "textInput": "Text Input",
+        "uploadFile": "Upload File",
+        "placeholder": "Enter topic or paste content, e.g.: {suggestion}...",
+        "suggestions": "Suggestions:",
+        "quantity": "Quantity:",
+        "auto": "Auto",
+        "cards": "cards",
+        "generate": "Start Generating",
+        "generating": "Analyzing knowledge network...",
+        "generatingHint": "AI is organizing core exam points in the \"{domain}\" field",
+        "generated": "Generated {count} cards",
+        "regenerate": "Regenerate this card",
+        "resumeTitlePrefix": "Interview Prep",
+        "resumeDefaultTitle": "Resume Interview Practice",
+        "resumeIntroTitle": "📄 Resume Interview Mode",
+        "resumeIntroDesc": "Upload your resume, AI will analyze and generate mock interview Q&A cards",
+        "extracting": "Extracting text...",
+        "extractingResume": "Extracting resume content...",
+        "characters": "characters",
+        "dragDrop": "Drag file here, or click to upload",
+        "supportedFormats": "Supports PDF, DOCX, TXT formats, max 10MB",
+        "unsupportedFormat": "Unsupported format, please upload PDF, DOCX or TXT file",
+        "fileTooLarge": "File size exceeds 10MB limit",
+        "extractPreview": "Extracted content preview:",
+        "startAnalysis": "Start Analysis",
+        "resumeSuggestions": "📝 Resume Optimization Suggestions",
+        "continueGenerate": "Continue Generating More Interview Questions",
+        "generatingMore": "Generating...",
+        "createNewDeck": "✨ Create New Deck",
+        "newDeckPlaceholder": "Enter new deck name",
+        "saveCards": "Save Cards",
+        "saved": "Saved {count} cards",
+        "saveFailed": "Save failed: {error}",
+        "usageLimitReached": "Your AI generation limit for today is reached. Please try again tomorrow or upgrade your membership.",
+        "tryNow": "Try Now"
+    },
+    "Import": {
+        "title": "Markdown Import",
+        "supportedFormats": "Supported Formats",
+        "qaFormat": "Q&A Format:",
+        "listFormat": "List Format:",
+        "doubleColonFormat": "Double Colon Format:",
+        "placeholder": "Paste Markdown content here...",
+        "parse": "Parse & Preview",
+        "preview": "Preview ({count} cards)",
+        "backToEdit": "← Back to Edit",
+        "front": "Front:",
+        "backLabel": "Back:",
+        "importing": "Importing...",
+        "importCount": "Import {count} cards",
+        "backBtn": "Back"
+    },
+    "FileUpload": {
+        "title": "Generate Cards from File",
+        "extracting": "Analyzing file...",
+        "dragDropActive": "Drop to upload file",
+        "dragDropHint": "Drag file here, or click to select",
+        "supportedFormatHint": "Supports PDF, TXT, DOCX, max 10MB",
+        "changeFile": "Change File",
+        "extractedContent": "Extracted text content",
+        "charCount": "{count} characters",
+        "generateCount": "Generate Card Count:",
+        "cards": "cards",
+        "generating": "Generating...",
+        "aiGenerate": "🤖 AI Generate {count} cards",
+        "processFailed": "File processing failed",
+        "parseFailed": "File parsing failed: {error}",
+        "unknownError": "Unknown error",
+        "generateFailed": "Generation failed"
+    },
+    "ApkgImport": {
+        "title": ".apkg File Import",
+        "selectFile": "Please select a valid .apkg file",
+        "parsing": "Parsing...",
+        "parse": "Parse & Preview",
+        "introTitle": "📦 Import Anki Deck",
+        "introDesc": "Select an .apkg file to import your Anki deck",
+        "feature1": "Supports standard Anki .apkg format",
+        "feature2": "Auto extract card content",
+        "feature3": "Preserve tag information",
+        "feature4": "Import study progress",
+        "chooseFile": "Choose .apkg file",
+        "importing": "Importing...",
+        "importCount": "Import {count} cards",
+        "importSuccess": "Successfully imported {count} cards to deck \"{deckName}\"!",
+        "importFailed": "Import failed",
+        "cardsCount": "{count} cards",
+        "moreCards": "...and {count} more cards",
+        "cancel": "Cancel",
+        "back": "Back"
+    },
+    "Browse": {
+        "advancedFilter": "Advanced Filter",
+        "searchPlaceholder": "Search front or back content...",
+        "statusLabel": "Card Status",
+        "deckLabel": "Decks",
+        "tagLabel": "Tags",
+        "resetFilters": "Reset all filters",
+        "selectedCount": "{count} cards selected",
+        "selectAll": "Select All ({count})",
+        "deselectAll": "Deselect All",
+        "addTags": "Add Tags",
+        "moveDeck": "Move Deck",
+        "resetProgress": "Reset Progress",
+        "delete": "Delete",
+        "searchTitle": "Search Keywords",
+        "newStatus": "New",
+        "learningStatus": "Learning",
+        "reviewStatus": "Review",
+        "relearningStatus": "Relearning"
+    },
+    "DeckDetail": {
+        "backToList": "Back to list",
+        "editDeckInfo": "Edit deck info",
+        "exportMarkdown": "Export Markdown",
+        "startStudy": "Start Study ({count})",
+        "addCard": "Add Card",
+        "aiGenerate": "AI Generate",
+        "collapse": "Collapse",
+        "expand": "Expand",
+        "frontLabel": "Front",
+        "backLabel": "Back",
+        "frontPlaceholder": "Question / Word...",
+        "backPlaceholder": "Answer / Explanation...",
+        "adding": "Adding...",
+        "saving": "Saving...",
+        "searchCardsPlaceholder": "Search cards (front/back)...",
+        "clearSearch": "Clear search",
+        "allStatus": "All",
+        "newStatus": "New",
+        "learningStatus": "Learning",
+        "reviewStatus": "Review",
+        "relearningStatus": "Relearning",
+        "existingCards": "Existing Cards ({count})",
+        "selectAllCurrentPage": "Select All Page",
+        "deselectAllCurrentPage": "Deselect Page",
+        "selectionCount": "{count} selected",
+        "deleteSelected": "Delete Selected ({count})",
+        "noMatchedCards": "No matching cards",
+        "noCardsYet": "No cards yet",
+        "frontHeader": "Front",
+        "backHeader": "Back",
+        "statusHeader": "Status",
+        "actionsHeader": "Actions",
+        "editCard": "Edit Card",
+        "batchDeleteTitle": "Batch Delete Cards",
+        "batchDeleteMessage": "Are you sure you want to delete the {count} selected cards?",
+        "batchDeleteDetails": "Deleted cards will be permanently lost, this action cannot be undone.",
+        "deleteConfirm": "Delete",
+        "cancel": "Cancel",
+        "exportNoCards": "No cards to export",
+        "exportSuccess": "Exported {count} cards to {filename}",
+        "addFailed": "Add failed",
+        "saveFailed": "Save failed",
+        "deleteFailed": "Delete failed",
+        "deckNotFound": "Deck not found",
+        "loading": "Loading...",
+        "paginationInfo": "Showing {start}-{end} / Total {total} cards",
+        "prevPage": "Prev",
+        "nextPage": "Next",
+        "pageSizeLabel": "Page size:"
+    },
+    "Study": {
+        "title": "Study Session",
+        "noCards": "No cards due for review",
+        "showAnswer": "Show Answer",
+        "again": "Forgot",
+        "hard": "Hard",
+        "good": "Good",
+        "easy": "Easy",
+        "completed": "All Reviews Completed!",
+        "todayProgress": "Great progress today, keep it up!",
+        "cardsReviewed": "Cards Reviewed",
+        "accuracy": "Accuracy",
+        "timeSpent": "Time Spent",
+        "continue": "Continue",
+        "finish": "Finish",
+        "backHome": "Back to Home",
+        "progress": "Study Progress",
+        "remaining": "{count} cards remaining",
+        "xpGained": "Gained {amount} XP",
+        "levelUp": "Level Up Lv.{level}",
+        "newAchievements": "🏆 New Achievements Unlocked",
+        "syncing": "Syncing..."
+    },
+    "CreateDeck": {
+        "title": "Create New Deck",
+        "name": "Name",
+        "namePlaceholder": "e.g. English Vocabulary",
+        "description": "Description (optional)",
+        "descriptionPlaceholder": "Briefly describe the deck content...",
+        "isPublic": "Make Public",
+        "create": "Create",
+        "creating": "Creating...",
+        "cancel": "Cancel",
+        "failed": "Creation failed, please try again"
+    },
+    "EditDeck": {
+        "title": "Edit Deck",
+        "name": "Deck Name",
+        "namePlaceholder": "Enter deck name...",
+        "description": "Description",
+        "descriptionPlaceholder": "Enter deck description (optional)...",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "nameRequired": "Deck name cannot be empty"
+    },
+    "EditCard": {
+        "title": "Edit Card",
+        "front": "Front (Question)",
+        "frontPlaceholder": "Enter question...",
+        "back": "Back (Answer)",
+        "backPlaceholder": "Enter answer...",
+        "tags": "Tags",
+        "tagsPlaceholder": "tag1, tag2, ...",
+        "tagsHint": "Use commas to separate multiple tags",
+        "frontImage": "Front Image (Optional)",
+        "backImage": "Back Image (Optional)",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "emptyError": "Front and back cannot be empty"
+    },
+    "Profile": {
+        "title": "Profile",
+        "basicInfo": "Basic Information",
+        "privacySettings": "Privacy Settings",
+        "username": "Username",
+        "displayName": "Display Name",
+        "bio": "Bio",
+        "bioPlaceholder": "Tell us about yourself...",
+        "bioEmpty": "This person is lazy and hasn't written anything yet~",
+        "followers": "Followers",
+        "following": "Following",
+        "editProfile": "Edit Profile",
+        "saveChanges": "Save Changes",
+        "profileUpdated": "Profile updated successfully",
+        "usernameTaken": "Username is already taken",
+        "publicDecks": "Public Decks",
+        "noPublicDecks": "This user has no public decks yet.",
+        "noDescription": "No description",
+        "normal": "Normal",
+        "userId": "User ID",
+        "usernameHint": "3-20 characters",
+        "checking": "Checking...",
+        "available": "Available",
+        "inUse": "In use",
+        "showProfile": "Make my profile public",
+        "publicHint": "Others can view your profile",
+        "privateHint": "Only visible to yourself",
+        "avatar": "Avatar",
+        "changeAvatar": "Change Avatar",
+        "uploadAvatar": "Click to upload new avatar",
+        "uploadAvatarHint": "Supports JPG, PNG, Max 2MB",
+        "avatarSizeError": "Image size cannot exceed 2MB",
+        "avatarTypeError": "Please select an image file",
+        "avatarUploadFailed": "Upload failed",
+        "follow": "Follow",
+        "unfollow": "Unfollow",
+        "followingStatus": "Following",
+        "processing": "Processing..."
+    },
+    "Settings": {
+        "title": "Settings",
+        "appearance": "Appearance Settings",
+        "theme": "Theme",
+        "language": "Language",
+        "learning": "Learning Settings",
+        "notifications": "Notification Settings",
+        "dailyReminder": "Daily Reminder",
+        "dailyGoal": "Daily Study Goal",
+        "cardsPerDay": "cards/day",
+        "tts": "Speech (TTS)",
+        "enableTTS": "Enable Text-to-Speech",
+        "autoPlayTTS": "Auto-play",
+        "autoPlayHint": "Automatically play when flipping cards",
+        "emailNotifications": "Email Notifications",
+        "notificationsHint": "Receive study reminders and system notifications",
+        "saveSettings": "Save Settings",
+        "saveSuccess": "Settings saved successfully",
+        "noChanges": "No changes to save",
+        "loading": "Loading..."
+    },
+    "Gamification": {
+        "achievementBadges": "Achievement Badges",
+        "loadingAchievements": "Loading achievements...",
+        "unlockedCount": "{count} / {total} Unlocked",
+        "xpReward": "+{xp} XP",
+        "dailyTasks": "Daily Tasks",
+        "taskCompleted": "{count}/{total} Completed",
+        "allCompleted": "🎉 All daily tasks completed! Come back tomorrow!",
+        "achievementUnlocked": "Achievement Unlocked!",
+        "reward": "Reward",
+        "modalAction": "Awesome!",
+        "studyStreak": "Study Streak",
+        "longestStreak": "Longest Streak",
+        "todayStatus": "Today's Status",
+        "studiedToday": "✅ Completed",
+        "pendingStudy": "⏳ Pending",
+        "streakWarning": "⚠️ Haven't studied today, streak about to break!",
+        "days": "Days",
+        "level": "Level",
+        "nextLevelNeeded": "{xp} XP more for next level",
+        "totalXp": "Total {xp} XP"
+    },
+    "LevelProgress": {
+        "level": "Level",
+        "xpProgress": "/ {total} XP",
+        "nextLevel": "{xp} XP more for Lv.{level}",
+        "totalXp": "Total XP: {xp} XP"
+    },
+    "Header": {
+        "home": "Home",
+        "decks": "Decks",
+        "stats": "Stats",
+        "login": "Login",
+        "signup": "Sign Up"
+    },
+    "UserSettings": {
+        "accountPreferences": "Account preferences",
+        "proPlan": "Pro Plan",
+        "featurePreviews": "Feature previews",
+        "theme": "Theme",
+        "dark": "Dark",
+        "light": "Light",
+        "classicDark": "Classic Dark",
+        "system": "System",
+        "logout": "Log out"
+    },
+    "StudyCard": {
+        "question": "Question",
+        "answer": "Answer",
+        "clickToReveal": "Click card to show answer",
+        "swipeToGrade": "Swipe card left/right to grade quickly",
+        "forgot": "Forgot",
+        "remember": "Remember"
+    },
+    "StatsCharts": {
+        "learningTrend": "📈 Learning Trend Analysis",
+        "dailyReviews": "Daily Review Count",
+        "totalReviews": "Total Reviews",
+        "correct": "Correct",
+        "accuracyTrend": "Accuracy Trend",
+        "accuracy": "Accuracy",
+        "ratingDistribution": "Rating Distribution",
+        "again": "Forgot",
+        "hard": "Hard",
+        "good": "Good",
+        "easy": "Easy",
+        "loading": "Loading...",
+        "noData": "No data available",
+        "activityHeatmap": "Learning Activity",
+        "pastYearReviews": "Past year {count} reviews",
+        "less": "Less",
+        "more": "More",
+        "reviews": "reviews",
+        "monthLabels": {
+            "0": "Jan",
+            "1": "Feb",
+            "2": "Mar",
+            "3": "Apr",
+            "4": "May",
+            "5": "Jun",
+            "6": "Jul",
+            "7": "Aug",
+            "8": "Sep",
+            "9": "Oct",
+            "10": "Nov",
+            "11": "Dec"
+        },
+        "loadingActivity": "Loading activity data...",
+        "retentionAnalysis": "📊 Retention Analysis",
+        "retention24h": "24h Retention",
+        "retention7d": "7d Retention",
+        "retention30d": "30d Retention",
+        "retentionTrend": "30-Day Retention Trend",
+        "retentionRate": "Retention Rate (%)",
+        "retentionOnly": "Retention Rate",
+        "retentionValue": "{rate}% Retained",
+        "ratingClassification": "Rating Classification",
+        "learningAchievement": "🎯 Learning Achievements",
+        "overallAccuracy": "Overall Accuracy",
+        "abilityRadar": "⚡ Ability Radar Chart",
+        "overallScore": "Overall Score",
+        "abilityValue": "Value",
+        "memory": "Memory",
+        "focus": "Focus",
+        "persistence": "Persistence",
+        "efficiency": "Efficiency",
+        "studyDuration": "Study Time",
+        "loadForecast": "🔮 Learning Load Forecast",
+        "dueNext7Days": "Next 7 Days Due",
+        "estimatedTime": "Estimated Study Time",
+        "dailyForecast": "Daily Review Forecast",
+        "dailyDetails": "Daily Details",
+        "hour": "h",
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "newShort": "New",
+        "learningShort": "Lrn",
+        "reviewShort": "Rev",
+        "relearningShort": "Rel",
+        "newLong": "New",
+        "learningLong": "Learning",
+        "reviewLong": "Review",
+        "relearningLong": "Relearning",
+        "syncing": "Syncing",
+        "sync": "Sync",
+        "syncingData": "Syncing study data...",
+        "powerTitle": "Daily Motivation",
+        "currentStreak": "Current Streak",
+        "longestStreak": "Best Streak",
+        "totalCards": "Total Cards",
+        "streakDays": "days",
+        "completed": "{percent}% Done",
+        "todayReview": "Today's Review",
+        "focusTime": "Focus Time",
+        "minutes": "min",
+        "cards": "cards"
+    },
+    "ConfirmDialog": {
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "processing": "Processing..."
+    },
+    "ErrorBoundary": {
+        "title": "😵 Something went wrong",
+        "message": "Sorry, the page encountered an issue.",
+        "errorDetails": "Error Details",
+        "refresh": "Refresh Page"
+    },
+    "LoadingModal": {
+        "defaultMessage": "Loading..."
+    },
+    "Toast": {
+        "close": "Close notification"
+    },
+    "Achievements": {
+        "unlocked": "🏆 Achievement Unlocked!",
+        "beginner_10": {
+            "name": "Beginner",
+            "description": "Review 10 cards"
+        },
+        "beginner_50": {
+            "name": "Learner",
+            "description": "Review 50 cards"
+        },
+        "beginner_200": {
+            "name": "Scholar",
+            "description": "Review 200 cards"
+        },
+        "beginner_1000": {
+            "name": "Master",
+            "description": "Review 1000 cards"
+        },
+        "streak_3": {
+            "name": "Enthusiastic",
+            "description": "Maintain a 3-day streak"
+        },
+        "streak_7": {
+            "name": "Persistent",
+            "description": "Maintain a 7-day streak"
+        },
+        "streak_30": {
+            "name": "Determined",
+            "description": "Maintain a 30-day streak"
+        },
+        "creator_10": {
+            "name": "Creator",
+            "description": "Create 10 cards"
+        },
+        "creator_ai_50": {
+            "name": "AI Assistant",
+            "description": "Generate 50 cards with AI"
+        },
+        "creator_500": {
+            "name": "Knowledge Base",
+            "description": "Own 500 cards"
+        },
+        "accuracy_90": {
+            "name": "Precise",
+            "description": "Achieve 90% daily accuracy"
+        },
+        "accuracy_100": {
+            "name": "Perfect",
+            "description": "Achieve 100% daily accuracy"
+        },
+        "level_10": {
+            "name": "Level 10 Scholar",
+            "description": "Reach level 10"
+        },
+        "first_deck": {
+            "name": "First Step",
+            "description": "Create your first deck"
+        }
+    },
+    "LanguageSwitcher": {
+        "label": "Language",
+        "en": "English",
+        "zh": "中文"
+    },
+    "Errors": {
+        "INTERNAL_ERROR": "Server busy, please try again later",
+        "NETWORK_ERROR": "Network connection failed, please check your connection",
+        "TIMEOUT": "Request timed out, please try again",
+        "VALIDATION_ERROR": "Invalid input data, please check",
+        "INVALID_INPUT": "Incorrect input parameters",
+        "NOT_FOUND": "Requested resource does not exist",
+        "FORBIDDEN": "No permission to perform this action",
+        "RATE_LIMIT": "Operation too frequent, please try again later",
+        "DATABASE_ERROR": "Data operation failed, please try again",
+        "CONFLICT": "Data conflict, please refresh and try again",
+        "UNAUTHORIZED": "Please login first",
+        "AUTH_INVALID_CREDENTIALS": "Incorrect email or password",
+        "AUTH_EMAIL_NOT_VERIFIED": "Email not verified, please verify first",
+        "AUTH_USER_NOT_FOUND": "User does not exist",
+        "AUTH_EMAIL_ALREADY_EXISTS": "This email is already registered",
+        "AUTH_USERNAME_TAKEN": "Username is already taken",
+        "AUTH_WEAK_PASSWORD": "Password is too weak, please use a more complex one",
+        "AUTH_TOKEN_EXPIRED": "Session expired, please login again",
+        "AUTH_SESSION_INVALID": "Session invalid, please login again",
+        "AI_SERVICE_UNAVAILABLE": "AI service temporarily unavailable, please try again later",
+        "AI_QUOTA_EXCEEDED": "Today's AI usage quota has been reached",
+        "AI_RATE_LIMIT": "AI requests too frequent, please try again later",
+        "AI_INVALID_CONTENT": "Input content does not meet requirements",
+        "AI_CONTENT_TOO_SHORT": "Input too short, please provide more information",
+        "AI_CONTENT_TOO_LONG": "Input exceeds limit, please shorten and try again",
+        "AI_GENERATION_FAILED": "AI generation failed, please try again",
+        "AI_PARSE_FAILED": "AI response parsing failed, please try again",
+        "AI_FILE_EXTRACT_FAILED": "File content extraction failed",
+        "AI_UNSUPPORTED_FILE_TYPE": "Unsupported file type",
+        "AI_RESUME_ANALYSIS_FAILED": "Resume analysis failed, please try again",
+        "DECK_NOT_FOUND": "Deck does not exist or has been deleted",
+        "DECK_CREATE_FAILED": "Failed to create deck, please try again",
+        "DECK_UPDATE_FAILED": "Failed to update deck, please try again",
+        "DECK_DELETE_FAILED": "Failed to delete deck, please try again",
+        "DECK_TITLE_REQUIRED": "Please enter a deck title",
+        "DECK_TITLE_TOO_LONG": "Deck title too long",
+        "DECK_ACCESS_DENIED": "No permission to access this deck",
+        "CARD_NOT_FOUND": "Card does not exist or has been deleted",
+        "CARD_CREATE_FAILED": "Failed to create card, please try again",
+        "CARD_UPDATE_FAILED": "Failed to update card, please try again",
+        "CARD_DELETE_FAILED": "Failed to delete card, please try again",
+        "CARD_FRONT_REQUIRED": "Card front cannot be empty",
+        "CARD_BACK_REQUIRED": "Card back cannot be empty",
+        "CARD_BATCH_LIMIT": "Batch operation limit exceeded (max 100)",
+        "CARD_IMPORT_FAILED": "Card import failed, please check file format",
+        "STUDY_NO_DUE_CARDS": "Great! No cards due for review",
+        "STUDY_GRADE_FAILED": "Failed to submit grade, please try again",
+        "STUDY_INVALID_RATING": "Invalid rating",
+        "STUDY_SESSION_EXPIRED": "Study session expired, please start again",
+        "STATS_LOAD_FAILED": "Failed to load statistics",
+        "STATS_NO_DATA": "No statistics available",
+        "USER_NOT_FOUND": "User does not exist",
+        "USER_PROFILE_UPDATE_FAILED": "Failed to update profile, please try again",
+        "USER_AVATAR_UPLOAD_FAILED": "Avatar upload failed, please try again",
+        "USER_PASSWORD_MISMATCH": "Passwords do not match",
+        "USER_PASSWORD_CHANGE_FAILED": "Failed to change password, please try again",
+        "IMPORT_FILE_INVALID": "Invalid file format",
+        "IMPORT_PARSE_FAILED": "File parsing failed, please check format",
+        "EXPORT_FAILED": "Export failed, please try again",
+        "UNIQUE_VIOLATION": "Record already exists",
+        "FOREIGN_KEY_VIOLATION": "Related data does not exist",
+        "DATA_NOT_FOUND": "Data not found",
+        "INSUFFICIENT_PRIVILEGE": "No permission for this operation"
+    },
+    "AIDomains": {
+        "general": {
+            "name": "General",
+            "description": "General generation mode for various topics",
+            "suggestions": [
+                "Business English",
+                "Python Basics",
+                "Psychological Effects",
+                "World Geography"
+            ]
+        },
+        "language": {
+            "name": "Language",
+            "description": "Foreign language vocabulary, grammar, and expressions",
+            "suggestions": [
+                "JLPT N3 Vocab",
+                "Business Email",
+                "French Verbs",
+                "Korean Dialog"
+            ]
+        },
+        "programming": {
+            "name": "Programming",
+            "description": "Languages, frameworks, algorithms, and data structures",
+            "suggestions": [
+                "React Hooks",
+                "Python Algorithms",
+                "SQL Optimization",
+                "Git Commands"
+            ]
+        },
+        "science": {
+            "name": "Science",
+            "description": "Physics, chemistry, biology, math, and more",
+            "suggestions": [
+                "Photosynthesis",
+                "Organic Chemistry",
+                "Newton's Laws",
+                "Cell Division"
+            ]
+        },
+        "history": {
+            "name": "History & Humanities",
+            "description": "Historical events, culture, philosophy, and art",
+            "suggestions": [
+                "WWII Battles",
+                "Renaissance Artists",
+                "Ancient Philosophy",
+                "Heritage Sites"
+            ]
+        },
+        "medicine": {
+            "name": "Medicine",
+            "description": "Medical knowledge, anatomy, pharmacology, clinical",
+            "suggestions": [
+                "Human Anatomy",
+                "Drug Actions",
+                "Cardiology",
+                "First Aid"
+            ]
+        },
+        "business": {
+            "name": "Business",
+            "description": "Economics, finance, management, and marketing",
+            "suggestions": [
+                "Statement Analysis",
+                "Marketing Strategy",
+                "MBA Concepts",
+                "Investment Basics"
+            ]
+        },
+        "law": {
+            "name": "Law",
+            "description": "Statutes, case law, and legal principles",
+            "suggestions": [
+                "Civil Code",
+                "Criminal Law",
+                "Contract Law",
+                "IP Law"
+            ]
+        },
+        "exam": {
+            "name": "Exam Prep",
+            "description": "Standardized tests and academic preparation",
+            "suggestions": [
+                "CPA Accounting",
+                "TOEFL Vocab",
+                "Driver's Theory",
+                "Teaching Cert"
+            ]
+        }
+    }
+}

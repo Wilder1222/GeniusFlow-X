@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { LineChart, Line, Area, AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart } from 'recharts';
+import { useTranslations } from 'next-intl';
 import { useStats } from '@/lib/contexts/stats-context';
 import styles from './retention-chart.module.css';
 
@@ -20,11 +21,12 @@ interface RetentionData {
 
 export default function RetentionChart() {
     const { retention: data, loading } = useStats();
+    const t = useTranslations('StatsCharts');
 
     if (loading) {
         return (
             <div className={styles.container}>
-                <div className={styles.loading}>加载中...</div>
+                <div className={styles.loading}>{t('loading')}</div>
             </div>
         );
     }
@@ -32,7 +34,7 @@ export default function RetentionChart() {
     if (!data) {
         return (
             <div className={styles.container}>
-                <div className={styles.empty}>暂无数据</div>
+                <div className={styles.empty}>{t('noData')}</div>
             </div>
         );
     }
@@ -76,27 +78,27 @@ export default function RetentionChart() {
 
     return (
         <div className={styles.container}>
-            <h2 className={styles.title}>📊 留存率分析</h2>
+            <h2 className={styles.title}>{t('retentionAnalysis')}</h2>
 
             {/* 关键指标 */}
             <div className={styles.metricsGrid}>
                 <div className={styles.metricCard}>
-                    <div className={styles.metricLabel}>24小时留存</div>
+                    <div className={styles.metricLabel}>{t('retention24h')}</div>
                     <div className={styles.metricValue} style={{ color: LANDING_COLORS.coral }}>{data.retention24h}%</div>
                 </div>
                 <div className={styles.metricCard}>
-                    <div className={styles.metricLabel}>7天留存</div>
+                    <div className={styles.metricLabel}>{t('retention7d')}</div>
                     <div className={styles.metricValue} style={{ color: LANDING_COLORS.pink }}>{data.retention7d}%</div>
                 </div>
                 <div className={styles.metricCard}>
-                    <div className={styles.metricLabel}>30天留存</div>
+                    <div className={styles.metricLabel}>{t('retention30d')}</div>
                     <div className={styles.metricValue} style={{ color: LANDING_COLORS.purple }}>{data.retention30d}%</div>
                 </div>
             </div>
 
             {/* 留存率趋势图 */}
             <div className={styles.chartSection}>
-                <h3 className={styles.chartTitle}>30天留存率趋势</h3>
+                <h3 className={styles.chartTitle}>{t('retentionTrend')}</h3>
                 <ResponsiveContainer width="100%" height={240}>
                     <AreaChart data={data.chartData}>
                         <defs>
@@ -120,7 +122,7 @@ export default function RetentionChart() {
                         <YAxis
                             tick={{ fontSize: 11, fill: 'var(--chart-text-secondary)' }}
                             domain={[0, 100]}
-                            label={{ value: '留存率 (%)', angle: -90, position: 'insideLeft', fill: 'var(--chart-text-secondary)', fontSize: 11 }}
+                            label={{ value: t('retentionRate'), angle: -90, position: 'insideLeft', fill: 'var(--chart-text-secondary)', fontSize: 11 }}
                             axisLine={false}
                             tickLine={false}
                         />
@@ -141,7 +143,7 @@ export default function RetentionChart() {
                             stroke={CHART_COLOR}
                             strokeWidth={3}
                             fill="url(#colorRetention)"
-                            name="留存率"
+                            name={t('retentionOnly')}
                             animationBegin={0}
                             animationDuration={1500}
                         />
@@ -151,14 +153,14 @@ export default function RetentionChart() {
 
             {/* 按难度分类 */}
             <div className={styles.difficultySection}>
-                <h3 className={styles.chartTitle}>按评分分类</h3>
+                <h3 className={styles.chartTitle}>{t('ratingClassification')}</h3>
                 <div className={styles.difficultyGrid}>
                     {Object.entries(data.byDifficulty).map(([key, value]) => {
                         const labels: Record<string, string> = {
-                            again: '再来一次',
-                            hard: '困难',
-                            good: '良好',
-                            easy: '简单'
+                            again: t('again'),
+                            hard: t('hard'),
+                            good: t('good'),
+                            easy: t('easy')
                         };
                         return (
                             <div key={key} className={styles.difficultyCard}>

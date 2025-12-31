@@ -2,6 +2,60 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createActionClient } from '@/lib/supabase-server';
 
 /**
+ * GET /api/decks/[id]
+ * Get a single deck by ID
+ */
+export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const { id: deckId } = await params;
+    console.log('[API GET /decks/:id] Received request for deck:', deckId);
+
+    try {
+        const supabase = await createActionClient();
+
+        // Auth
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) {
+            console.error('[API GET /decks/:id] Auth error:', authError);
+            return NextResponse.json({ success: false, error: { message: 'Unauthorized' } }, { status: 401 });
+        }
+
+        // Fetch deck with card count
+        const { data: deck, error: fetchError } = await supabase
+            .from('decks')
+            .select(`
+                *,
+                cards:cards(count)
+            `)
+            .eq('id', deckId)
+            .single();
+
+        if (fetchError || !deck) {
+            console.error('[API GET /decks/:id] Deck not found or access denied:', fetchError);
+            return NextResponse.json({
+                success: false,
+                error: { message: 'Deck not found or access denied' }
+            }, { status: 404 });
+        }
+
+        console.log('[API GET /decks/:id] Successfully fetched deck:', deckId);
+        return NextResponse.json({
+            success: true,
+            data: deck
+        });
+
+    } catch (error: any) {
+        console.error('[API GET /decks/:id] Unexpected error:', error);
+        return NextResponse.json({
+            success: false,
+            error: { message: error.message }
+        }, { status: 500 });
+    }
+}
+
+/**
  * PUT /api/decks/[id]
  * Update deck information (title, description)
  */

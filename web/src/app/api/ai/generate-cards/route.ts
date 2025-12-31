@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
         }
 
         // 1. Check membership status and limits
-        const supabase = createRouteClient(req);
+        const supabase = await createRouteClient(req);
         const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) {

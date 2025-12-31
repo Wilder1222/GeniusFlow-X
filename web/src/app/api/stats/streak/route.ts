@@ -5,7 +5,7 @@ import { AppError, ErrorCode } from '@/lib/errors';
 
 export async function GET(req: NextRequest) {
     try {
-        const supabase = createRouteClient(req);
+        const supabase = await createRouteClient(req);
 
         const { data: { user }, error: authError } = await supabase.auth.getUser();
         if (authError || !user) {

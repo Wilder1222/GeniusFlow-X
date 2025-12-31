@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { apiClient } from '@/lib/api-client';
 import styles from './streak-counter.module.css';
 
@@ -11,6 +12,7 @@ interface StreakInfo {
 }
 
 export default function StreakCounter() {
+    const t = useTranslations('Gamification');
     const [streakInfo, setStreakInfo] = useState<StreakInfo | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -51,29 +53,29 @@ export default function StreakCounter() {
                     🔥
                 </div>
                 <div className={styles.info}>
-                    <div className={styles.label}>学习连胜</div>
+                    <div className={styles.label}>{t('studyStreak')}</div>
                     <div className={styles.streakValue}>
-                        {streakInfo.currentStreak} 天
+                        {streakInfo.currentStreak} {t('days')}
                     </div>
                 </div>
             </div>
 
             <div className={styles.stats}>
                 <div className={styles.statItem}>
-                    <span className={styles.statLabel}>最长记录</span>
-                    <span className={styles.statValue}>{streakInfo.longestStreak} 天</span>
+                    <span className={styles.statLabel}>{t('longestStreak')}</span>
+                    <span className={styles.statValue}>{streakInfo.longestStreak} {t('days')}</span>
                 </div>
                 <div className={styles.statItem}>
-                    <span className={styles.statLabel}>今日状态</span>
+                    <span className={styles.statLabel}>{t('todayStatus')}</span>
                     <span className={`${styles.statusBadge} ${studiedToday ? styles.completed : styles.pending}`}>
-                        {studiedToday ? '✅ 已完成' : '⏳ 待学习'}
+                        {studiedToday ? t('studiedToday') : t('pendingStudy')}
                     </span>
                 </div>
             </div>
 
             {!studiedToday && streakInfo.currentStreak > 0 && (
                 <div className={styles.warning}>
-                    ⚠️ 今天还没学习，连胜即将中断！
+                    {t('streakWarning')}
                 </div>
             )}
         </div>

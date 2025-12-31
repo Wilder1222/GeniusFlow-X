@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { parseApkg, ApkgImportResult } from '@/lib/apkg-parser';
 import { apiClient } from '@/lib/api-client';
 import { useToast } from '@/lib/contexts/toast-context';
@@ -14,6 +15,7 @@ interface ApkgImportModalProps {
 }
 
 export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImportModalProps) {
+    const t = useTranslations('ApkgImport');
     const toast = useToast();
     const [file, setFile] = useState<File | null>(null);
     const [parsing, setParsing] = useState(false);
@@ -28,7 +30,7 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
         if (selectedFile && selectedFile.name.endsWith('.apkg')) {
             setFile(selectedFile);
         } else {
-            toast.warning('请选择有效的 .apkg 文件');
+            toast.warning(t('selectFile'));
         }
     };
 
@@ -65,10 +67,10 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
             });
 
             if (!data.success) {
-                throw new Error(data.error?.message || '导入失败');
+                throw new Error(data.error?.message || t('importFailed'));
             }
 
-            toast.success(`成功导入 ${data.data.cards_imported} 张卡片到卡组「${preview.deckName}」！`);
+            toast.success(t('importSuccess', { count: data.data.cards_imported, deckName: preview.deckName }));
             onImportComplete(preview.deckName, preview.cards);
             handleClose();
         } catch (error: any) {
@@ -90,7 +92,7 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
         <div className={styles.overlay} onClick={handleClose}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.header}>
-                    <h2>.apkg 文件导入</h2>
+                    <h2>{t('title')}</h2>
                     <button onClick={handleClose} className={styles.closeButton}>
                         ✕
                     </button>
@@ -100,13 +102,13 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
                     <>
                         <div className={styles.content}>
                             <div className={styles.instructions}>
-                                <h3>📦 导入 Anki 卡组</h3>
-                                <p>选择一个 .apkg 文件来导入您的 Anki 卡组</p>
+                                <h3>{t('introTitle')}</h3>
+                                <p>{t('introDesc')}</p>
                                 <ul>
-                                    <li>支持标准 Anki .apkg 格式</li>
-                                    <li>自动提取卡片内容</li>
-                                    <li>保留标签信息</li>
-                                    <li>导入学习进度</li>
+                                    <li>{t('feature1')}</li>
+                                    <li>{t('feature2')}</li>
+                                    <li>{t('feature3')}</li>
+                                    <li>{t('feature4')}</li>
                                 </ul>
                             </div>
 
@@ -119,7 +121,7 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
                                     id="apkg-file"
                                 />
                                 <label htmlFor="apkg-file" className={styles.fileLabel}>
-                                    {file ? file.name : '选择 .apkg 文件'}
+                                    {file ? file.name : t('chooseFile')}
                                 </label>
                                 {file && (
                                     <span className={styles.fileSize}>
@@ -131,14 +133,14 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
 
                         <div className={styles.footer}>
                             <button onClick={handleClose} className={styles.cancelButton}>
-                                取消
+                                {t('cancel')}
                             </button>
                             <button
                                 onClick={handleParse}
                                 disabled={!file || parsing}
                                 className={styles.parseButton}
                             >
-                                {parsing ? '解析中...' : '解析预览'}
+                                {parsing ? t('parsing') : t('parse')}
                             </button>
                         </div>
                     </>
@@ -148,7 +150,7 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
                             <div className={styles.previewHeader}>
                                 <h3>📋 {preview?.deckName}</h3>
                                 <span className={styles.cardCount}>
-                                    {preview?.cards.length} 张卡片
+                                    {t('cardsCount', { count: preview?.cards.length ?? 0 })}
                                 </span>
                             </div>
 
@@ -168,7 +170,7 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
                                 ))}
                                 {preview && preview.cards.length > 10 && (
                                     <div className={styles.moreCards}>
-                                        还有 {preview.cards.length - 10} 张卡片...
+                                        {t('moreCards', { count: preview.cards.length - 10 })}
                                     </div>
                                 )}
                             </div>
@@ -176,14 +178,14 @@ export function ApkgImportModal({ isOpen, onClose, onImportComplete }: ApkgImpor
 
                         <div className={styles.footer}>
                             <button onClick={() => setStep('select')} className={styles.cancelButton}>
-                                返回
+                                {t('back')}
                             </button>
                             <button
                                 onClick={handleImport}
                                 disabled={importing || !preview}
                                 className={styles.importButton}
                             >
-                                {importing ? '导入中...' : `导入 ${preview?.cards.length} 张卡片`}
+                                {importing ? t('importing') : t('importCount', { count: preview?.cards.length ?? 0 })}
                             </button>
                         </div>
                     </>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { createPortal } from 'react-dom';
 import {
     LuSparkles,
@@ -42,6 +43,10 @@ type ModalMode = 'flashcard' | 'resume';
 export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAdded }: AIGeneratorModalProps) {
     const { user } = useAuth();
     const toast = useToast();
+    const tAI = useTranslations('AI');
+    const tDomain = useTranslations('AIDomains');
+    const tError = useTranslations('Errors');
+    const tCommon = useTranslations('Common');
     const [modalMode, setModalMode] = useState<ModalMode>('flashcard');
     const [step, setStep] = useState<Step>('input');
     const [selectedDomain, setSelectedDomain] = useState<AIDomain>('general');
@@ -141,14 +146,14 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
         const allowedTypes = ['.pdf', '.docx', '.txt'];
         const ext = '.' + file.name.split('.').pop()?.toLowerCase();
         if (!allowedTypes.includes(ext)) {
-            setExtractError('不支持的文件格式，请上传 PDF、DOCX 或 TXT 文件');
+            setExtractError(tAI('unsupportedFormat'));
             return;
         }
 
         // Check file size (10MB limit)
         const MAX_FILE_SIZE = 10 * 1024 * 1024;
         if (file.size > MAX_FILE_SIZE) {
-            setExtractError('文件大小超过10MB限制');
+            setExtractError(tAI('fileTooLarge'));
             return;
         }
 
@@ -176,14 +181,14 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
         const allowedTypes = ['.pdf', '.docx', '.txt'];
         const ext = '.' + file.name.split('.').pop()?.toLowerCase();
         if (!allowedTypes.includes(ext)) {
-            setExtractError('不支持的文件格式，请上传 PDF、DOCX 或 TXT 文件');
+            setExtractError(tAI('unsupportedFormat'));
             return;
         }
 
         // Check file size (10MB limit)
         const MAX_FILE_SIZE = 10 * 1024 * 1024;
         if (file.size > MAX_FILE_SIZE) {
-            setExtractError('文件大小超过10MB限制');
+            setExtractError(tAI('fileTooLarge'));
             return;
         }
 
@@ -209,7 +214,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
 
         // 1. Check usage limit BEFORE starting
         if (usageStatus && usageStatus.remaining <= 0) {
-            toast.error('您今天的 AI 生成次数已用尽，请明天再试或升级会员。');
+            toast.error(tAI('usageLimitReached'));
             return;
         }
 
@@ -224,10 +229,10 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
             });
             setGeneratedCards(cards);
             if (!deckId) {
-                const domainConfig = getDomainConfig(selectedDomain);
+                const domainName = tDomain(`${selectedDomain}.name`);
                 setNewDeckTitle(sourceType === 'file' && uploadedFile
                     ? uploadedFile.name.replace(/\.[^.]+$/, '')
-                    : `${domainConfig.name} - ${topic.slice(0, 20)}`);
+                    : `${domainName} - ${topic.slice(0, 20)}`);
             }
             setStep('preview');
             // Refresh usage status after generation
@@ -235,8 +240,8 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
         } catch (error: any) {
             console.error('Generation failed:', error);
             setStep('input');
-            const errorMessage = formatApiError(error);
-            toast.error(errorMessage);
+            const errorCode = formatApiError(error);
+            toast.error(tError(errorCode));
         }
     };
 
@@ -246,7 +251,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
 
         // 1. Check usage limit BEFORE starting
         if (usageStatus && usageStatus.remaining <= 0) {
-            toast.error('您今天的 AI 生成次数已用尽，请明天再试或升级会员。');
+            toast.error(tAI('usageLimitReached'));
             return;
         }
 
@@ -259,8 +264,8 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
             setResumeHasMore(result.hasMore);
             if (!deckId) {
                 setNewDeckTitle(uploadedFile
-                    ? `面试准备 - ${uploadedFile.name.replace(/\.[^.]+$/, '')}`
-                    : '简历面试练习');
+                    ? `${tAI('resumeTitlePrefix')} - ${uploadedFile.name.replace(/\.[^.]+$/, '')}`
+                    : tAI('resumeDefaultTitle'));
             }
             setStep('preview');
             // Refresh usage status after analysis
@@ -268,7 +273,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
         } catch (error: any) {
             console.error('Resume analysis failed:', error);
             setStep('input');
-            toast.error(formatApiError(error));
+            toast.error(tError(formatApiError(error)));
         }
     };
 
@@ -297,7 +302,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
 
         // Check usage limit BEFORE starting
         if (usageStatus && usageStatus.remaining <= 0) {
-            toast.error('您今天的 AI 生成次数已用尽，请明天再试或升级会员。');
+            toast.error(tAI('usageLimitReached'));
             return;
         }
 
@@ -368,7 +373,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
             }
 
             // Show success message
-            toast.success(`已保存 ${generatedCards.length} 张卡片`);
+            toast.success(tAI('saved', { count: generatedCards.length }));
 
             // Refresh usage status after saving
             fetchUsageStatus();
@@ -382,7 +387,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
 
         } catch (error: any) {
             console.error('Save failed:', error);
-            toast.error(`保存失败: ${error.message || '未知错误'}`);
+            toast.error(tAI('saveFailed', { error: error.message || tCommon('unknownError') }));
         } finally {
             setIsSaving(false);
         }
@@ -404,17 +409,17 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                 <div className={styles.header}>
                     <div className={styles.headerTitle}>
                         {step === 'preview' && (
-                            <button onClick={goBack} className={styles.backBtn} title="返回">
+                            <button onClick={goBack} className={styles.backBtn} title={tCommon('back')}>
                                 <LuArrowLeft size={20} />
                             </button>
                         )}
                         <div className={styles.iconBox}>
                             <LuSparkles size={20} />
                         </div>
-                        <h3>AI 闪卡生成</h3>
+                        <h3>{tAI('title')}</h3>
                         {usageStatus && (
                             <span className={styles.usageBadge}>
-                                {usageStatus.remaining}/{usageStatus.limit} 次可用
+                                {tAI('usageRemaining', { remaining: usageStatus.remaining, limit: usageStatus.limit })}
                             </span>
                         )}
                     </div>
@@ -431,14 +436,14 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                             onClick={() => setModalMode('flashcard')}
                         >
                             <LuSparkles size={16} />
-                            闪卡生成
+                            {tAI('flashcardMode')}
                         </button>
                         <button
                             className={`${styles.modeTab} ${modalMode === 'resume' ? styles.active : ''}`}
                             onClick={() => setModalMode('resume')}
                         >
                             <LuBriefcase size={16} />
-                            简历面试
+                            {tAI('resumeMode')}
                         </button>
                     </div>
                 )}
@@ -453,7 +458,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                 <>
                                     {/* Domain Tags - Compact */}
                                     <div className={styles.domainTagsSection}>
-                                        <span className={styles.domainTagsLabel}>选择领域：</span>
+                                        <span className={styles.domainTagsLabel}>{tAI('selectDomain')}</span>
                                         <div className={styles.domainTags}>
                                             {AI_DOMAINS.map(domain => (
                                                 <button
@@ -463,7 +468,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                                     style={{ '--domain-color': domain.color } as React.CSSProperties}
                                                 >
                                                     <span>{domain.icon}</span>
-                                                    <span>{domain.name}</span>
+                                                    <span>{tDomain(`${domain.id}.name`)}</span>
                                                 </button>
                                             ))}
                                         </div>
@@ -476,14 +481,14 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                             onClick={() => setSourceType('text')}
                                         >
                                             <LuFileText size={16} />
-                                            文本输入
+                                            {tAI('textInput')}
                                         </button>
                                         <button
                                             className={`${styles.sourceTab} ${sourceType === 'file' ? styles.active : ''}`}
                                             onClick={() => setSourceType('file')}
                                         >
                                             <LuUpload size={16} />
-                                            上传文件
+                                            {tAI('uploadFile')}
                                         </button>
                                     </div>
 
@@ -494,14 +499,14 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                                 <textarea
                                                     value={topic}
                                                     onChange={(e) => setTopic(e.target.value)}
-                                                    placeholder={`输入主题或粘贴内容，例如：${domainConfig.suggestions[0]}...`}
+                                                    placeholder={tAI('placeholder', { suggestion: (tDomain.raw(`${selectedDomain}.suggestions`) as string[])[0] })}
                                                     className={styles.topicTextarea}
                                                     autoFocus
                                                 />
                                             </div>
                                             <div className={styles.suggestions}>
-                                                <span>推荐：</span>
-                                                {domainConfig.suggestions.map(t => (
+                                                <span>{tAI('suggestions')}</span>
+                                                {(tDomain.raw(`${selectedDomain}.suggestions`) as string[]).map((t: string) => (
                                                     <button key={t} onClick={() => setTopic(t)} className={styles.tag}>{t}</button>
                                                 ))}
                                             </div>
@@ -527,28 +532,28 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                                 {isExtracting ? (
                                                     <div className={styles.uploadLoading}>
                                                         <LuLoader className={styles.spinner} size={32} />
-                                                        <span>正在提取文本...</span>
+                                                        <span>{tAI('extracting')}</span>
                                                     </div>
                                                 ) : uploadedFile ? (
                                                     <div className={styles.uploadedFileInfo}>
                                                         <LuFileText size={32} />
                                                         <span className={styles.fileName}>{uploadedFile.name}</span>
                                                         <span className={styles.fileSize}>
-                                                            {extractedText ? `${extractedText.length} 字符` : '提取中...'}
+                                                            {extractedText ? `${extractedText.length} ${tAI('characters')}` : tAI('extracting')}
                                                         </span>
                                                     </div>
                                                 ) : (
                                                     <div className={styles.uploadPrompt}>
                                                         <LuUpload size={32} />
-                                                        <span>拖拽文件到此处，或点击上传</span>
-                                                        <span className={styles.uploadHint}>支持 PDF、DOCX、TXT 格式，最大 10MB</span>
+                                                        <span>{tAI('dragDrop')}</span>
+                                                        <span className={styles.uploadHint}>{tAI('supportedFormats')}</span>
                                                     </div>
                                                 )}
                                             </div>
                                             {extractError && <p className={styles.errorText}>{extractError}</p>}
                                             {extractedText && (
                                                 <div className={styles.extractedPreview}>
-                                                    <span className={styles.previewLabel}>提取内容预览：</span>
+                                                    <span className={styles.previewLabel}>{tAI('extractPreview')}</span>
                                                     <p>{extractedText.slice(0, 200)}...</p>
                                                 </div>
                                             )}
@@ -558,7 +563,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                     {/* Card Count & Generate */}
                                     <div className={styles.generateActions}>
                                         <div className={styles.countSelector}>
-                                            <span className={styles.selectorLabel}>数量：</span>
+                                            <span className={styles.selectorLabel}>{tAI('quantity')}</span>
                                             <div className={styles.countButtons}>
                                                 {(['auto', 3, 5, 10] as const).map(count => (
                                                     <button
@@ -566,7 +571,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                                         onClick={() => setCardCount(count)}
                                                         className={`${styles.countBtn} ${cardCount === count ? styles.countBtnActive : ''}`}
                                                     >
-                                                        {count === 'auto' ? '自动' : `${count}张`}
+                                                        {count === 'auto' ? tAI('auto') : `${count}${tAI('cards')}`}
                                                     </button>
                                                 ))}
                                             </div>
@@ -577,7 +582,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                             className={styles.primaryBtn}
                                         >
                                             <LuSparkles size={18} />
-                                            <span>开始生成</span>
+                                            <span>{tAI('generate')}</span>
                                         </button>
                                     </div>
                                 </>
@@ -587,8 +592,8 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                             {modalMode === 'resume' && (
                                 <>
                                     <div className={styles.resumeIntro}>
-                                        <h4>📄 简历面试模式</h4>
-                                        <p>上传您的简历，AI将分析并生成模拟面试问答卡片</p>
+                                        <h4>{tAI('resumeIntroTitle')}</h4>
+                                        <p>{tAI('resumeIntroDesc')}</p>
                                     </div>
 
                                     <div
@@ -607,21 +612,21 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                         {isExtracting ? (
                                             <div className={styles.uploadLoading}>
                                                 <LuLoader className={styles.spinner} size={32} />
-                                                <span>正在提取简历内容...</span>
+                                                <span>{tAI('extractingResume')}</span>
                                             </div>
                                         ) : uploadedFile ? (
                                             <div className={styles.uploadedFileInfo}>
                                                 <LuFileText size={32} />
                                                 <span className={styles.fileName}>{uploadedFile.name}</span>
                                                 <span className={styles.fileSize}>
-                                                    {extractedText ? `${extractedText.length} 字符` : '提取中...'}
+                                                    {extractedText ? `${extractedText.length} ${tAI('characters')}` : tAI('extracting')}
                                                 </span>
                                             </div>
                                         ) : (
                                             <div className={styles.uploadPrompt}>
                                                 <LuUpload size={32} />
-                                                <span>拖拽简历到此处，或点击上传</span>
-                                                <span className={styles.uploadHint}>支持 PDF、DOCX、TXT 格式，最大 10MB</span>
+                                                <span>{tAI('dragDrop')}</span>
+                                                <span className={styles.uploadHint}>{tAI('supportedFormats')}</span>
                                             </div>
                                         )}
                                     </div>
@@ -634,7 +639,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                             className={styles.primaryBtn}
                                         >
                                             <LuBriefcase size={18} />
-                                            <span>开始分析</span>
+                                            <span>{tAI('startAnalysis')}</span>
                                         </button>
                                     </div>
                                 </>
@@ -648,8 +653,8 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                             <div className={styles.loaderWrapper}>
                                 <LuLoader size={48} className={styles.spinner} />
                             </div>
-                            <h4>正在深入分析知识网络...</h4>
-                            <p>AI 正在为你整理 "{domainConfig.name}" 领域的核心考点</p>
+                            <h4>{tAI('generating')}</h4>
+                            <p>{tAI('generatingHint', { domain: tDomain(`${selectedDomain}.name`) })}</p>
                         </div>
                     )}
 
@@ -659,7 +664,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                             <div className={styles.previewHeader}>
                                 <h4>
                                     <LuCheck size={18} className={styles.successIcon} />
-                                    已生成 {generatedCards.length} 张卡片
+                                    {tAI('generated', { count: generatedCards.length })}
                                 </h4>
                             </div>
 
@@ -672,7 +677,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                                 className={styles.regenerateBtn}
                                                 onClick={() => handleRegenerateCard(i)}
                                                 disabled={regeneratingIndex !== null}
-                                                title="重新生成此卡片"
+                                                title={tAI('regenerate')}
                                             >
                                                 <LuRefreshCw size={14} className={regeneratingIndex === i ? styles.spinning : ''} />
                                             </button>
@@ -695,7 +700,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                             {/* Resume Suggestions - Only in resume mode */}
                             {modalMode === 'resume' && resumeSuggestions.length > 0 && (
                                 <div className={styles.resumeSuggestions}>
-                                    <h5>📝 简历优化建议</h5>
+                                    <h5>{tAI('resumeSuggestions')}</h5>
                                     <ul>
                                         {resumeSuggestions.map((s, i) => (
                                             <li key={i}>{s}</li>
@@ -715,12 +720,12 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                         {isLoadingMore ? (
                                             <>
                                                 <LuLoader size={16} className={styles.spinning} />
-                                                生成中...
+                                                {tAI('generatingMore')}
                                             </>
                                         ) : (
                                             <>
                                                 <LuPlus size={16} />
-                                                继续生成更多面试题
+                                                {tAI('continueGenerate')}
                                             </>
                                         )}
                                     </button>
@@ -744,7 +749,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                         className={styles.saveSelect}
                                         disabled={!!deckId}
                                     >
-                                        <option value="new">✨ 创建新牌组</option>
+                                        <option value="new">✨ {tAI('createNewDeck')}</option>
                                         {userDecks.map(d => (
                                             <option key={d.id} value={d.id}>📚 {d.title}</option>
                                         ))}
@@ -754,7 +759,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                             type="text"
                                             value={newDeckTitle}
                                             onChange={(e) => setNewDeckTitle(e.target.value)}
-                                            placeholder="输入新牌组名称"
+                                            placeholder={tAI('newDeckPlaceholder')}
                                             className={styles.saveInput}
                                         />
                                     )}
@@ -764,7 +769,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                         className={styles.saveBtn}
                                     >
                                         {isSaving ? <LuLoader className={styles.spinning} size={14} /> : <LuSave size={14} />}
-                                        保存卡片
+                                        {tAI('saveCards')}
                                     </button>
                                 </div>
                             </div>

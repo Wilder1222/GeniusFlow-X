@@ -38,64 +38,25 @@ export async function POST(req: NextRequest) {
             return errorResponse(new AppError('Invalid XP data', ErrorCode.INVALID_INPUT, 400));
         }
 
-        // Get current profile
-        const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('xp, level')
-            .eq('id', user.id)
-            .single();
+        // Use RPC to update XP, Level and record transaction in one transaction
+        const { data: result, error: rpcError } = await supabase.rpc('award_xp', {
+            p_user_id: user.id,
+            p_amount: amount,
+            p_reason: reason,
+            p_metadata: metadata || null
+        });
 
-        if (profileError) {
-            console.error('[XP] Error fetching profile:', profileError);
-            return errorResponse(profileError);
-        }
-
-        const currentXp = profile.xp || 0;
-        const currentLevel = profile.level || 1;
-        const newXp = currentXp + amount;
-        const newLevel = calculateLevel(newXp);
-        const leveledUp = newLevel > currentLevel;
-
-        // Update profile
-        const { error: updateError } = await supabase
-            .from('profiles')
-            .update({
-                xp: newXp,
-                level: newLevel,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', user.id);
-
-        if (updateError) {
-            console.error('[XP] Error updating profile:', updateError);
-            return errorResponse(updateError);
-        }
-
-        // Record transaction
-        const { error: txError } = await supabase
-            .from('xp_transactions')
-            .insert({
-                user_id: user.id,
-                amount,
-                reason,
-                metadata: metadata || null
-            });
-
-        if (txError) {
-            console.error('[XP] Error recording transaction:', txError);
-            // Don't fail the request if transaction logging fails
+        if (rpcError) {
+            console.error('[XP] RPC Error:', rpcError);
+            return errorResponse(rpcError);
         }
 
         return successResponse({
-            xp: newXp,
-            level: newLevel,
-            leveledUp,
-            xpGained: amount,
-            nextLevelXp: xpForNextLevel(newLevel),
-            currentLevelXp: getXPForLevel(newLevel),
-            progress: ((newXp - getXPForLevel(newLevel)) / (xpForNextLevel(newLevel) - getXPForLevel(newLevel))) * 100
+            ...result,
+            nextLevelXp: xpForNextLevel(result.level),
+            currentLevelXp: getXPForLevel(result.level),
+            progress: ((result.xp - getXPForLevel(result.level)) / (xpForNextLevel(result.level) - getXPForLevel(result.level))) * 100
         });
-
     } catch (error: any) {
         console.error('[XP] Error:', error);
         return errorResponse(error);

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import { useTranslations } from 'next-intl';
 import { motion, PanInfo, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 import { Card } from '@/types/decks';
 import { Rating } from '@/lib/study';
@@ -16,10 +17,12 @@ interface StudyCardProps {
     onGrade: (rating: Rating) => void;
     ttsEnabled?: boolean;
     ttsAutoPlay?: boolean;
+    disabled?: boolean;
 }
 
-export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = true, ttsAutoPlay = false }: StudyCardProps) {
+export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = true, ttsAutoPlay = false, disabled = false }: StudyCardProps) {
     const { speak, isSpeaking } = useTTS();
+    const t = useTranslations('StudyCard');
 
     // Swipe values
     const x = useMotionValue(0);
@@ -41,17 +44,22 @@ export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = tr
     };
 
     const handleDragEnd = (event: any, info: PanInfo) => {
-        const threshold = 120;
-        if (info.offset.x > threshold && isRevealed) {
-            onGrade(Rating.Good);
-        } else if (info.offset.x < -threshold && isRevealed) {
-            onGrade(Rating.Again);
-        }
-    };
+        const threshold = 150; // Increased threshold
+        const { x: dx, y: dy } = info.offset;
 
-    const handleClick = () => {
-        if (onReveal) {
-            onReveal();
+        // Calculate if the swipe is primarily horizontal (within 30 degrees)
+        const angle = Math.abs(Math.atan2(dy, dx));
+        const angleDeg = (angle * 180) / Math.PI;
+
+        // Horizontal means it's close to 0 (right) or 180 (left)
+        const isHorizontal = angleDeg < 30 || angleDeg > 150;
+
+        if (isHorizontal && isRevealed) {
+            if (dx > threshold) {
+                onGrade(Rating.Good);
+            } else if (dx < -threshold) {
+                onGrade(Rating.Again);
+            }
         }
     };
 
@@ -60,12 +68,15 @@ export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = tr
             <motion.div
                 className={styles.perspectiveContainer}
                 style={{ x, rotate, touchAction: 'none' }}
-                drag={isRevealed ? "x" : false}
-                dragListener={isRevealed}
+                drag={isRevealed && !disabled ? "x" : false}
+                dragListener={isRevealed && !disabled}
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.4}
                 onDragEnd={handleDragEnd}
-                onClick={handleClick}
+                onTap={() => {
+                    // motion's onTap only fires if it wasn't a drag
+                    if (onReveal && !disabled) onReveal();
+                }}
             >
                 {/* Swipe Feedback Overlays */}
                 <AnimatePresence>
@@ -74,7 +85,7 @@ export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = tr
                             className={`${styles.swipeIndicator} ${styles.indicatorLeft}`}
                             style={{ opacity: opacityLeft }}
                         >
-                            忘记
+                            {t('forgot')}
                         </motion.div>
                     )}
                     {isRevealed && x.get() > 20 && (
@@ -82,7 +93,7 @@ export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = tr
                             className={`${styles.swipeIndicator} ${styles.indicatorRight}`}
                             style={{ opacity: opacityRight }}
                         >
-                            记得
+                            {t('remember')}
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -99,11 +110,11 @@ export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = tr
                     {/* FRONT FACE */}
                     <div className={styles.cardFront}>
                         <div className={styles.cardContent}>
-                            <div className={styles.tag}>问题</div>
+                            <div className={styles.tag}>{t('question')}</div>
                             <div className={styles.text}>{card.front}</div>
                         </div>
                         <div className={styles.cardFooter}>
-                            <span className={styles.hint}>点击卡片显示答案</span>
+                            <span className={styles.hint}>{t('clickToReveal')}</span>
                         </div>
                         {ttsEnabled && (
                             <button
@@ -118,13 +129,13 @@ export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = tr
                     {/* BACK FACE */}
                     <div className={styles.cardBack}>
                         <div className={styles.cardContent}>
-                            <div className={styles.tag}>答案</div>
+                            <div className={styles.tag}>{t('answer')}</div>
                             <div className={styles.text}>
                                 <MarkdownContent content={card.back} />
                             </div>
                         </div>
                         <div className={styles.cardFooter}>
-                            <span className={styles.hint}>左右滑动卡片快速评分</span>
+                            <span className={styles.hint}>{t('swipeToGrade')}</span>
                         </div>
                         {ttsEnabled && (
                             <button

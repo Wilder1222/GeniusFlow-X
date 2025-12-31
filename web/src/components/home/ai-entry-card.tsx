@@ -1,6 +1,7 @@
 'use client';
 
 import { LuSparkles, LuBrain, LuArrowRight } from 'react-icons/lu';
+import { useTranslations } from 'next-intl';
 import styles from './ai-entry-card.module.css';
 
 interface AIEntryCardProps {
@@ -8,6 +9,8 @@ interface AIEntryCardProps {
 }
 
 export default function AIEntryCard({ onStart }: AIEntryCardProps) {
+    const t = useTranslations('Home');
+
     return (
         <div className={styles.card}>
             <div className={styles.content}>
@@ -16,15 +19,15 @@ export default function AIEntryCard({ onStart }: AIEntryCardProps) {
                 </div>
                 <div className={styles.text}>
                     <h2 className={styles.title}>
-                        AI 智能生成闪卡
+                        {t('aiTitle')}
                         <span className={styles.badge}>BETA</span>
                     </h2>
                     <p className={styles.description}>
-                        输入任意主题，AI 即可为您瞬间构建专属知识库。无论是准备考试还是学习新技能，都能事半功倍。
+                        {t('aiDescription')}
                     </p>
                 </div>
                 <button onClick={onStart} className={styles.actionButton}>
-                    <span>立刻体验</span>
+                    <span>{t('tryNow')}</span>
                     <LuArrowRight size={18} />
                 </button>
             </div>

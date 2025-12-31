@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip, Customized } from 'recharts';
+import { useTranslations } from 'next-intl';
 import { useStats } from '@/lib/contexts/stats-context';
 import styles from './skill-radar-chart.module.css';
 
@@ -26,6 +27,7 @@ const ABILITY_COLORS = {
 
 export default function SkillRadarChart() {
     const { streak, learning, summary, retention, loading } = useStats();
+    const t = useTranslations('StatsCharts');
 
     // Compute skills from context data
     const skills: SkillData | null = (streak && learning && summary && retention) ? {
@@ -42,7 +44,7 @@ export default function SkillRadarChart() {
             <div className={styles.container}>
                 <div className={styles.loading}>
                     <div className={styles.spinner}></div>
-                    <span>加载中...</span>
+                    <span>{t('loading')}</span>
                 </div>
             </div>
         );
@@ -51,18 +53,18 @@ export default function SkillRadarChart() {
     if (!skills) {
         return (
             <div className={styles.container}>
-                <div className={styles.empty}>暂无数据</div>
+                <div className={styles.empty}>{t('noData')}</div>
             </div>
         );
     }
 
     const radarData = [
-        { subject: '记忆力', value: skills.memory, fullMark: 100, color: ABILITY_COLORS.memory },
-        { subject: '专注力', value: skills.focus, fullMark: 100, color: ABILITY_COLORS.focus },
-        { subject: '坚持力', value: skills.persistence, fullMark: 100, color: ABILITY_COLORS.persistence },
-        { subject: '效率', value: skills.efficiency, fullMark: 100, color: ABILITY_COLORS.efficiency },
-        { subject: '正确率', value: skills.accuracy, fullMark: 100, color: ABILITY_COLORS.accuracy },
-        { subject: '学习时长', value: skills.studyTime, fullMark: 100, color: ABILITY_COLORS.studyTime },
+        { subject: t('memory'), value: skills.memory, fullMark: 100, color: ABILITY_COLORS.memory },
+        { subject: t('focus'), value: skills.focus, fullMark: 100, color: ABILITY_COLORS.focus },
+        { subject: t('persistence'), value: skills.persistence, fullMark: 100, color: ABILITY_COLORS.persistence },
+        { subject: t('efficiency'), value: skills.efficiency, fullMark: 100, color: ABILITY_COLORS.efficiency },
+        { subject: t('accuracy'), value: skills.accuracy, fullMark: 100, color: ABILITY_COLORS.accuracy },
+        { subject: t('studyDuration'), value: skills.studyTime, fullMark: 100, color: ABILITY_COLORS.studyTime },
     ];
 
     const totalScore = Object.values(skills).reduce((sum, val) => sum + val, 0) / 6;
@@ -85,9 +87,9 @@ export default function SkillRadarChart() {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h2 className={styles.title}>⚡ 能力雷达图</h2>
+                <h2 className={styles.title}>{t('abilityRadar')}</h2>
                 <div className={styles.overallScore}>
-                    <span className={styles.scoreLabel}>综合评分</span>
+                    <span className={styles.scoreLabel}>{t('overallScore')}</span>
                     <span className={styles.scoreValue}>{totalScore.toFixed(1)}</span>
                 </div>
             </div>
@@ -115,7 +117,7 @@ export default function SkillRadarChart() {
                             axisLine={false}
                         />
                         <Radar
-                            name="能力值"
+                            name={t('abilityValue')}
                             dataKey="value"
                             stroke="var(--primary-color)"
                             strokeWidth={3}
@@ -134,7 +136,7 @@ export default function SkillRadarChart() {
                                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
                             }}
                             cursor={false} // clean look
-                            formatter={(value: any) => [`${value.toFixed(1)}`, '能力值']}
+                            formatter={(value: any) => [`${value.toFixed(1)}`, t('abilityValue')]}
                         />
                     </RadarChart>
                 </ResponsiveContainer>

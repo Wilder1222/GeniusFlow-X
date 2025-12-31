@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { apiClient } from '@/lib/api-client';
 import { motion } from 'framer-motion';
 import { LuTrophy, LuSparkles } from 'react-icons/lu';
@@ -9,7 +10,7 @@ import styles from './achievement-list.module.css';
 
 interface Achievement {
     id: string;
-    code: string;
+    key: string;
     name: string;
     description: string;
     icon: string;
@@ -19,6 +20,7 @@ interface Achievement {
 }
 
 export default function AchievementList() {
+    const t = useTranslations('Gamification');
     const [achievements, setAchievements] = useState<Achievement[]>([]);
     const [loading, setLoading] = useState(true);
     const isFetchingRef = useRef(false);
@@ -49,12 +51,12 @@ export default function AchievementList() {
                 <div className={styles.header}>
                     <div className={styles.titleGroup}>
                         <LuTrophy className={styles.titleIcon} />
-                        <h2 className={styles.title}>成就徽章</h2>
+                        <h2 className={styles.title}>{t('achievementBadges')}</h2>
                     </div>
                 </div>
                 <div className={styles.loading}>
                     <div className={styles.spinner}></div>
-                    <span>加载成就中...</span>
+                    <span>{t('loadingAchievements')}</span>
                 </div>
             </div>
         );
@@ -72,11 +74,11 @@ export default function AchievementList() {
                     >
                         <LuTrophy className={styles.titleIcon} />
                     </motion.div>
-                    <h2 className={styles.title}>成就徽章</h2>
+                    <h2 className={styles.title}>{t('achievementBadges')}</h2>
                 </div>
                 <div className={styles.progressBadge}>
                     <LuSparkles className={styles.sparkleIcon} />
-                    <span>{unlockedCount} / {achievements.length} 已解锁</span>
+                    <span>{t('unlockedCount', { count: unlockedCount, total: achievements.length })}</span>
                 </div>
             </div>
 
@@ -99,7 +101,7 @@ export default function AchievementList() {
                         }}
                     >
                         <AchievementCard
-                            code={achievement.code}
+                            code={achievement.key}
                             name={achievement.name}
                             description={achievement.description}
                             icon={achievement.icon}

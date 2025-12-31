@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Card } from '@/types/decks';
 import ImageUpload from '@/components/media/image-upload';
 import { deleteImage } from '@/lib/media';
@@ -24,6 +25,7 @@ interface EditCardModalProps {
 }
 
 export default function EditCardModal({ isOpen, card, userId, deckId, onClose, onSave }: EditCardModalProps) {
+    const t = useTranslations('EditCard');
     const toast = useToast();
     const [front, setFront] = useState('');
     const [back, setBack] = useState('');
@@ -46,7 +48,7 @@ export default function EditCardModal({ isOpen, card, userId, deckId, onClose, o
 
     const handleSave = async () => {
         if (!front.trim() || !back.trim()) {
-            toast.warning('正面和背面不能为空');
+            toast.warning(t('emptyError'));
             return;
         }
 
@@ -101,7 +103,7 @@ export default function EditCardModal({ isOpen, card, userId, deckId, onClose, o
         <div className={styles.overlay} onClick={handleOverlayClick} onKeyDown={handleKeyDown}>
             <div className={styles.modal}>
                 <div className={styles.header}>
-                    <h2 className={styles.title}>编辑卡片</h2>
+                    <h2 className={styles.title}>{t('title')}</h2>
                     <button
                         className={styles.closeButton}
                         onClick={onClose}
@@ -113,39 +115,39 @@ export default function EditCardModal({ isOpen, card, userId, deckId, onClose, o
 
                 <form className={styles.form} onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>正面（问题）</label>
+                        <label className={styles.label}>{t('front')}</label>
                         <textarea
                             className={styles.textarea}
                             value={front}
                             onChange={(e) => setFront(e.target.value)}
-                            placeholder="输入问题..."
+                            placeholder={t('frontPlaceholder')}
                             autoFocus
                             disabled={saving}
                         />
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>背面（答案）</label>
+                        <label className={styles.label}>{t('back')}</label>
                         <textarea
                             className={styles.textarea}
                             value={back}
                             onChange={(e) => setBack(e.target.value)}
-                            placeholder="输入答案..."
+                            placeholder={t('backPlaceholder')}
                             disabled={saving}
                         />
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>标签</label>
+                        <label className={styles.label}>{t('tags')}</label>
                         <input
                             type="text"
                             className={styles.input}
                             value={tags}
                             onChange={(e) => setTags(e.target.value)}
-                            placeholder="标签1, 标签2, ..."
+                            placeholder={t('tagsPlaceholder')}
                             disabled={saving}
                         />
-                        <span className={styles.hint}>使用逗号分隔多个标签</span>
+                        <span className={styles.hint}>{t('tagsHint')}</span>
                     </div>
 
                     <div className={styles.formGroup}>
@@ -154,7 +156,7 @@ export default function EditCardModal({ isOpen, card, userId, deckId, onClose, o
                             deckId={deckId}
                             cardId={card?.id || 'temp'}
                             currentImage={frontMedia}
-                            label="正面图片（可选）"
+                            label={t('frontImage')}
                             onUploadComplete={(url) => setFrontMedia(url)}
                             onDelete={() => setFrontMedia(null)}
                         />
@@ -166,7 +168,7 @@ export default function EditCardModal({ isOpen, card, userId, deckId, onClose, o
                             deckId={deckId}
                             cardId={card?.id || 'temp'}
                             currentImage={backMedia}
-                            label="背面图片（可选）"
+                            label={t('backImage')}
                             onUploadComplete={(url) => setBackMedia(url)}
                             onDelete={() => setBackMedia(null)}
                         />
@@ -179,14 +181,14 @@ export default function EditCardModal({ isOpen, card, userId, deckId, onClose, o
                             onClick={onClose}
                             disabled={saving}
                         >
-                            取消
+                            {t('cancel')}
                         </button>
                         <button
                             type="submit"
                             className={`${styles.button} ${styles.saveButton}`}
                             disabled={saving}
                         >
-                            {saving ? '保存中...' : '保存'}
+                            {saving ? t('saving') : t('save')}
                         </button>
                     </div>
                 </form>

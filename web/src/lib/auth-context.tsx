@@ -91,11 +91,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Auto-redirect to login if not authenticated
     useEffect(() => {
-        // Public routes that don't require authentication
-        // Landing page (root '/') is public, exact match required
+        // Public routes that don't require authentication (without locale prefix)
         const publicRoutes = ['/auth/login', '/auth/signup', '/auth/register', '/user'];
-        const isLandingPage = pathname === '/';
-        const isPublicRoute = isLandingPage || publicRoutes.some(route => pathname?.startsWith(route));
+
+        // Landing page can be '/', '/en', or '/zh' (with locale prefix)
+        const isLandingPage = pathname === '/' || pathname === '/en' || pathname === '/zh';
+
+        // Check if current path matches any public route (accounting for locale prefix)
+        const isPublicRoute = isLandingPage || publicRoutes.some(route => {
+            // Check both with and without locale prefix
+            return pathname?.startsWith(route) ||
+                pathname?.startsWith(`/en${route}`) ||
+                pathname?.startsWith(`/zh${route}`);
+        });
 
         // If not loading, no user, and not on a public route, redirect to login
         if (!loading && !user && pathname && !isPublicRoute) {
@@ -105,7 +113,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // If not loading, user is logged in, and on login/signup/register page, redirect to home
         const authPages = ['/auth/login', '/auth/signup', '/auth/register'];
-        if (!loading && user && pathname && authPages.some(route => pathname.startsWith(route))) {
+        const isAuthPage = authPages.some(route => {
+            return pathname?.startsWith(route) ||
+                pathname?.startsWith(`/en${route}`) ||
+                pathname?.startsWith(`/zh${route}`);
+        });
+
+        if (!loading && user && pathname && isAuthPage) {
             console.log('[AuthProvider] User already logged in, redirecting to /home');
             router.push('/home');
         }

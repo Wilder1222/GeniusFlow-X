@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useToast } from '@/lib/contexts/toast-context';
 import styles from './create-deck-modal.module.css';
 
@@ -12,6 +13,7 @@ interface CreateDeckModalProps {
 
 export function CreateDeckModal({ isOpen, onClose, onSubmit }: CreateDeckModalProps) {
     const toast = useToast();
+    const t = useTranslations('CreateDeck');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [isPublic, setIsPublic] = useState(false);
@@ -33,7 +35,7 @@ export function CreateDeckModal({ isOpen, onClose, onSubmit }: CreateDeckModalPr
             onClose();
         } catch (error) {
             console.error('Create deck failed:', error);
-            toast.error('创建失败，请重试');
+            toast.error(t('failed'));
         } finally {
             setLoading(false);
         }
@@ -43,30 +45,30 @@ export function CreateDeckModal({ isOpen, onClose, onSubmit }: CreateDeckModalPr
         <div className={styles.overlay} onClick={onClose}>
             <div className={styles.modal} onClick={e => e.stopPropagation()}>
                 <div className={styles.header}>
-                    <h2 className={styles.title}>新建卡组</h2>
+                    <h2 className={styles.title}>{t('title')}</h2>
                 </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>名称</label>
+                        <label className={styles.label}>{t('name')}</label>
                         <input
                             type="text"
                             className={styles.input}
                             value={title}
                             onChange={e => setTitle(e.target.value)}
-                            placeholder="例如：英语四级词汇"
+                            placeholder={t('namePlaceholder')}
                             autoFocus
                             required
                         />
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>描述 (可选)</label>
+                        <label className={styles.label}>{t('description')}</label>
                         <textarea
                             className={styles.textarea}
                             value={description}
                             onChange={e => setDescription(e.target.value)}
-                            placeholder="简单描述这个卡组的内容..."
+                            placeholder={t('descriptionPlaceholder')}
                         />
                     </div>
 
@@ -79,14 +81,14 @@ export function CreateDeckModal({ isOpen, onClose, onSubmit }: CreateDeckModalPr
                             onClick={onClose}
                             disabled={loading}
                         >
-                            取消
+                            {t('cancel')}
                         </button>
                         <button
                             type="submit"
                             className={styles.submitBtn}
                             disabled={loading || !title.trim()}
                         >
-                            {loading ? '创建中...' : '创建'}
+                            {loading ? t('creating') : t('create')}
                         </button>
                     </div>
                 </form>

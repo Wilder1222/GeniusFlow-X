@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components';
 import { followUser, unfollowUser } from '@/lib/social';
 import styles from './follow-button.module.css';
@@ -18,6 +19,7 @@ export function FollowButton({
     onFollowChange,
     size = 'medium',
 }: FollowButtonProps) {
+    const t = useTranslations('Profile');
     const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
     const [loading, setLoading] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
@@ -36,18 +38,18 @@ export function FollowButton({
                 onFollowChange?.(true);
             }
         } catch (err) {
-            console.error('关注操作失败:', err);
+            console.error('Follow action failed:', err);
         } finally {
             setLoading(false);
         }
     };
 
     const getButtonContent = () => {
-        if (loading) return '处理中...';
+        if (loading) return t('processing');
         if (isFollowing) {
-            return isHovering ? '取消关注' : '已关注';
+            return isHovering ? t('unfollow') : t('followingStatus');
         }
-        return '关注';
+        return t('follow');
     };
 
     return (

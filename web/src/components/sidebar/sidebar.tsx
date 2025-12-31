@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { usePathname } from 'next/navigation';
 import styles from './sidebar.module.css';
 
 interface NavItem {
-    label: string;
+    labelKey: string;
     href: string;
     icon?: string;
 }
@@ -16,13 +17,13 @@ export interface SidebarProps {
 }
 
 const defaultItems: NavItem[] = [
-    { label: '仪表盘', href: '/', icon: '📊' },
-    { label: '学习', href: '/study', icon: '📚' },
-    { label: '牌组', href: '/decks', icon: '🗂️' },
-    { label: 'AI 助手', href: '/ai', icon: '✨' },
-    { label: '统计', href: '/stats', icon: '📈' },
-    { label: '个人资料', href: '/profile', icon: '👤' },
-    { label: '设置', href: '/settings', icon: '⚙️' },
+    { labelKey: 'dashboard', href: '/', icon: '📊' },
+    { labelKey: 'study', href: '/study', icon: '📚' },
+    { labelKey: 'decks', href: '/decks', icon: '🗂️' },
+    { labelKey: 'aiAssistant', href: '/ai', icon: '✨' },
+    { labelKey: 'stats', href: '/stats', icon: '📈' },
+    { labelKey: 'profile', href: '/profile', icon: '👤' },
+    { labelKey: 'settings', href: '/settings', icon: '⚙️' },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -30,12 +31,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
     const pathname = usePathname();
     const [collapsed, setCollapsed] = useState(false);
+    const t = useTranslations('Sidebar');
+
+    // Extract locale-less path for comparison
+    const pathWithoutLocale = pathname.replace(/^\/(en|zh)/, '') || '/';
 
     return (
         <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
             <nav className={styles.nav}>
                 {items.map((item) => {
-                    const isActive = pathname === item.href;
+                    const isActive = pathWithoutLocale === item.href ||
+                        (item.href !== '/' && pathWithoutLocale.startsWith(item.href));
                     return (
                         <Link
                             key={item.href}
@@ -43,7 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             className={`${styles.navItem} ${isActive ? styles.active : ''}`}
                         >
                             {item.icon && <span className={styles.icon}>{item.icon}</span>}
-                            <span className={styles.label}>{item.label}</span>
+                            <span className={styles.label}>{t(item.labelKey)}</span>
                         </Link>
                     );
                 })}
@@ -52,7 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
                 className={styles.collapseButton}
                 onClick={() => setCollapsed(!collapsed)}
-                aria-label={collapsed ? '展开侧边栏' : '收起侧边栏'}
+                aria-label={collapsed ? t('expand') : t('collapse')}
             >
                 {collapsed ? '→' : '←'}
             </button>

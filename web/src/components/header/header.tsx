@@ -1,12 +1,14 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link'
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { usePathname } from 'next/navigation';
 import styles from './header.module.css';
 import { Button } from '../button';
 import { useAuth } from '@/lib/auth-context';
 import UserSettingsPanel from '../user-settings-panel/user-settings-panel';
+import LanguageSwitcher from '../common/language-switcher';
 
 export interface HeaderProps {
     title?: string;
@@ -19,13 +21,16 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
     const { user, loading } = useAuth();
     const pathname = usePathname();
+    const t = useTranslations('Header');
 
     const navItems = [
-        { label: 'Home', href: '/home', icon: '🏠' },
-        { label: 'Decks', href: '/decks', icon: '🗂️' },
-        { label: 'Stats', href: '/stats', icon: '📊' },
-        // { label: 'Pricing', href: '/pricing', icon: '💎' },
+        { labelKey: 'home', href: '/home', icon: '🏠' },
+        { labelKey: 'decks', href: '/decks', icon: '🗂️' },
+        { labelKey: 'stats', href: '/stats', icon: '📊' },
     ];
+
+    // Extract locale-less path for comparison
+    const pathWithoutLocale = pathname.replace(/^\/(en|zh)/, '') || '/';
 
     return (
         <header className={styles.header}>
@@ -41,33 +46,35 @@ export const Header: React.FC<HeaderProps> = ({
                 {/* Center: Navigation Card */}
                 <nav className={styles.navCard}>
                     <div className={styles.navContent}>
-                        {navItems.map((item) => (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`${styles.navItem} ${pathname === item.href ? styles.active : ''}`}
-                            >
-                                {item.label}
-                            </Link>
-                        ))}
-                        {/* <Link href="/add" className={styles.navItem}>
-                            Add
-                        </Link> */}
+                        {navItems.map((item) => {
+                            const isActive = pathWithoutLocale === item.href ||
+                                (item.href !== '/' && pathWithoutLocale.startsWith(item.href));
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={`${styles.navItem} ${isActive ? styles.active : ''}`}
+                                >
+                                    {t(item.labelKey)}
+                                </Link>
+                            );
+                        })}
                     </div>
                 </nav>
 
                 {/* Right: User Settings */}
                 {showAuth && !loading && (
                     <div className={styles.actions}>
+                        <LanguageSwitcher />
                         {user ? (
                             <UserSettingsPanel />
                         ) : (
                             <>
                                 <Link href="/auth/login">
-                                    <Button variant="ghost" size="sm">Login</Button>
+                                    <Button variant="ghost" size="sm">{t('login')}</Button>
                                 </Link>
                                 <Link href="/auth/signup">
-                                    <Button variant="primary" size="sm">Sign Up</Button>
+                                    <Button variant="primary" size="sm">{t('signup')}</Button>
                                 </Link>
                             </>
                         )}

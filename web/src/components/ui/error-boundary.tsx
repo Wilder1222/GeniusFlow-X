@@ -5,6 +5,12 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 interface Props {
     children: ReactNode;
     fallback?: ReactNode;
+    t?: {
+        title: string;
+        message: string;
+        errorDetails: string;
+        refresh: string;
+    };
 }
 
 interface State {
@@ -13,7 +19,7 @@ interface State {
 }
 
 /**
- * Error Boundary Component
+ * Error Boundary Component  
  * Catches rendering errors and displays a fallback UI
  */
 class ErrorBoundary extends Component<Props, State> {
@@ -36,6 +42,13 @@ class ErrorBoundary extends Component<Props, State> {
                 return this.props.fallback;
             }
 
+            const t = this.props.t || {
+                title: '😵 出错了',
+                message: '抱歉，页面遇到了一些问题。',
+                errorDetails: '错误详情',
+                refresh: '刷新页面'
+            };
+
             return (
                 <div style={{
                     padding: '40px',
@@ -43,9 +56,9 @@ class ErrorBoundary extends Component<Props, State> {
                     maxWidth: '600px',
                     margin: '100px auto'
                 }}>
-                    <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>😵 出错了</h1>
+                    <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>{t.title}</h1>
                     <p style={{ color: '#666', marginBottom: '24px' }}>
-                        抱歉，页面遇到了一些问题。
+                        {t.message}
                     </p>
                     {this.state.error && (
                         <details style={{
@@ -56,7 +69,7 @@ class ErrorBoundary extends Component<Props, State> {
                             marginBottom: '24px'
                         }}>
                             <summary style={{ cursor: 'pointer', marginBottom: '8px' }}>
-                                错误详情
+                                {t.errorDetails}
                             </summary>
                             <pre style={{
                                 fontSize: '12px',
@@ -79,7 +92,7 @@ class ErrorBoundary extends Component<Props, State> {
                             fontSize: '16px'
                         }}
                     >
-                        刷新页面
+                        {t.refresh}
                     </button>
                 </div>
             );

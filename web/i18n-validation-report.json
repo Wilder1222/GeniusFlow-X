@@ -1,0 +1,387 @@
+{
+  "summary": {
+    "totalKeys": 697,
+    "keyMismatches": 0,
+    "chineseEnglishIssues": 51,
+    "englishChineseIssues": 1
+  },
+  "missingInEnglish": [],
+  "missingInChinese": [],
+  "chineseWithEnglish": [
+    {
+      "key": "Landing.footer.copyright",
+      "value": "© {year} GeniusFlow-X. 保留所有权利。",
+      "words": [
+        "year",
+        "GeniusFlow"
+      ]
+    },
+    {
+      "key": "Landing.AIDemo.topics.react.label",
+      "value": "React Hooks 基础",
+      "words": [
+        "React",
+        "Hooks"
+      ]
+    },
+    {
+      "key": "Auth.login.title",
+      "value": "登录 GeniusFlow-X",
+      "words": [
+        "GeniusFlow"
+      ]
+    },
+    {
+      "key": "Auth.login.emailPlaceholder",
+      "value": "你的邮箱@example.com",
+      "words": [
+        "example",
+        "com"
+      ]
+    },
+    {
+      "key": "Auth.signup.title",
+      "value": "注册 GeniusFlow-X",
+      "words": [
+        "GeniusFlow"
+      ]
+    },
+    {
+      "key": "Auth.signup.emailPlaceholder",
+      "value": "你的邮箱@example.com",
+      "words": [
+        "example",
+        "com"
+      ]
+    },
+    {
+      "key": "Home.cardsReviewCount",
+      "value": "今天有 {count} 张卡片待复习",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "Home.totalCards",
+      "value": "总卡片 {count}",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "Decks.import",
+      "value": "📥 导入 .apkg",
+      "words": [
+        "apkg"
+      ]
+    },
+    {
+      "key": "AI.usageRemaining",
+      "value": "剩余 {remaining}/{limit} 次",
+      "words": [
+        "remaining",
+        "limit"
+      ]
+    },
+    {
+      "key": "AI.placeholder",
+      "value": "输入主题或粘贴内容，例如：{suggestion}...",
+      "words": [
+        "suggestion"
+      ]
+    },
+    {
+      "key": "AI.generatingHint",
+      "value": "AI 正在为您整理 \"{domain}\" 领域的核心考点",
+      "words": [
+        "domain"
+      ]
+    },
+    {
+      "key": "AI.generated",
+      "value": "已生成 {count} 张卡片",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "AI.saved",
+      "value": "已保存 {count} 张卡片",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "AI.saveFailed",
+      "value": "保存失败: {error}",
+      "words": [
+        "error"
+      ]
+    },
+    {
+      "key": "Import.preview",
+      "value": "预览 ({count} 张卡片)",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "Import.importCount",
+      "value": "导入 {count} 张卡片",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "FileUpload.charCount",
+      "value": "{count} 字符",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "FileUpload.aiGenerate",
+      "value": "🤖 AI 生成 {count} 张卡片",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "FileUpload.parseFailed",
+      "value": "文件解析失败: {error}",
+      "words": [
+        "error"
+      ]
+    },
+    {
+      "key": "ApkgImport.title",
+      "value": ".apkg 文件导入",
+      "words": [
+        "apkg"
+      ]
+    },
+    {
+      "key": "ApkgImport.selectFile",
+      "value": "请选择有效的 .apkg 文件",
+      "words": [
+        "apkg"
+      ]
+    },
+    {
+      "key": "ApkgImport.introDesc",
+      "value": "选择一个 .apkg 文件来导入您的 Anki 卡组",
+      "words": [
+        "apkg"
+      ]
+    },
+    {
+      "key": "ApkgImport.feature1",
+      "value": "支持标准 Anki .apkg 格式",
+      "words": [
+        "apkg"
+      ]
+    },
+    {
+      "key": "ApkgImport.chooseFile",
+      "value": "选择 .apkg 文件",
+      "words": [
+        "apkg"
+      ]
+    },
+    {
+      "key": "ApkgImport.importCount",
+      "value": "导入 {count} 张卡片",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "ApkgImport.importSuccess",
+      "value": "成功导入 {count} 张卡片到卡组 \"{deckName}\"！",
+      "words": [
+        "count",
+        "deckName"
+      ]
+    },
+    {
+      "key": "ApkgImport.cardsCount",
+      "value": "{count} 张卡片",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "ApkgImport.moreCards",
+      "value": "...以及其他 {count} 张",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "Browse.selectedCount",
+      "value": "已选 {count} 张",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "Browse.selectAll",
+      "value": "全选 ({count})",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "DeckDetail.startStudy",
+      "value": "开始学习 ({count})",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "DeckDetail.existingCards",
+      "value": "现有卡片 ({count})",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "DeckDetail.selectionCount",
+      "value": "已选 {count} 项",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "DeckDetail.deleteSelected",
+      "value": "删除已选 ({count})",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "DeckDetail.batchDeleteMessage",
+      "value": "确定要删除选中的 {count} 张卡片吗？",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "DeckDetail.exportSuccess",
+      "value": "已导出 {count} 张卡片到 {filename}",
+      "words": [
+        "count",
+        "filename"
+      ]
+    },
+    {
+      "key": "DeckDetail.paginationInfo",
+      "value": "显示 {start}-{end} / 共 {total} 张",
+      "words": [
+        "start",
+        "end",
+        "total"
+      ]
+    },
+    {
+      "key": "Study.remaining",
+      "value": "剩余 {count} 张",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "Study.xpGained",
+      "value": "获得 {amount} XP",
+      "words": [
+        "amount"
+      ]
+    },
+    {
+      "key": "Study.levelUp",
+      "value": "升级 Lv.{level}",
+      "words": [
+        "level"
+      ]
+    },
+    {
+      "key": "Profile.uploadAvatarHint",
+      "value": "支持 JPG, PNG，最大 2MB",
+      "words": [
+        "JPG",
+        "PNG"
+      ]
+    },
+    {
+      "key": "Settings.tts",
+      "value": "语音朗读 (TTS)",
+      "words": [
+        "TTS"
+      ]
+    },
+    {
+      "key": "Gamification.unlockedCount",
+      "value": "已解锁 {count} / {total}",
+      "words": [
+        "count",
+        "total"
+      ]
+    },
+    {
+      "key": "Gamification.taskCompleted",
+      "value": "已完成 {count}/{total}",
+      "words": [
+        "count",
+        "total"
+      ]
+    },
+    {
+      "key": "LevelProgress.xpProgress",
+      "value": "/ {total} XP",
+      "words": [
+        "total"
+      ]
+    },
+    {
+      "key": "LevelProgress.nextLevel",
+      "value": "距离 Lv.{level} 还差 {xp} XP",
+      "words": [
+        "level"
+      ]
+    },
+    {
+      "key": "StatsCharts.pastYearReviews",
+      "value": "过去一年 {count} 次复习",
+      "words": [
+        "count"
+      ]
+    },
+    {
+      "key": "StatsCharts.retentionValue",
+      "value": "保留 {rate}%",
+      "words": [
+        "rate"
+      ]
+    },
+    {
+      "key": "StatsCharts.completed",
+      "value": "完成 {percent}%",
+      "words": [
+        "percent"
+      ]
+    },
+    {
+      "key": "LanguageSwitcher.en",
+      "value": "English",
+      "words": [
+        "English"
+      ]
+    }
+  ],
+  "englishWithChinese": [
+    {
+      "key": "LanguageSwitcher.zh",
+      "value": "中文"
+    }
+  ]
+}

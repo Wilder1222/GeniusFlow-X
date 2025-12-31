@@ -9,7 +9,7 @@ import { getMembershipStatus } from '@/lib/membership';
  */
 export async function GET(req: NextRequest) {
     try {
-        const supabase = createRouteClient(req);
+        const supabase = await createRouteClient(req);
         const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) {

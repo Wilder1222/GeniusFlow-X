@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components';
 import { FollowButton } from './follow-button';
 import styles from './user-info-card.module.css';
@@ -22,6 +23,8 @@ interface UserInfoCardProps {
 }
 
 export function UserInfoCard({ profile }: UserInfoCardProps) {
+    const t = useTranslations('Profile');
+
     return (
         <div className={styles.card}>
             <div className={styles.header}>
@@ -51,7 +54,7 @@ export function UserInfoCard({ profile }: UserInfoCardProps) {
                     {profile.isOwnProfile ? (
                         <Link href="/profile">
                             <Button variant="secondary">
-                                编辑资料
+                                {t('editProfile')}
                             </Button>
                         </Link>
                     ) : (
@@ -64,17 +67,17 @@ export function UserInfoCard({ profile }: UserInfoCardProps) {
             </div>
 
             <div className={styles.bio}>
-                {profile.bio || '这个人很懒，什么都没写~'}
+                {profile.bio || t('bioEmpty')}
             </div>
 
             <div className={styles.stats}>
                 <div className={styles.statItem}>
                     <span className={styles.statValue}>{profile.followersCount}</span>
-                    <span className={styles.statLabel}>粉丝</span>
+                    <span className={styles.statLabel}>{t('followers')}</span>
                 </div>
                 <div className={styles.statItem}>
                     <span className={styles.statValue}>{profile.followingCount}</span>
-                    <span className={styles.statLabel}>关注</span>
+                    <span className={styles.statLabel}>{t('following')}</span>
                 </div>
             </div>
         </div>

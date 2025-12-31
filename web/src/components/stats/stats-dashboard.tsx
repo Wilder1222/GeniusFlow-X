@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useStats } from '@/lib/contexts/stats-context';
 import { motion } from 'framer-motion';
 import {
@@ -57,6 +58,7 @@ interface StatsDashboardProps {
 
 function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
     const { heatmap: data, loading } = useStats();
+    const t = useTranslations('StatsCharts');
 
     const generateDays = () => {
         const days: { date: string; count: number }[] = [];
@@ -107,11 +109,10 @@ function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
         return weeks;
     };
 
-    const getMonthLabels = useMemo(() => {
+    const getMonthLabels = () => {
         const days = generateDays();
         const weeks = groupByWeeks(days);
         const monthLabels: { month: string; weekIndex: number }[] = [];
-        const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
         let lastYearMonth = '';
 
         weeks.forEach((week, weekIndex) => {
@@ -123,37 +124,36 @@ function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
                 const yearMonth = `${year}-${month}`;
 
                 if (yearMonth !== lastYearMonth) {
-                    monthLabels.push({ month: monthNames[month], weekIndex });
+                    monthLabels.push({ month: t(`monthLabels.${month}`), weekIndex });
                     lastYearMonth = yearMonth;
                 }
                 break;
             }
         });
 
-        const displayLabels = (monthLabels.length > 0 && monthLabels[0].month === '12月')
+        const displayLabels = (monthLabels.length > 0 && monthLabels[0].month === t('monthLabels.11'))
             ? monthLabels.slice(1)
             : monthLabels;
 
         return { monthLabels: displayLabels, totalWeeks: weeks.length };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data]);
+    };
 
     if (loading) {
-        return <div className={styles.heatmapLoading}>加载活跃度数据...</div>;
+        return <div className={styles.heatmapLoading}>{t('loadingActivity')}</div>;
     }
 
     const days = generateDays();
     const weeks = groupByWeeks(days);
     const totalActivity = data.reduce((sum, d) => sum + d.count, 0);
-    const { monthLabels, totalWeeks } = getMonthLabels;
+    const { monthLabels, totalWeeks } = getMonthLabels();
 
     const heatmapWidth = totalWeeks * 12;
 
     return (
         <div className={styles.heatmapContainer}>
             <div className={styles.heatmapHeader}>
-                <span className={styles.heatmapTitle}>学习活跃度</span>
-                <span className={styles.heatmapSummary}>过去一年 {totalActivity} 次复习</span>
+                <span className={styles.heatmapTitle}>{t('activityHeatmap')}</span>
+                <span className={styles.heatmapSummary}>{t('pastYearReviews', { count: totalActivity })}</span>
             </div>
             <div className={styles.heatmapContent}>
                 <div
@@ -191,14 +191,14 @@ function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
                                         height: isStatsPage ? 'auto' : undefined,
                                         aspectRatio: isStatsPage ? '1' : undefined
                                     }}
-                                    title={day.date ? `${day.date}: ${day.count} 次复习` : ''}
+                                    title={day.date ? `${day.date}: ${day.count} ${t('reviews')}` : ''}
                                 />
                             ))}
                         </div>
                     ))}
                 </div>
                 <div className={styles.heatmapLegend}>
-                    <span>少</span>
+                    <span>{t('less')}</span>
                     <div className={styles.legendColors}>
                         <div style={{ backgroundColor: 'var(--heatmap-empty)' }} />
                         <div style={{ backgroundColor: 'var(--heatmap-low)' }} />
@@ -206,7 +206,7 @@ function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
                         <div style={{ backgroundColor: 'var(--heatmap-high)' }} />
                         <div style={{ backgroundColor: 'var(--heatmap-very-high)' }} />
                     </div>
-                    <span>多</span>
+                    <span>{t('more')}</span>
                 </div>
             </div>
         </div>
@@ -215,27 +215,28 @@ function EmbeddedHeatmap({ isStatsPage }: { isStatsPage?: boolean }) {
 
 export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
     const { summary, streak, learning, activity, loading, refresh } = useStats();
+    const t = useTranslations('StatsCharts');
 
     // Landing page inspired colors
     const indicators = [
         {
-            label: '今天复习',
+            label: t('todayReview'),
             value: activity?.today || 0,
             target: 50,
             icon: <LuActivity />,
             color: '#20c997', // Green
-            unit: '张'
+            unit: t('cards')
         },
         {
-            label: '专注时长',
+            label: t('focusTime'),
             value: summary?.studyTime || 0,
             target: 60,
             icon: <LuClock />,
             color: '#339af0', // Blue
-            unit: 'm'
+            unit: t('minutes')
         },
         {
-            label: '正确率',
+            label: t('accuracy'),
             value: learning?.averageAccuracy || 0,
             target: 100,
             icon: <LuTarget />,
@@ -246,25 +247,25 @@ export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
 
     const secondaryStats = [
         {
-            label: '当前连胜',
+            label: t('currentStreak'),
             value: streak?.currentStreak || 0,
             icon: <LuFlame />,
             color: '#20c997',
-            unit: '天'
+            unit: t('streakDays')
         },
         {
-            label: '最高纪录',
+            label: t('longestStreak'),
             value: streak?.longestStreak || 0,
             icon: <LuTrophy />,
             color: '#339af0',
-            unit: '天'
+            unit: t('streakDays')
         },
         {
-            label: '总卡片数',
+            label: t('totalCards'),
             value: summary?.totalCards || 0,
             icon: <LuBrain />,
             color: '#fcc419',
-            unit: '张'
+            unit: t('cards')
         }
     ];
 
@@ -274,16 +275,16 @@ export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
                 <div className={styles.header}>
                     <div className={styles.titleGroup}>
                         <LuZap className={styles.zapIcon} />
-                        <h2 className={styles.title}>今日动力</h2>
+                        <h2 className={styles.title}>{t('powerTitle')}</h2>
                     </div>
                     <button className={styles.refreshBtn} disabled>
                         <LuRefreshCw className={styles.refreshIcon} />
-                        同步
+                        {t('sync')}
                     </button>
                 </div>
                 <div className={styles.loadingContainer}>
                     <div className={styles.spinner}></div>
-                    <p>正在同步学习数据...</p>
+                    <p>{t('syncingData')}</p>
                 </div>
             </div>
         );
@@ -299,7 +300,7 @@ export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
                     >
                         <LuZap className={styles.zapIcon} />
                     </motion.div>
-                    <h2 className={styles.title}>今日动力</h2>
+                    <h2 className={styles.title}>{t('powerTitle')}</h2>
                 </div>
                 <motion.button
                     onClick={refresh}
@@ -308,7 +309,7 @@ export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
                     whileTap={{ scale: 0.95 }}
                 >
                     <LuRefreshCw className={styles.refreshIcon} />
-                    同步
+                    {t('sync')}
                 </motion.button>
             </div>
 
@@ -390,7 +391,7 @@ export default function StatsDashboard({ isStatsPage }: StatsDashboardProps) {
                                             <span className={styles.unit}>{item.unit}</span>
                                         </div>
                                         <div className={styles.progressText}>
-                                            {Math.round(progress * 100)}% 完成
+                                            {t('completed', { percent: Math.round(progress * 100) })}
                                         </div>
                                     </div>
                                 </motion.div>

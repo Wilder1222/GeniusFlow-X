@@ -34,8 +34,7 @@ export async function POST(request: NextRequest) {
                             name,
                             value,
                             ...options,
-                            // Session过期时间设置为48小时
-                            maxAge: 60 * 60 * 48, // 48 hours in seconds
+                            // Let Supabase manage session expiry - don't override maxAge
                             httpOnly: true,
                             secure: process.env.NODE_ENV === 'production',
                             sameSite: 'lax',

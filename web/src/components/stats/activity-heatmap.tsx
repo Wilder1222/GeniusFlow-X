@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { useStats } from '@/lib/contexts/stats-context';
 import styles from './activity-heatmap.module.css';
 
@@ -11,6 +12,7 @@ interface HeatmapData {
 
 export default function ActivityHeatmap() {
     const { heatmap: data, loading } = useStats();
+    const t = useTranslations('StatsCharts');
 
     // Generate last 365 days
     const generateDays = () => {
@@ -78,12 +80,11 @@ export default function ActivityHeatmap() {
     };
 
     // Calculate month labels with their positions
-    const getMonthLabels = useMemo(() => {
+    const getMonthLabels = () => {
         const days = generateDays();
         const weeks = groupByWeeks(days);
-        const monthLabels: { month: string; weekIndex: number; yearMonth: string }[] = [];
-        const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-
+        const monthLabels: { month: string; weekIndex: number }[] = [];
+        const monthNames = t('monthLabels') as unknown as string[];
         let lastYearMonth = '';
 
         weeks.forEach((week, weekIndex) => {
@@ -100,7 +101,6 @@ export default function ActivityHeatmap() {
                     monthLabels.push({
                         month: monthNames[month],
                         weekIndex: weekIndex,
-                        yearMonth: yearMonth
                     });
                     lastYearMonth = yearMonth;
                 }
@@ -110,17 +110,18 @@ export default function ActivityHeatmap() {
 
         // Always skip the first month label to avoid showing partial month at the start
         // This also prevents showing duplicate month names (like 12月 at both ends)
-        const displayLabels = monthLabels.length > 1 ? monthLabels.slice(1) : monthLabels;
+        const displayLabels = (monthLabels.length > 0 && monthLabels[0].month === (t('monthLabels') as unknown as string[])[11])
+            ? monthLabels.slice(1)
+            : monthLabels;
 
         return { monthLabels: displayLabels, totalWeeks: weeks.length };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data]);
+    };
 
     if (loading) {
         return (
             <div className={styles.container}>
-                <h3 className={styles.title}>学习活跃度</h3>
-                <div className={styles.loading}>加载活动数据中...</div>
+                <h3 className={styles.title}>{t('activityHeatmap')}</h3>
+                <div className={styles.loading}>{t('loadingActivity')}</div>
             </div>
         );
     }
@@ -128,13 +129,15 @@ export default function ActivityHeatmap() {
     const days = generateDays();
     const weeks = groupByWeeks(days);
     const totalActivity = data.reduce((sum, d) => sum + d.count, 0);
-    const { monthLabels, totalWeeks } = getMonthLabels;
+    const { monthLabels, totalWeeks } = getMonthLabels();
 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h3 className={styles.title}>学习活跃度</h3>
-                <span className={styles.summary}>过去一年共 {totalActivity} 次复习</span>
+                <h2 className={styles.title}>{t('activityHeatmap')}</h2>
+                <div className={styles.summary}>
+                    {t('pastYearReviews', { count: totalActivity })}
+                </div>
             </div>
 
             <div className={styles.heatmap}>
@@ -165,7 +168,7 @@ export default function ActivityHeatmap() {
                                         backgroundColor: day.count === -1 ? 'transparent' : getColor(day.count),
                                         visibility: day.count === -1 ? 'hidden' : 'visible'
                                     }}
-                                    title={day.date ? `${day.date}: ${day.count} 次复习` : ''}
+                                    title={day.date ? `${day.date}: ${day.count} ${t('reviews')}` : ''}
                                 />
                             ))}
                         </div>
@@ -173,15 +176,15 @@ export default function ActivityHeatmap() {
                 </div>
 
                 <div className={styles.legend}>
-                    <span>少</span>
+                    <span>{t('less')}</span>
                     <div className={styles.legendColors}>
-                        <div className={styles.legendColor} style={{ backgroundColor: 'var(--heatmap-empty)' }} />
-                        <div className={styles.legendColor} style={{ backgroundColor: 'var(--heatmap-low)' }} />
-                        <div className={styles.legendColor} style={{ backgroundColor: 'var(--heatmap-medium)' }} />
-                        <div className={styles.legendColor} style={{ backgroundColor: 'var(--heatmap-high)' }} />
-                        <div className={styles.legendColor} style={{ backgroundColor: 'var(--heatmap-very-high)' }} />
+                        <div style={{ backgroundColor: 'var(--heatmap-empty)' }} />
+                        <div style={{ backgroundColor: 'var(--heatmap-low)' }} />
+                        <div style={{ backgroundColor: 'var(--heatmap-medium)' }} />
+                        <div style={{ backgroundColor: 'var(--heatmap-high)' }} />
+                        <div style={{ backgroundColor: 'var(--heatmap-very-high)' }} />
                     </div>
-                    <span>多</span>
+                    <span>{t('more')}</span>
                 </div>
             </div>
         </div>

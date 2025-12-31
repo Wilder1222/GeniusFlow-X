@@ -1,11 +1,13 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import confetti from 'canvas-confetti';
 import { useGamification } from '@/lib/contexts/gamification-context';
 import styles from './level-progress-bar.module.css';
 
 export default function LevelProgressBar() {
+    const t = useTranslations('Gamification');
     const { levelInfo, loading } = useGamification();
 
     const triggerLevelUpAnimation = () => {
@@ -55,7 +57,7 @@ export default function LevelProgressBar() {
         <div className={styles.container}>
             <div className={styles.header}>
                 <div className={styles.levelBadge}>
-                    <span className={styles.levelLabel}>等级</span>
+                    <span className={styles.levelLabel}>{t('level')}</span>
                     <span className={styles.levelNumber}>{levelInfo.level}</span>
                 </div>
                 <div className={styles.xpInfo}>
@@ -76,10 +78,10 @@ export default function LevelProgressBar() {
 
             <div className={styles.footer}>
                 <div className={styles.nextLevelInfo}>
-                    距离下一级还需 {levelInfo.nextLevelXp - levelInfo.xp} XP
+                    {t('nextLevelNeeded', { xp: levelInfo.nextLevelXp - levelInfo.xp })}
                 </div>
                 <div className={styles.totalXp}>
-                    总计 {levelInfo.xp.toLocaleString()} XP
+                    {t('totalXp', { xp: levelInfo.xp.toLocaleString() })}
                 </div>
             </div>
 

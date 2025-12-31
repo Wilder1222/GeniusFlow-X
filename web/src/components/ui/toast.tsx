@@ -63,7 +63,7 @@ function Toast({ toast, onClose }: ToastProps) {
             <button
                 className={styles.closeButton}
                 onClick={handleClose}
-                aria-label="关闭通知"
+                aria-label="Close notification"
             >
                 <X size={14} />
             </button>

@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useLocale, useTranslations } from 'next-intl';
 import styles from './achievement-card.module.css';
 
 // Apple-inspired gradient color palette for achievements
@@ -36,6 +37,9 @@ export default function AchievementCard({
     unlockedAt,
     index = 0
 }: AchievementCardProps) {
+    const locale = useLocale();
+    const t = useTranslations('Gamification');
+    const tAchievements = useTranslations('Achievements');
     const colorIndex = index % ACHIEVEMENT_COLORS.length;
     const colors = ACHIEVEMENT_COLORS[colorIndex];
 
@@ -67,14 +71,14 @@ export default function AchievementCard({
             </div>
 
             <div className={styles.content}>
-                <h3 className={styles.name}>{name}</h3>
-                <p className={styles.description}>{description}</p>
+                <h3 className={styles.name}>{tAchievements(`${code}.name`)}</h3>
+                <p className={styles.description}>{tAchievements(`${code}.description`)}</p>
 
                 <div className={styles.footer}>
-                    <span className={styles.xp}>+{xpReward} XP</span>
+                    <span className={styles.xp}>{t('xpReward', { xp: xpReward })}</span>
                     {unlocked && unlockedAt && (
                         <span className={styles.unlockedDate}>
-                            {new Date(unlockedAt).toLocaleDateString('zh-CN')}
+                            {new Date(unlockedAt).toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US')}
                         </span>
                     )}
                 </div>

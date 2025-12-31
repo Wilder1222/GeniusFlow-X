@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Deck } from '@/types/decks';
 import { useToast } from '@/lib/contexts/toast-context';
 import { formatApiError } from '@/lib/error-handler';
@@ -14,6 +15,7 @@ interface EditDeckModalProps {
 }
 
 export default function EditDeckModal({ isOpen, deck, onClose, onSave }: EditDeckModalProps) {
+    const t = useTranslations('EditDeck');
     const toast = useToast();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -30,7 +32,7 @@ export default function EditDeckModal({ isOpen, deck, onClose, onSave }: EditDec
 
     const handleSave = async () => {
         if (!title.trim()) {
-            toast.warning('卡组名称不能为空');
+            toast.warning(t('nameRequired'));
             return;
         }
 
@@ -69,7 +71,7 @@ export default function EditDeckModal({ isOpen, deck, onClose, onSave }: EditDec
         <div className={styles.overlay} onClick={handleOverlayClick} onKeyDown={handleKeyDown}>
             <div className={styles.modal}>
                 <div className={styles.header}>
-                    <h2 className={styles.title}>编辑卡组</h2>
+                    <h2 className={styles.title}>{t('title')}</h2>
                     <button
                         className={styles.closeButton}
                         onClick={onClose}
@@ -81,13 +83,13 @@ export default function EditDeckModal({ isOpen, deck, onClose, onSave }: EditDec
 
                 <form className={styles.form} onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>卡组名称</label>
+                        <label className={styles.label}>{t('name')}</label>
                         <input
                             type="text"
                             className={styles.input}
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="输入卡组名称..."
+                            placeholder={t('namePlaceholder')}
                             autoFocus
                             disabled={saving}
                             required
@@ -95,12 +97,12 @@ export default function EditDeckModal({ isOpen, deck, onClose, onSave }: EditDec
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>描述</label>
+                        <label className={styles.label}>{t('description')}</label>
                         <textarea
                             className={styles.textarea}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            placeholder="输入卡组描述（可选）..."
+                            placeholder={t('descriptionPlaceholder')}
                             disabled={saving}
                         />
                     </div>
@@ -112,14 +114,14 @@ export default function EditDeckModal({ isOpen, deck, onClose, onSave }: EditDec
                             onClick={onClose}
                             disabled={saving}
                         >
-                            取消
+                            {t('cancel')}
                         </button>
                         <button
                             type="submit"
                             className={`${styles.button} ${styles.saveButton}`}
                             disabled={saving}
                         >
-                            {saving ? '保存中...' : '保存'}
+                            {saving ? t('saving') : t('save')}
                         </button>
                     </div>
                 </form>

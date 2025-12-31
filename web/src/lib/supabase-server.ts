@@ -7,18 +7,25 @@ import { AppError, ErrorCode } from './errors';
 /**
  * Create a Supabase client for use in Route Handlers (GET/POST etc.)
  * Uses the request's cookies for authentication.
+ * Note: This creates a read-only client that cannot update cookies.
+ * For routes that need to modify session (login/logout), use inline cookie handlers.
  */
-export function createRouteClient(req: NextRequest): SupabaseClient {
+export async function createRouteClient(req: NextRequest): Promise<SupabaseClient> {
+    const cookieStore = await cookies();
     return createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
             cookies: {
-                get(name: string) {
-                    return req.cookies.get(name)?.value;
+                getAll() {
+                    return cookieStore.getAll();
                 },
-                set() { },
-                remove() { }
+                setAll(cookiesToSet: Array<{ name: string; value: string; options: CookieOptions }>) {
+                    // In route handlers, we can set cookies via the cookie store
+                    cookiesToSet.forEach(({ name, value, options }) => {
+                        cookieStore.set(name, value, options);
+                    });
+                },
             }
         }
     );
@@ -70,7 +77,8 @@ export function withAuth<T>(
     handler: (req: NextRequest, ctx: AuthContext) => Promise<NextResponse<T>>
 ) {
     return async (req: NextRequest): Promise<NextResponse<T> | NextResponse<{ error: { message: string } }>> => {
-        const supabase = createRouteClient(req);
+        const supabase = await createRouteClient(req);
+
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {

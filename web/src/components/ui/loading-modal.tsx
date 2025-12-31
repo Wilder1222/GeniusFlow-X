@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import styles from './loading-modal.module.css';
 
 interface LoadingModalProps {
@@ -8,7 +9,10 @@ interface LoadingModalProps {
     message?: string;
 }
 
-export function LoadingModal({ isOpen, message = '登录中...' }: LoadingModalProps) {
+export function LoadingModal({ isOpen, message }: LoadingModalProps) {
+    const t = useTranslations('LoadingModal');
+    const displayMessage = message || t('defaultMessage');
+
     if (!isOpen) return null;
 
     return (
@@ -26,7 +30,7 @@ export function LoadingModal({ isOpen, message = '登录中...' }: LoadingModalP
                         ></circle>
                     </svg>
                 </div>
-                <p className={styles.message}>{message}</p>
+                <p className={styles.message}>{displayMessage}</p>
             </div>
         </div>
     );

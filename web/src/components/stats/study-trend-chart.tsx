@@ -1,6 +1,7 @@
 'use client';
 
 import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { useTranslations } from 'next-intl';
 import { useStats } from '@/lib/contexts/stats-context';
 import styles from './study-trend-chart.module.css';
 
@@ -32,11 +33,12 @@ const getCSSColor = (varName: string) => {
 
 export default function StudyTrendChart() {
     const { charts: data, loading } = useStats();
+    const t = useTranslations('StatsCharts');
 
     if (loading) {
         return (
             <div className={styles.container}>
-                <div className={styles.loading}>加载中...</div>
+                <div className={styles.loading}>{t('loading')}</div>
             </div>
         );
     }
@@ -44,7 +46,7 @@ export default function StudyTrendChart() {
     if (!data) {
         return (
             <div className={styles.container}>
-                <div className={styles.empty}>暂无数据</div>
+                <div className={styles.empty}>{t('noData')}</div>
             </div>
         );
     }
@@ -71,7 +73,12 @@ export default function StudyTrendChart() {
     const pieData = Object.entries(data.ratingDistribution).map(([key, value]) => ({
         name: key,
         value,
-        label: { again: '再来', hard: '困难', good: '良好', easy: '简单' }[key]
+        label: {
+            again: t('again'),
+            hard: t('hard'),
+            good: t('good'),
+            easy: t('easy')
+        }[key]
     }));
 
     const totalReviews = Object.values(data.ratingDistribution).reduce((a, b) => a + b, 0);
@@ -98,11 +105,11 @@ export default function StudyTrendChart() {
 
     return (
         <div className={styles.container}>
-            <h2 className={styles.title}>📈 学习趋势分析</h2>
+            <h2 className={styles.title}>{t('learningTrend')}</h2>
 
             {/* 每日复习数量 */}
             <div className={styles.chartSection}>
-                <h3 className={styles.chartTitle}>每日复习数量</h3>
+                <h3 className={styles.chartTitle}>{t('dailyReviews')}</h3>
                 <ResponsiveContainer width="100%" height={240}>
                     <AreaChart data={data.dailyReviews}>
                         <defs>
@@ -148,7 +155,7 @@ export default function StudyTrendChart() {
                             stroke={LANDING_COLORS.coral}
                             strokeWidth={3}
                             fill="url(#colorCount)"
-                            name="总复习"
+                            name={t('totalReviews')}
                             animationBegin={0}
                             animationDuration={1200}
                         />
@@ -158,7 +165,7 @@ export default function StudyTrendChart() {
                             stroke={LANDING_COLORS.pink}
                             strokeWidth={3}
                             fill="url(#colorCorrect)"
-                            name="正确"
+                            name={t('correct')}
                             animationBegin={200}
                             animationDuration={1200}
                         />
@@ -168,7 +175,7 @@ export default function StudyTrendChart() {
 
             {/* 正确率趋势 */}
             <div className={styles.chartSection}>
-                <h3 className={styles.chartTitle}>正确率变化趋势</h3>
+                <h3 className={styles.chartTitle}>{t('accuracyTrend')}</h3>
                 <ResponsiveContainer width="100%" height={240}>
                     <AreaChart data={data.accuracyTrend}>
                         <defs>
@@ -212,7 +219,7 @@ export default function StudyTrendChart() {
                             stroke={LANDING_COLORS.purple}
                             strokeWidth={3}
                             fill="url(#colorAccuracy)"
-                            name="正确率"
+                            name={t('accuracy')}
                             animationBegin={0}
                             animationDuration={1500}
                         />
@@ -222,7 +229,7 @@ export default function StudyTrendChart() {
 
             {/* 评分分布 */}
             <div className={styles.distributionSection}>
-                <h3 className={styles.chartTitle}>评分分布</h3>
+                <h3 className={styles.chartTitle}>{t('ratingDistribution')}</h3>
                 <div className={styles.distributionContent}>
                     <div className={styles.pieChartWrapper}>
                         <ResponsiveContainer width="100%" height={220}>
@@ -262,7 +269,12 @@ export default function StudyTrendChart() {
                                         fontWeight: 600,
                                     }}
                                     formatter={(value: any, name: any, props: any) => {
-                                        const labels: Record<string, string> = { again: '忘记', hard: '困难', good: '良好', easy: '简单' };
+                                        const labels: Record<string, string> = {
+                                            again: t('again'),
+                                            hard: t('hard'),
+                                            good: t('good'),
+                                            easy: t('easy')
+                                        };
                                         const color = DISTRIBUTION_COLORS[props.payload.name as keyof typeof DISTRIBUTION_COLORS];
                                         return [
                                             <span key="v" style={{ color, fontWeight: 700, fontSize: '16px' }}>{value}</span>,

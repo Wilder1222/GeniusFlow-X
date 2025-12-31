@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { RadialBarChart, RadialBar, Legend, ResponsiveContainer, PolarAngleAxis } from 'recharts';
+import { useTranslations } from 'next-intl';
 import { useStats } from '@/lib/contexts/stats-context';
 import styles from './accuracy-radial-chart.module.css';
 
@@ -13,6 +14,7 @@ interface RadialData {
 
 export default function AccuracyRadialChart() {
     const { learning, retention, loading } = useStats();
+    const t = useTranslations('StatsCharts');
 
     // Compute data from context
     const data: RadialData | null = (learning && retention) ? {
@@ -26,7 +28,7 @@ export default function AccuracyRadialChart() {
             <div className={styles.container}>
                 <div className={styles.loading}>
                     <div className={styles.spinner}></div>
-                    <span>加载中...</span>
+                    <span>{t('loading')}</span>
                 </div>
             </div>
         );
@@ -35,7 +37,7 @@ export default function AccuracyRadialChart() {
     if (!data) {
         return (
             <div className={styles.container}>
-                <div className={styles.empty}>暂无数据</div>
+                <div className={styles.empty}>{t('noData')}</div>
             </div>
         );
     }
@@ -43,17 +45,17 @@ export default function AccuracyRadialChart() {
     // 准备径向图数据 - 从外到内
     const chartData = [
         {
-            name: '总体正确率',
+            name: t('overallAccuracy'),
             value: data.accuracy,
             fill: '#4ecdc4', // Cyan
         },
         {
-            name: '7天留存',
+            name: t('retention7d'),
             value: data.retention7d,
             fill: '#ff6b6b', // Coral
         },
         {
-            name: '24h留存',
+            name: t('retention24h'),
             value: data.retention24h,
             fill: '#a55eea', // Purple
         },
@@ -61,7 +63,7 @@ export default function AccuracyRadialChart() {
 
     return (
         <div className={styles.container}>
-            <h2 className={styles.title}>🎯 学习成就</h2>
+            <h2 className={styles.title}>{t('learningAchievement')}</h2>
 
             <div className={styles.chartWrapper}>
                 <ResponsiveContainer width="100%" height={300}>
@@ -93,19 +95,19 @@ export default function AccuracyRadialChart() {
                     <div className={styles.statValue} style={{ color: '#4ecdc4' }}>
                         {data.accuracy.toFixed(1)}%
                     </div>
-                    <div className={styles.statLabel}>总体正确率</div>
+                    <div className={styles.statLabel}>{t('overallAccuracy')}</div>
                 </div>
                 <div className={styles.statItem}>
                     <div className={styles.statValue} style={{ color: '#ff6b6b' }}>
                         {data.retention7d.toFixed(1)}%
                     </div>
-                    <div className={styles.statLabel}>7天留存</div>
+                    <div className={styles.statLabel}>{t('retention7d')}</div>
                 </div>
                 <div className={styles.statItem}>
                     <div className={styles.statValue} style={{ color: '#a55eea' }}>
                         {data.retention24h.toFixed(1)}%
                     </div>
-                    <div className={styles.statLabel}>24h留存</div>
+                    <div className={styles.statLabel}>{t('retention24h')}</div>
                 </div>
             </div>
         </div>

@@ -16,7 +16,7 @@ interface BrowseCardsQuery {
 
 export async function GET(req: NextRequest) {
     try {
-        const supabase = createRouteClient(req);
+        const supabase = await createRouteClient(req);
 
         // Auth check
         const { data: { user }, error: authError } = await supabase.auth.getUser();

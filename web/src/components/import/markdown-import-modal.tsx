@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { parseMarkdownToCards } from '@/lib/markdown-parser';
 import { apiClient } from '@/lib/api-client';
 import { useToast } from '@/lib/contexts/toast-context';
@@ -15,6 +16,7 @@ interface MarkdownImportModalProps {
 }
 
 export function MarkdownImportModal({ isOpen, onClose, deckId, onImportComplete }: MarkdownImportModalProps) {
+    const t = useTranslations('Import');
     const toast = useToast();
     const [markdownText, setMarkdownText] = useState('');
     const [preview, setPreview] = useState<Array<{ front: string; back: string }>>([]);
@@ -41,7 +43,7 @@ export function MarkdownImportModal({ isOpen, onClose, deckId, onImportComplete 
                 }))
             });
             const successCount = data.data?.length || 0;
-            toast.success(`成功导入 ${successCount} 张卡片！`);
+            toast.success(t('importSuccess', { count: successCount }));
             onImportComplete();
             handleClose();
         } catch (error: any) {
@@ -63,7 +65,7 @@ export function MarkdownImportModal({ isOpen, onClose, deckId, onImportComplete 
         <div className={styles.overlay} onClick={handleClose}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.header}>
-                    <h2>Markdown 导入</h2>
+                    <h2>{t('title')}</h2>
                     <button onClick={handleClose} className={styles.closeButton}>
                         ✕
                     </button>
@@ -73,23 +75,23 @@ export function MarkdownImportModal({ isOpen, onClose, deckId, onImportComplete 
                     <>
                         <div className={styles.content}>
                             <div className={styles.instructions}>
-                                <h3>支持的格式</h3>
-                                <p><strong>Q&A 格式：</strong></p>
+                                <h3>{t('supportedFormats')}</h3>
+                                <p><strong>{t('qaFormat')}</strong></p>
                                 <pre>{`Q: 什么是 React?
 A: 一个用于构建用户界面的 JavaScript 库`}</pre>
 
-                                <p><strong>列表格式：</strong></p>
+                                <p><strong>{t('listFormat')}</strong></p>
                                 <pre>{`- 前面内容 | 后面内容
 - Capital of France | Paris`}</pre>
 
-                                <p><strong>双冒号格式：</strong></p>
+                                <p><strong>{t('doubleColonFormat')}</strong></p>
                                 <pre>{`前面内容 :: 后面内容
 What is AI :: Artificial Intelligence`}</pre>
                             </div>
 
                             <textarea
                                 className={styles.textarea}
-                                placeholder="在此粘贴 Markdown 内容..."
+                                placeholder={t('placeholder')}
                                 value={markdownText}
                                 onChange={(e) => setMarkdownText(e.target.value)}
                                 rows={12}
@@ -98,14 +100,14 @@ What is AI :: Artificial Intelligence`}</pre>
 
                         <div className={styles.footer}>
                             <button onClick={handleClose} className={styles.cancelButton}>
-                                取消
+                                {t('cancel')}
                             </button>
                             <button
                                 onClick={handleParse}
                                 disabled={!markdownText.trim()}
                                 className={styles.parseButton}
                             >
-                                解析预览
+                                {t('parse')}
                             </button>
                         </div>
                     </>
@@ -113,9 +115,9 @@ What is AI :: Artificial Intelligence`}</pre>
                     <>
                         <div className={styles.content}>
                             <div className={styles.previewHeader}>
-                                <h3>预览 ({preview.length} 张卡片)</h3>
+                                <h3>{t('preview', { count: preview.length })}</h3>
                                 <button onClick={() => setStep('input')} className={styles.backButton}>
-                                    ← 返回编辑
+                                    {t('backToEdit')}
                                 </button>
                             </div>
 
@@ -125,10 +127,10 @@ What is AI :: Artificial Intelligence`}</pre>
                                         <div className={styles.cardNumber}>#{index + 1}</div>
                                         <div className={styles.cardPreview}>
                                             <div className={styles.cardFront}>
-                                                <strong>正面：</strong>{card.front}
+                                                <strong>{t('front')}</strong>{card.front}
                                             </div>
                                             <div className={styles.cardBack}>
-                                                <strong>背面：</strong>{card.back}
+                                                <strong>{t('backLabel')}</strong>{card.back}
                                             </div>
                                         </div>
                                     </div>
@@ -138,14 +140,14 @@ What is AI :: Artificial Intelligence`}</pre>
 
                         <div className={styles.footer}>
                             <button onClick={() => setStep('input')} className={styles.cancelButton}>
-                                返回
+                                {t('backBtn')}
                             </button>
                             <button
                                 onClick={handleImport}
                                 disabled={importing || preview.length === 0}
                                 className={styles.importButton}
                             >
-                                {importing ? '导入中...' : `导入 ${preview.length} 张卡片`}
+                                {importing ? t('importing') : t('importCount', { count: preview.length })}
                             </button>
                         </div>
                     </>

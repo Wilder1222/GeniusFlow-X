@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button, Input } from '@/components';
 import type { UserSettings, UpdateSettingsData } from '@/types/profile';
 import { getSettings, updateSettings } from '@/lib/settings';
@@ -13,6 +14,8 @@ export interface SettingsFormProps {
 }
 
 export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
+    const t = useTranslations('Settings');
+    const tus = useTranslations('UserSettings');
     const [settings, setSettings] = useState<UserSettings | null>(initialSettings || null);
     const [formData, setFormData] = useState({
         theme: 'system' as 'light' | 'dark' | 'system',
@@ -57,7 +60,7 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
                 });
             }
         } catch (err) {
-            console.error('加载设置失败:', err);
+            console.error('Failed to load settings:', err);
         } finally {
             setLoading(false);
         }
@@ -97,7 +100,7 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
             }
 
             if (Object.keys(updateData).length === 0) {
-                setSuccess('没有需要保存的更改');
+                setSuccess(t('noChanges'));
                 setSaving(false);
                 return;
             }
@@ -105,7 +108,7 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
             const updatedSettings = await updateSettings(updateData);
             if (updatedSettings) {
                 setSettings(updatedSettings);
-                setSuccess('设置已保存');
+                setSuccess(t('saveSuccess'));
                 onUpdate?.(updatedSettings);
             }
         } catch (err: unknown) {
@@ -116,16 +119,16 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
     };
 
     if (loading) {
-        return <div className={styles.loading}>加载中...</div>;
+        return <div className={styles.loading}>{t('loading')}</div>;
     }
 
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>外观设置</h3>
+                <h3 className={styles.sectionTitle}>{t('appearance')}</h3>
 
                 <div className={styles.optionGroup}>
-                    <label className={styles.optionLabel}>主题</label>
+                    <label className={styles.optionLabel}>{t('theme')}</label>
                     <div className={styles.radioGroup}>
                         {(['light', 'dark', 'system'] as const).map((theme) => (
                             <label key={theme} className={styles.radioLabel}>
@@ -138,9 +141,9 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
                                     className={styles.radio}
                                 />
                                 <span className={styles.radioText}>
-                                    {theme === 'light' && '☀️ 浅色'}
-                                    {theme === 'dark' && '🌙 深色'}
-                                    {theme === 'system' && '💻 跟随系统'}
+                                    {theme === 'light' && `☀️ ${tus('light')}`}
+                                    {theme === 'dark' && `🌙 ${tus('dark')}`}
+                                    {theme === 'system' && `💻 ${tus('system')}`}
                                 </span>
                             </label>
                         ))}
@@ -148,7 +151,7 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
                 </div>
 
                 <div className={styles.optionGroup}>
-                    <label className={styles.optionLabel}>语言</label>
+                    <label className={styles.optionLabel}>{t('language')}</label>
                     <select
                         value={formData.language}
                         onChange={(e) => setFormData(prev => ({ ...prev, language: e.target.value }))}
@@ -161,10 +164,10 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
             </div>
 
             <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>学习设置</h3>
+                <h3 className={styles.sectionTitle}>{t('learning')}</h3>
 
                 <div className={styles.optionGroup}>
-                    <label className={styles.optionLabel}>每日学习目标</label>
+                    <label className={styles.optionLabel}>{t('dailyGoal')}</label>
                     <div className={styles.goalInput}>
                         <input
                             type="number"
@@ -177,12 +180,12 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
                             }))}
                             className={styles.numberInput}
                         />
-                        <span className={styles.goalUnit}>张卡片/天</span>
+                        <span className={styles.goalUnit}>{t('cardsPerDay')}</span>
                     </div>
                 </div>
 
                 <div className={styles.optionGroup}>
-                    <label className={styles.optionLabel}>语音朗读 (TTS)</label>
+                    <label className={styles.optionLabel}>{t('tts')}</label>
 
                     <label className={styles.toggleLabel} style={{ marginBottom: '12px' }}>
                         <input
@@ -191,7 +194,7 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
                             onChange={(e) => setFormData(prev => ({ ...prev, ttsEnabled: e.target.checked }))}
                             className={styles.toggle}
                         />
-                        <span>启用语音朗读</span>
+                        <span>{t('enableTTS')}</span>
                     </label>
 
                     <label className={styles.toggleLabel}>
@@ -202,16 +205,16 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
                             onChange={(e) => setFormData(prev => ({ ...prev, ttsAutoPlay: e.target.checked }))}
                             className={styles.toggle}
                         />
-                        <span>自动朗读</span>
+                        <span>{t('autoPlayTTS')}</span>
                         <span className={styles.toggleHint}>
-                            翻卡时自动播放
+                            {t('autoPlayHint')}
                         </span>
                     </label>
                 </div>
             </div>
 
             <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>通知设置</h3>
+                <h3 className={styles.sectionTitle}>{t('notifications')}</h3>
 
                 <label className={styles.toggleLabel}>
                     <input
@@ -220,9 +223,9 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
                         onChange={(e) => setFormData(prev => ({ ...prev, emailNotifications: e.target.checked }))}
                         className={styles.toggle}
                     />
-                    <span>邮件通知</span>
+                    <span>{t('emailNotifications')}</span>
                     <span className={styles.toggleHint}>
-                        接收学习提醒和系统通知
+                        {t('notificationsHint')}
                     </span>
                 </label>
             </div>
@@ -231,7 +234,7 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
             {success && <div className={styles.success}>{success}</div>}
 
             <Button type="submit" variant="primary" fullWidth disabled={saving}>
-                {saving ? '保存中...' : '保存设置'}
+                {saving ? t('loading') : t('saveSettings')}
             </Button>
         </form>
     );

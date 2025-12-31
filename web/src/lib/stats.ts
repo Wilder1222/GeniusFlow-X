@@ -2,7 +2,7 @@
  * Stats API - 学习统计
  */
 
-import { supabase } from './supabase';
+import { apiClient } from '@/lib/api-client';
 
 export interface StudyStats {
     id: string;
@@ -44,44 +44,13 @@ function statsFromRow(row: StudyStatsRow): StudyStats {
  * 获取当前用户的学习统计
  */
 export async function getStudyStats(): Promise<StudyStats | null> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-
-    const { data, error } = await supabase
-        .from('study_stats')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-    if (error) {
-        // PGRST116 表示没有找到记录，尝试创建一条初始记录
-        if (error.code === 'PGRST116') {
-            const { data: newData, error: insertError } = await supabase
-                .from('study_stats')
-                .insert({
-                    user_id: user.id,
-                    total_cards_reviewed: 0,
-                    total_study_time_minutes: 0,
-                    current_streak: 0,
-                    longest_streak: 0,
-                    last_study_date: null,
-                })
-                .select('*')
-                .single();
-
-            if (insertError) {
-                console.error('创建学习统计失败:', insertError);
-                return null;
-            }
-
-            return statsFromRow(newData as StudyStatsRow);
-        }
-
+    try {
+        const response = await apiClient.get<{ success: boolean; data: StudyStatsRow }>('/api/stats/study');
+        return statsFromRow(response.data);
+    } catch (error) {
         console.error('获取学习统计失败:', error);
         return null;
     }
-
-    return statsFromRow(data as StudyStatsRow);
 }
 
 /**
@@ -91,60 +60,13 @@ export async function updateStudyStats(update: {
     cardsReviewed?: number;
     studyTimeMinutes?: number;
 }): Promise<StudyStats | null> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('未登录');
-
-    // 先获取当前统计
-    const currentStats = await getStudyStats();
-    if (!currentStats) return null;
-
-    const today = new Date().toISOString().split('T')[0];
-    const lastStudyDate = currentStats.lastStudyDate;
-
-    // 计算连续学习天数
-    let currentStreak = currentStats.currentStreak;
-    let longestStreak = currentStats.longestStreak;
-
-    if (lastStudyDate !== today) {
-        // 检查是否是连续学习
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-        if (lastStudyDate === yesterdayStr) {
-            // 连续学习
-            currentStreak += 1;
-        } else {
-            // 断了，重新开始
-            currentStreak = 1;
-        }
-
-        longestStreak = Math.max(longestStreak, currentStreak);
+    try {
+        const response = await apiClient.post<{ success: boolean; data: StudyStatsRow }>('/api/stats/study', update);
+        return statsFromRow(response.data);
+    } catch (error) {
+        console.error('更新学习统计失败:', error);
+        return null; // Or throw depending on desired behavior
     }
-
-    const updateData: Record<string, unknown> = {
-        last_study_date: today,
-        current_streak: currentStreak,
-        longest_streak: longestStreak,
-        updated_at: new Date().toISOString(),
-    };
-
-    if (update.cardsReviewed) {
-        updateData.total_cards_reviewed = currentStats.totalCardsReviewed + update.cardsReviewed;
-    }
-    if (update.studyTimeMinutes) {
-        updateData.total_study_time_minutes = currentStats.totalStudyTimeMinutes + update.studyTimeMinutes;
-    }
-
-    const { data, error } = await supabase
-        .from('study_stats')
-        .update(updateData)
-        .eq('user_id', user.id)
-        .select('*')
-        .single();
-
-    if (error) throw error;
-    return statsFromRow(data as StudyStatsRow);
 }
 
 /**

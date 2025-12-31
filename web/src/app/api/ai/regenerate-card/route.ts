@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Auth check
-        const supabase = createRouteClient(req);
+        const supabase = await createRouteClient(req);
         const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) {
