@@ -16,6 +16,8 @@ export interface Profile {
     membershipTier: 'free' | 'pro';
     aiGenerationCount: number;
     lastAiReset: string;
+    xp: number;
+    level: number;
     createdAt: string;
     updatedAt: string;
 }
@@ -100,6 +102,8 @@ export interface ProfileRow {
     membership_tier: 'free' | 'pro';
     ai_generation_count: number;
     last_ai_reset: string;
+    xp: number;
+    level: number;
     created_at: string;
     updated_at: string;
 }
@@ -144,6 +148,8 @@ export function profileFromRow(row: ProfileRow): Profile {
         membershipTier: row.membership_tier || 'free',
         aiGenerationCount: row.ai_generation_count || 0,
         lastAiReset: row.last_ai_reset || row.created_at,
+        xp: row.xp || 0,
+        level: row.level || 1,
         createdAt: row.created_at,
         updatedAt: row.updated_at,
     };

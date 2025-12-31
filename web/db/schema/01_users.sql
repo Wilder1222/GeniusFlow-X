@@ -5,11 +5,14 @@
 -- 用户配置表 (扩展 auth.users)
 CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    user_id TEXT UNIQUE, -- 9位数字用户码
+    email TEXT,
     username TEXT UNIQUE,
     display_name TEXT,
     avatar_url TEXT,
     bio TEXT,
-    user_code TEXT UNIQUE, -- 9位数字用户码
+    xp INTEGER DEFAULT 0,
+    level INTEGER DEFAULT 1,
     membership_tier TEXT DEFAULT 'free',
     ai_generation_count INTEGER DEFAULT 0,
     last_ai_reset TIMESTAMPTZ DEFAULT NOW(),
@@ -19,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 );
 
 -- 用户设置表
-CREATE TABLE IF NOT EXISTS public.user_settings (
+CREATE TABLE IF NOT EXISTS public.profile_settings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     theme TEXT DEFAULT 'system', -- 'light', 'dark', 'system'
@@ -35,7 +38,7 @@ CREATE TABLE IF NOT EXISTS public.user_settings (
     UNIQUE(user_id)
 );
 
--- 创建唯一9位用户码的函数
+-- 创建唯一9位用户码的函数 (保留以备万一，但在触发器中直接生成)
 CREATE OR REPLACE FUNCTION generate_user_code()
 RETURNS TEXT AS $$
 DECLARE
@@ -44,7 +47,7 @@ DECLARE
 BEGIN
     LOOP
         new_code := LPAD(FLOOR(RANDOM() * 1000000000)::TEXT, 9, '0');
-        SELECT EXISTS(SELECT 1 FROM profiles WHERE user_code = new_code) INTO code_exists;
+        SELECT EXISTS(SELECT 1 FROM profiles WHERE user_id = new_code) INTO code_exists;
         EXIT WHEN NOT code_exists;
     END LOOP;
     RETURN new_code;
@@ -55,14 +58,18 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.profiles (id, username, user_code)
+    INSERT INTO public.profiles (id, user_id, email, username)
     VALUES (
         NEW.id,
-        COALESCE(NEW.raw_user_meta_data->>'username', 'user_' || SUBSTRING(NEW.id::TEXT, 1, 8)),
-        generate_user_code()
+        generate_user_code(),
+        NEW.email,
+        COALESCE(NEW.raw_user_meta_data->>'username', 'user_' || SUBSTRING(NEW.id::TEXT, 1, 8))
     );
     
-    INSERT INTO public.user_settings (user_id)
+    INSERT INTO public.profile_settings (user_id)
+    VALUES (NEW.id);
+    
+    INSERT INTO public.study_stats (user_id)
     VALUES (NEW.id);
     
     RETURN NEW;

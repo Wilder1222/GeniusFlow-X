@@ -749,7 +749,7 @@ export function AIGeneratorModal({ isOpen, onClose, onSuccess, deckId, onCardsAd
                                         className={styles.saveSelect}
                                         disabled={!!deckId}
                                     >
-                                        <option value="new">✨ {tAI('createNewDeck')}</option>
+                                        <option value="new">{tAI('createNewDeck')}</option>
                                         {userDecks.map(d => (
                                             <option key={d.id} value={d.id}>📚 {d.title}</option>
                                         ))}

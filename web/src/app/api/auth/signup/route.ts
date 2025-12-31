@@ -125,6 +125,8 @@ export async function POST(request: NextRequest) {
                         email: email,
                         username: finalUsername,
                         is_public: true,
+                        xp: 0,
+                        level: 1,
                         created_at: new Date().toISOString(),
                         updated_at: new Date().toISOString(),
                     });
