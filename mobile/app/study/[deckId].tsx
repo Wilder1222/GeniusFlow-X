@@ -18,7 +18,12 @@ import { cardService } from '../../src/services/card.service';
 import { Card } from '../../src/types/decks';
 import { Rating } from 'ts-fsrs';
 import { StudyCard } from '../../src/components/study/StudyCard';
+import { FocusTimer } from '../../src/components/study/FocusTimer';
 import { Button, LoadingSpinner } from '../../src/components/common';
+import { studyService, SessionResult } from '../../src/services/study.service';
+import { gamificationService } from '../../src/services/gamification.service';
+import { syncService } from '../../src/services/sync.service';
+import { useCardStore } from '../../src/stores/cardStore';
 import { Ionicons } from '@expo/vector-icons';
 import { showMessage } from 'react-native-flash-message';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
@@ -27,26 +32,39 @@ export default function StudyScreen() {
     const { deckId } = useLocalSearchParams<{ deckId: string }>();
     const { theme, isDark } = useTheme();
 
-    const [cards, setCards] = useState<Card[]>([]);
+    const { cardsByDeck, fetchCards, gradeCardOffline, loading: storeLoading } = useCardStore();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isFinished, setIsFinished] = useState(false);
 
-    // 加载待复习卡片
+    // 统计数据
+    const [stats, setStats] = useState({
+        correct: 0,
+        incorrect: 0,
+        totalTimeMs: 0
+    });
+    const [sessionId, setSessionId] = useState<string | null>(null);
+    const [sessionResult, setSessionResult] = useState<SessionResult | null>(null);
+
+    // 加载待复习卡片并开始会话
     useEffect(() => {
-        const loadCards = async () => {
+        const initStudy = async () => {
+            if (!deckId) return;
             setLoading(true);
-            const { data, error } = await cardService.getDueCards(deckId);
-            if (error) {
-                showMessage({ message: error, type: 'danger' });
-            } else {
-                setCards(data || []);
-            }
+
+            // 离线优先：先从 Store 获取
+            await fetchCards(deckId);
+
+            // 开始会话
+            const sid = await studyService.startSession(deckId);
+            setSessionId(sid);
             setLoading(false);
         };
-        loadCards();
-    }, [deckId]);
+        initStudy();
+    }, [deckId, fetchCards]);
+
+    const cards = cardsByDeck[deckId || ''] || [];
 
     const handleFlip = () => {
         setIsFlipped(!isFlipped);
@@ -56,34 +74,74 @@ export default function StudyScreen() {
         const currentCard = cards[currentIndex];
         if (!currentCard) return;
 
-        // 乐观更新 UI
-        // 这里只是简单的移动到下一张，实际上可以根据评分决定是否回炉
+        // 1. 更新本地统计
+        const isCorrect = rating >= Rating.Good;
+        setStats(prev => ({
+            ...prev,
+            correct: prev.correct + (isCorrect ? 1 : 0),
+            incorrect: prev.incorrect + (isCorrect ? 0 : 1),
+        }));
 
-        // 1. 调用服务更新状态
-        const { error } = await cardService.gradeCard(currentCard, rating);
-        if (error) {
-            showMessage({ message: '评分同步失败', type: 'warning' });
+        // 2. 离线评分 (更新本地状态并加入同步队列)
+        try {
+            await gradeCardOffline(currentCard, rating);
+        } catch (error) {
+            showMessage({ message: '本地评分保存失败', type: 'danger' });
+            return;
         }
 
-        // 2. 移动到下一张或结束
+        // 3. 移动到下一张或结束
         if (currentIndex < cards.length - 1) {
             setCurrentIndex(prev => prev + 1);
             setIsFlipped(false);
         } else {
-            setIsFinished(true);
+            handleComplete();
         }
     };
 
-    if (loading) return <LoadingSpinner fullScreen text="准备卡片中..." />;
+    const handleComplete = async () => {
+        setLoading(true);
+        // 如果是最后一张，上面的 handleGrade 已经更新了 stats
+        const result = await studyService.completeSession(
+            stats.correct,
+            stats.incorrect,
+            sessionId || undefined,
+            stats.totalTimeMs
+        );
+
+        if (result) {
+            setSessionResult(result);
+        }
+        setIsFinished(true);
+        setLoading(false);
+    };
+
+    if (loading && !isFinished) return <LoadingSpinner fullScreen text="准备卡片中..." />;
 
     if (cards.length === 0 || isFinished) {
         return (
             <SafeAreaView style={[styles.container, styles.centered, { backgroundColor: theme.colors.background.primary }]}>
                 <Ionicons name="checkmark-circle" size={80} color={theme.colors.interactive.primary} />
                 <Text style={[styles.finishTitle, { color: theme.colors.text.primary }]}>学习完成！</Text>
+
+                {sessionResult && (
+                    <View style={styles.resultContainer}>
+                        <View style={styles.resultRow}>
+                            <Text style={[styles.resultLabel, { color: theme.colors.text.secondary }]}>获得经验</Text>
+                            <Text style={[styles.resultValue, { color: theme.colors.interactive.primary }]}>+{sessionResult.xpGained} XP</Text>
+                        </View>
+                        {sessionResult.achievements.unlocked.length > 0 && (
+                            <View style={styles.resultRow}>
+                                <Text style={[styles.resultLabel, { color: theme.colors.text.secondary }]}>解锁成就</Text>
+                                <Text style={[styles.resultValue, { color: '#FFB300' }]}>{sessionResult.achievements.unlocked.length} 个新成就!</Text>
+                            </View>
+                        )}
+                    </View>
+                )}
+
                 <Text style={[styles.finishSub, { color: theme.colors.text.secondary }]}>您已完成本次所有复习任务</Text>
                 <Button
-                    title="返回"
+                    title="确定"
                     onPress={() => router.back()}
                     style={{ marginTop: 32, width: 200 }}
                 />
@@ -100,14 +158,19 @@ export default function StudyScreen() {
                 <TouchableOpacity onPress={() => router.back()}>
                     <Ionicons name="close" size={28} color={theme.colors.text.primary} />
                 </TouchableOpacity>
-                <View style={[styles.progressBadge, { backgroundColor: theme.colors.background.tertiary }]}>
-                    <Text style={{ color: theme.colors.text.secondary, fontSize: 12 }}>
-                        {currentIndex + 1} / {cards.length}
-                    </Text>
+
+                <FocusTimer onTick={(sec) => setStats(prev => ({ ...prev, totalTimeMs: sec * 1000 }))} />
+
+                <View style={styles.headerRight}>
+                    <View style={[styles.progressBadge, { backgroundColor: theme.colors.background.tertiary, marginRight: 8 }]}>
+                        <Text style={{ color: theme.colors.text.secondary, fontSize: 12 }}>
+                            {currentIndex + 1} / {cards.length}
+                        </Text>
+                    </View>
+                    <TouchableOpacity onPress={() => {/* 设置 */ }}>
+                        <Ionicons name="settings-outline" size={24} color={theme.colors.text.primary} />
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={() => {/* 设置 */ }}>
-                    <Ionicons name="settings-outline" size={24} color={theme.colors.text.primary} />
-                </TouchableOpacity>
             </View>
 
             {/* 卡片展示区 */}
@@ -192,6 +255,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
     },
+    headerRight: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     progressBadge: {
         paddingHorizontal: 12,
         paddingVertical: 4,
@@ -251,5 +318,25 @@ const styles = StyleSheet.create({
     finishSub: {
         fontSize: 16,
         marginTop: 8,
+    },
+    resultContainer: {
+        marginTop: 24,
+        padding: 20,
+        borderRadius: 16,
+        backgroundColor: 'rgba(0,0,0,0.03)',
+        width: '80%',
+    },
+    resultRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 8,
+    },
+    resultLabel: {
+        fontSize: 16,
+    },
+    resultValue: {
+        fontSize: 18,
+        fontWeight: '700',
     }
 });

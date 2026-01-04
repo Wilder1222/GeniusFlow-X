@@ -151,21 +151,21 @@ export const getLevelFromExp = (exp: number): { level: number; currentExp: numbe
 // 存储键（本地缓存）
 export const STORAGE_KEYS = {
     // 认证
-    AUTH_TOKEN: '@auth_token',
-    USER_ID: '@user_id',
+    AUTH_TOKEN: 'auth_token',
+    USER_ID: 'user_id',
 
     // 用户偏好
-    THEME: '@theme',
-    LANGUAGE: '@language',
+    THEME: 'theme_preference',
+    LANGUAGE: 'language_preference',
 
     // 离线数据
-    OFFLINE_QUEUE: '@offline_queue',
-    CACHED_DECKS: '@cached_decks',
-    CACHED_CARDS: '@cached_cards',
+    OFFLINE_QUEUE: 'offline_queue',
+    CACHED_DECKS: 'cached_decks',
+    CACHED_CARDS: 'cached_cards',
 
     // 其他
-    ONBOARDING_COMPLETED: '@onboarding_completed',
-    LAST_SYNC_TIME: '@last_sync_time',
+    ONBOARDING_COMPLETED: 'onboarding_completed',
+    LAST_SYNC_TIME: 'last_sync_time',
 } as const;
 
 // 应用配置

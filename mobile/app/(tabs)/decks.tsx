@@ -7,11 +7,13 @@ import {
     View,
     Text,
     StyleSheet,
-    FlatList,
     RefreshControl,
     TouchableOpacity,
     TextInput
 } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
+
+const AnyFlashList = FlashList as any;
 import { router } from 'expo-router';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
@@ -19,42 +21,45 @@ import { deckService } from '../../src/services/deck.service';
 import { Deck, CreateDeckData } from '../../src/types/decks';
 import { DeckCard } from '../../src/components/deck/DeckCard';
 import { CreateDeckModal } from '../../src/components/deck/CreateDeckModal';
+import { ImportModal } from '../../src/components/deck/ImportModal';
 import { LoadingSpinner } from '../../src/components/common';
+import { useDeckStore } from '../../src/stores/deckStore';
 import { Ionicons } from '@expo/vector-icons';
 import { showMessage } from 'react-native-flash-message';
 import { SUCCESS_MESSAGES } from '../../src/config/constants';
+import { useTranslation } from 'react-i18next';
 
 export default function DecksScreen() {
     const { theme } = useTheme();
     const { user } = useAuth();
-    const [decks, setDecks] = useState<Deck[]>([]);
+    const { t } = useTranslation();
+    const { decks, fetchDecks, loading, error: storeError } = useDeckStore();
     const [filteredDecks, setFilteredDecks] = useState<Deck[]>([]);
-    const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const [importModalVisible, setImportModalVisible] = useState(false);
 
-    const fetchDecks = useCallback(async (isRefresh = false) => {
+    const loadDecks = useCallback(async (force = false) => {
         if (!user) return;
-
-        if (!isRefresh) setLoading(true);
-        const { data, error } = await deckService.getUserDecks(user.id);
-
-        if (error) {
-            showMessage({ message: error, type: 'danger' });
-        } else {
-            const results = data || [];
-            setDecks(results);
-            filterDecks(searchQuery, results);
-        }
-
-        setLoading(false);
+        if (force) setRefreshing(true);
+        await fetchDecks(user.id, force);
         setRefreshing(false);
-    }, [user, searchQuery]);
+    }, [user, fetchDecks]);
 
     useEffect(() => {
-        fetchDecks();
-    }, [fetchDecks]);
+        loadDecks();
+    }, [loadDecks]);
+
+    useEffect(() => {
+        filterDecks(searchQuery, decks);
+    }, [decks, searchQuery]);
+
+    useEffect(() => {
+        if (storeError) {
+            showMessage({ message: storeError, type: 'danger' });
+        }
+    }, [storeError]);
 
     const filterDecks = (query: string, allDecks: Deck[] = decks) => {
         setSearchQuery(query);
@@ -72,17 +77,17 @@ export default function DecksScreen() {
 
     const handleCreateDeck = async (data: CreateDeckData) => {
         if (!user) return;
-        const { error } = await deckService.createDeck(user.id, data);
+        const { data: newDeck, error } = await deckService.createDeck(user.id, data);
         if (error) {
             throw new Error(error);
         } else {
             showMessage({ message: SUCCESS_MESSAGES.DECK_CREATED, type: 'success' });
-            fetchDecks(true);
+            if (newDeck) useDeckStore.getState().addDeck(newDeck);
         }
     };
 
     if (loading && !refreshing) {
-        return <LoadingSpinner fullScreen text="加速加载中..." />;
+        return <LoadingSpinner fullScreen text={t('common.loading')} />;
     }
 
     return (
@@ -93,7 +98,7 @@ export default function DecksScreen() {
                     <Ionicons name="search" size={20} color={theme.colors.text.tertiary} />
                     <TextInput
                         style={[styles.searchInput, { color: theme.colors.text.primary }]}
-                        placeholder="搜索我的卡组..."
+                        placeholder={t('decks.search_placeholder')}
                         placeholderTextColor={theme.colors.text.tertiary}
                         value={searchQuery}
                         onChangeText={filterDecks}
@@ -104,37 +109,49 @@ export default function DecksScreen() {
                         </TouchableOpacity>
                     )}
                 </View>
+                <TouchableOpacity
+                    style={[styles.importIconBtn, { backgroundColor: theme.colors.background.secondary }]}
+                    onPress={() => router.push('/discover')}
+                >
+                    <Ionicons name="planet-outline" size={22} color={theme.colors.interactive.primary} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.importIconBtn, { backgroundColor: theme.colors.background.secondary }]}
+                    onPress={() => setImportModalVisible(true)}
+                >
+                    <Ionicons name="cloud-download-outline" size={22} color={theme.colors.interactive.primary} />
+                </TouchableOpacity>
             </View>
 
-            <FlatList
-                data={filteredDecks}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <DeckCard
-                        deck={item}
-                        onPress={() => router.push(`/decks/${item.id}`)}
-                    />
-                )}
-                contentContainerStyle={styles.listContent}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={() => {
-                            setRefreshing(true);
-                            fetchDecks(true);
-                        }}
-                        tintColor={theme.colors.interactive.primary}
-                    />
-                }
-                ListEmptyComponent={
-                    <View style={styles.emptyContainer}>
-                        <Ionicons name="documents-outline" size={64} color={theme.colors.text.tertiary} />
-                        <Text style={[styles.emptyText, { color: theme.colors.text.secondary }]}>
-                            {searchQuery ? '未找到相关卡组' : '还没有卡组，点击右下角创建'}
-                        </Text>
-                    </View>
-                }
-            />
+            {AnyFlashList && (
+                <AnyFlashList
+                    data={filteredDecks}
+                    keyExtractor={(item: Deck) => item.id}
+                    estimatedItemSize={100}
+                    renderItem={({ item }: { item: Deck }) => (
+                        <DeckCard
+                            deck={item}
+                            onPress={() => router.push(`/decks/${item.id}`)}
+                        />
+                    )}
+                    contentContainerStyle={styles.listContent}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={() => loadDecks(true)}
+                            tintColor={theme.colors.interactive.primary}
+                        />
+                    }
+                    ListEmptyComponent={
+                        <View style={styles.emptyContainer}>
+                            <Ionicons name="documents-outline" size={64} color={theme.colors.text.tertiary} />
+                            <Text style={[styles.emptyText, { color: theme.colors.text.secondary }]}>
+                                {searchQuery ? t('decks.not_found') : t('decks.empty')}
+                            </Text>
+                        </View>
+                    }
+                />
+            )}
 
             {/* 悬浮创建按钮 */}
             <TouchableOpacity
@@ -149,6 +166,12 @@ export default function DecksScreen() {
                 onClose={() => setModalVisible(false)}
                 onSave={handleCreateDeck}
             />
+
+            <ImportModal
+                visible={importModalVisible}
+                onClose={() => setImportModalVisible(false)}
+                onSuccess={() => loadDecks(true)}
+            />
         </View>
     );
 }
@@ -158,9 +181,19 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
+        flexDirection: 'row',
+        alignItems: 'center',
         paddingHorizontal: 16,
         paddingTop: 16,
         paddingBottom: 8,
+    },
+    importIconBtn: {
+        width: 48,
+        height: 48,
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 12,
     },
     searchBar: {
         flexDirection: 'row',

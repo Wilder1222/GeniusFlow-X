@@ -19,7 +19,12 @@ const ExpoSecureStoreAdapter = {
 const supabaseUrl = API_CONFIG.SUPABASE_URL;
 const supabaseAnonKey = API_CONFIG.SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('CRITICAL: Supabase URL or Anon Key is missing! Please check your .env.local file.');
+}
+
+// 导出 supabase 实例，即使配置缺失也创建一个空的（虽然会报错，但能让导出不为 undefined）
+export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder', {
     auth: {
         storage: ExpoSecureStoreAdapter,
         autoRefreshToken: true,

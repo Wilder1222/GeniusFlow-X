@@ -11,7 +11,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import FlashMessage from 'react-native-flash-message';
 import { ThemeProvider } from '../src/contexts/ThemeContext';
 import { AuthProvider } from '../src/contexts/AuthContext';
+// import { SyncStatusIndicator } from '../src/components/common';
 import { StyleSheet } from 'react-native';
+import '../src/config/i18n'; // Initialize i18n
 
 export default function RootLayout() {
     return (
@@ -22,6 +24,8 @@ export default function RootLayout() {
                         <StatusBar style="auto" />
                         <Slot />
                         <FlashMessage position="top" />
+                        {/* Temporarily disabled due to import error */}
+                        {/* <SyncStatusIndicator /> */}
                     </AuthProvider>
                 </ThemeProvider>
             </SafeAreaProvider>

@@ -3,16 +3,29 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 import { Card, Button } from '../../src/components/common';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/contexts/AuthContext';
+import { LevelProgressBar } from '../../src/components/common';
+import { gamificationService, UserLevel } from '../../src/services/gamification.service';
 
 export default function ProfileScreen() {
     const { theme, themeMode, setThemeMode } = useTheme();
+    const { t } = useTranslation();
     const { profile, user, signOut } = useAuth();
+    const [userLevel, setUserLevel] = React.useState<UserLevel | null>(null);
+
+    React.useEffect(() => {
+        const fetchLevel = async () => {
+            const level = await gamificationService.getUserLevel();
+            setUserLevel(level);
+        };
+        fetchLevel();
+    }, []);
 
     const handleLogout = async () => {
         await signOut();
@@ -48,7 +61,7 @@ export default function ProfileScreen() {
         >
             <View style={styles.header}>
                 <Text style={[styles.title, { color: theme.colors.text.primary }]}>
-                    个人中心
+                    {t('profile.title')}
                 </Text>
                 <Button
                     title=""
@@ -84,22 +97,37 @@ export default function ProfileScreen() {
                 )}
             </Card>
 
+            {/* 等级进度 */}
+            {userLevel && (
+                <Card style={{ marginVertical: theme.spacing.md }}>
+                    <TouchableOpacity onPress={() => router.push('/achievements')}>
+                        <LevelProgressBar userLevel={userLevel} />
+                        <View style={styles.achievementsLink}>
+                            <Text style={[styles.linkText, { color: theme.colors.interactive.primary }]}>
+                                {t('profile.view_achievements') || 'View All Achievements'}
+                            </Text>
+                            <Ionicons name="chevron-forward" size={16} color={theme.colors.interactive.primary} />
+                        </View>
+                    </TouchableOpacity>
+                </Card>
+            )}
+
             {/* 会员与AI额度 */}
             <Card style={{ marginVertical: theme.spacing.md }}>
                 <View style={styles.row}>
                     <Text style={[styles.label, { color: theme.colors.text.secondary }]}>
-                        会员类型
+                        {t('profile.membership')}
                     </Text>
                     <Text style={[styles.value, { color: theme.colors.interactive.primary, fontWeight: 'bold' }]}>
-                        {profile?.membership_type === 'pro' ? '💎 Pro' : '🆓 Free'}
+                        {profile?.membership_tier === 'pro' ? '💎 Pro' : '🆓 Free'}
                     </Text>
                 </View>
                 <View style={styles.usageContainer}>
                     <Text style={[styles.label, { color: theme.colors.text.secondary }]}>
-                        今日AI生成额度
+                        {t('profile.ai_usage_today') || 'AI Usage Today'}
                     </Text>
                     <Text style={[styles.value, { color: theme.colors.text.primary }]}>
-                        {profile?.ai_generation_count ?? 0} / {profile?.membership_type === 'pro' ? '∞' : '10'}
+                        {profile?.ai_generation_count ?? 0} / {profile?.membership_tier === 'pro' ? '∞' : '10'}
                     </Text>
                 </View>
             </Card>
@@ -121,7 +149,7 @@ export default function ProfileScreen() {
                     账号管理
                 </Text>
                 <Button
-                    title="退出登录"
+                    title={t('profile.logout')}
                     onPress={handleLogout}
                     variant="outline"
                     style={{ marginTop: theme.spacing.sm }}
@@ -204,5 +232,19 @@ const styles = StyleSheet.create({
     },
     value: {
         fontSize: 16,
+    },
+    achievementsLink: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 8,
+        borderTopWidth: 1,
+        borderTopColor: 'rgba(0,0,0,0.05)',
+        marginTop: 8,
+    },
+    linkText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginRight: 4,
     },
 });

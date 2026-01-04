@@ -1,0 +1,66 @@
+{
+    "common": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "delete": "Delete",
+        "edit": "Edit",
+        "loading": "Loading...",
+        "success": "Success",
+        "error": "Error",
+        "confirm": "Confirm",
+        "offline_mode": "Offline Mode"
+    },
+    "home": {
+        "title": "Home",
+        "welcome": "Welcome back",
+        "stats": {
+            "today_review": "Today's Review",
+            "focus_minutes": "Focus Minutes",
+            "accuracy": "Accuracy"
+        },
+        "ai_generate": "AI Flashcards",
+        "ai_desc": "Generate cards instantly with AI"
+    },
+    "decks": {
+        "title": "My Decks",
+        "search": "Search decks...",
+        "empty": "No decks yet, tap + to create one",
+        "import": "Import Deck",
+        "create": "Create Deck"
+    },
+    "study": {
+        "title": "Study",
+        "flip_hint": "Tap to flip card",
+        "finish": "Session Complete!",
+        "finish_desc": "You've finished all reviews for now",
+        "xp_gained": "XP Gained",
+        "achievements_unlocked": "Achievements Unlocked"
+    },
+    "achievements": {
+        "title": "Achievements",
+        "level": "Level",
+        "xp": "XP",
+        "locked": "Locked",
+        "unlocked": "Unlocked",
+        "all": "All"
+    },
+    "profile": {
+        "title": "Profile",
+        "view_achievements": "View All Achievements",
+        "membership": "Membership",
+        "ai_usage_today": "AI Generation Quota",
+        "logout": "Logout"
+    },
+    "community": {
+        "title": "Discover",
+        "search": "Discover public decks...",
+        "import_to_my": "Import to My Decks",
+        "author": "Author",
+        "fork_success": "Deck imported successfully!",
+        "fork_error": "Failed to import deck",
+        "user_profile": "User Profile",
+        "shared_decks": "Shared Decks",
+        "followers": "Followers",
+        "following": "Following"
+    }
+}

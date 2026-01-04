@@ -1,0 +1,53 @@
+{
+    "common": {
+        "cancel": "取消",
+        "save": "保存",
+        "delete": "删除",
+        "edit": "编辑",
+        "loading": "加载中...",
+        "success": "成功",
+        "error": "错误",
+        "confirm": "确定",
+        "offline_mode": "离线模式"
+    },
+    "home": {
+        "title": "首页",
+        "welcome": "欢迎回来",
+        "stats": {
+            "today_review": "今日复习",
+            "focus_minutes": "专注分钟",
+            "accuracy": "正确率"
+        },
+        "ai_generate": "AI 智能生成",
+        "ai_desc": "使用 AI 瞬间生成复习卡片"
+    },
+    "decks": {
+        "title": "我的卡组",
+        "search": "搜索我的卡组...",
+        "empty": "还没有卡组，点击 + 创建",
+        "import": "导入卡组",
+        "create": "创建卡组"
+    },
+    "study": {
+        "title": "学习",
+        "flip_hint": "点击卡片翻转",
+        "finish": "学习完成！",
+        "finish_desc": "您已完成本次所有复习任务",
+        "xp_gained": "获得经验",
+        "achievements_unlocked": "解锁成就"
+    },
+    "achievements": {
+        "title": "成就系统",
+        "level": "等级",
+        "xp": "经验值",
+        "locked": "待解锁",
+        "unlocked": "已解锁",
+        "all": "全部"
+    },
+    "profile": {
+        "title": "个人资料",
+        "membership": "会员等级",
+        "settings": "设置",
+        "logout": "退出登录"
+    }
+}
