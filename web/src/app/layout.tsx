@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import ErrorBoundary from "@/components/ui/error-boundary";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: "GeniusFlow-X - AI-Powered Flashcard App",
@@ -24,6 +25,7 @@ export default function RootLayout({
         <ErrorBoundary>
           {children}
         </ErrorBoundary>
+        <SpeedInsights />
         <script
           dangerouslySetInnerHTML={{
             __html: `

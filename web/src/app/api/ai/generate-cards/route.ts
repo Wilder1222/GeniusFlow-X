@@ -4,6 +4,7 @@ import { createAIClient, getModelName, getAIProvider, getProviderConfig } from '
 import { createRouteClient } from '@/lib/supabase-server';
 import { getMembershipStatus, incrementAIUsage } from '@/lib/membership';
 import { buildDomainPrompt, AIDomain } from '@/lib/ai-domains';
+import { GoogleGenAI } from '@google/genai';
 
 interface GenerateCardsRequest {
     text: string;
@@ -57,7 +58,6 @@ export async function POST(req: NextRequest) {
 
         // Create AI client and get model
         const provider = getAIProvider();
-        const client = createAIClient(provider);
         const model = getModelName();
         const config = getProviderConfig(provider);
 
@@ -70,14 +70,38 @@ export async function POST(req: NextRequest) {
             throw new Error(`API key not configured for provider: ${provider}. Please set ${provider.toUpperCase()}_API_KEY in .env.local`);
         }
 
-        const completion = await client.chat.completions.create({
-            model: model,
-            messages: [{ role: 'user', content: prompt }],
-            temperature: 0.7,
-            max_tokens: 4000
-        });
+        let responseText: string | undefined;
+        let tokenUsage: { promptTokens?: number; completionTokens?: number } = {};
 
-        const responseText = completion.choices[0]?.message?.content;
+        // Handle Gemini provider separately due to different SDK
+        if (provider === 'gemini') {
+            const genAI = new GoogleGenAI({ apiKey: config.apiKey });
+            const response = await genAI.models.generateContent({
+                model: model,
+                contents: prompt
+            });
+            responseText = response.text;
+            // Gemini doesn't provide token usage in the same format
+            tokenUsage = {
+                promptTokens: undefined,
+                completionTokens: undefined
+            };
+        } else {
+            // OpenAI-compatible providers
+            const client = createAIClient(provider);
+            const completion = await client.chat.completions.create({
+                model: model,
+                messages: [{ role: 'user', content: prompt }],
+                temperature: 0.7,
+                max_tokens: 4000
+            });
+            responseText = completion.choices[0]?.message?.content ?? undefined;
+            tokenUsage = {
+                promptTokens: completion.usage?.prompt_tokens,
+                completionTokens: completion.usage?.completion_tokens
+            };
+        }
+
         console.log('[AI Generation] Response retrieved');
         if (!responseText) {
             throw new Error('Empty response from AI');
@@ -197,8 +221,8 @@ export async function POST(req: NextRequest) {
             provider,
             model,
             usage: {
-                promptTokens: completion.usage?.prompt_tokens,
-                completionTokens: completion.usage?.completion_tokens
+                promptTokens: tokenUsage.promptTokens,
+                completionTokens: tokenUsage.completionTokens
             }
         });
 

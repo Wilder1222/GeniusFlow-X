@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 
 // AI Provider configuration
-export type AIProvider = 'openai' | 'anthropic' | 'deepseek' | 'zhipu' | 'moonshot' | 'mimo';
+export type AIProvider = 'openai' | 'anthropic' | 'deepseek' | 'zhipu' | 'moonshot' | 'mimo' | 'gemini';
 
 interface ProviderConfig {
     apiKey: string;
@@ -58,6 +58,13 @@ export function getProviderConfig(provider: AIProvider): ProviderConfig {
                 apiKey: process.env.MIMO_API_KEY || '',
                 baseURL: 'https://api.xiaomimimo.com/v1',
                 model: process.env.MIMO_MODEL || 'mimo-v2-flash'
+            };
+
+        case 'gemini':
+            return {
+                apiKey: process.env.GEMINI_API_KEY || '',
+                baseURL: 'https://generativelanguage.googleapis.com/v1beta',
+                model: process.env.GEMINI_MODEL || 'gemini-3-flash-preview'
             };
 
         default:
