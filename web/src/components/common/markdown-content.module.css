@@ -14,6 +14,7 @@
 
 .paragraph {
     margin: 0.75rem 0;
+    color: var(--color-text-primary);
 }
 
 .paragraph:first-child {
@@ -49,6 +50,7 @@
 .list {
     margin: 0.75rem 0;
     padding-left: 1.5rem;
+    color: var(--color-text-primary);
 }
 
 .list li {
@@ -62,7 +64,7 @@
     background: var(--color-surface-hover);
     border-radius: 0 4px 4px 0;
     font-style: italic;
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
 }
 
 .inlineCode {

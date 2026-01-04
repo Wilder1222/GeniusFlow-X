@@ -19,7 +19,6 @@
 
 .perspectiveContainer.disabled {
     cursor: not-allowed;
-    opacity: 0.8;
 }
 
 .cardInner {
@@ -82,7 +81,7 @@
     font-size: 2rem;
     font-weight: 600;
     line-height: 1.4;
-    color: var(--text-primary);
+    color: var(--color-text-primary);
     text-align: center;
     word-break: break-word;
     max-width: 90%;
@@ -99,8 +98,8 @@
 
 .hint {
     font-size: 0.85rem;
-    color: var(--text-secondary);
-    opacity: 0.7;
+    color: var(--color-text-secondary);
+    font-weight: 500;
 }
 
 .speakerBtn {
