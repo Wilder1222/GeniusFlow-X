@@ -1,6 +1,10 @@
 'use client';
 
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import styles from './markdown-content.module.css';
 
 interface MarkdownContentProps {
@@ -16,9 +20,11 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
     return (
         <div className={`${styles.markdown} ${className || ''}`}>
             <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[rehypeKatex]}
                 components={{
                     // Style code blocks
-                    code: ({ className, children, ...props }) => {
+                    code: ({ className, children, ...props }: any) => {
                         const isInline = !className;
                         return isInline ? (
                             <code className={styles.inlineCode} {...props}>{children}</code>
@@ -44,6 +50,22 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
                     // Style strong/bold
                     strong: ({ children }) => (
                         <strong className={styles.strong}>{children}</strong>
+                    ),
+                    // Style headings
+                    h1: ({ children }) => <h1 className={styles.h1}>{children}</h1>,
+                    h2: ({ children }) => <h2 className={styles.h2}>{children}</h2>,
+                    h3: ({ children }) => <h3 className={styles.h3}>{children}</h3>,
+                    // Style tables
+                    table: ({ children }) => (
+                        <div className={styles.tableWrapper}>
+                            <table className={styles.table}>{children}</table>
+                        </div>
+                    ),
+                    th: ({ children }) => <th className={styles.th}>{children}</th>,
+                    td: ({ children }) => <td className={styles.td}>{children}</td>,
+                    // Style blockquotes
+                    blockquote: ({ children }) => (
+                        <blockquote className={styles.blockquote}>{children}</blockquote>
                     ),
                 }}
             >

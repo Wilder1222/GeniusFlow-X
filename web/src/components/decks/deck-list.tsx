@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Deck } from '@/types/decks';
 import { apiClient } from '@/lib/api-client';
 import { useToast } from '@/lib/contexts/toast-context';
@@ -18,6 +19,8 @@ interface DeckListProps {
 export function DeckList({ decks, onCreateClick, onDeckDeleted }: DeckListProps) {
     const router = useRouter();
     const toast = useToast();
+    const t = useTranslations('Decks');
+    const tCommon = useTranslations('Common');
     const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; deck: Deck | null }>({
         isOpen: false,
         deck: null
@@ -35,7 +38,7 @@ export function DeckList({ decks, onCreateClick, onDeckDeleted }: DeckListProps)
             const data = await apiClient.delete(`/api/decks/${deleteDialog.deck.id}`);
 
             if (!data.success) {
-                throw new Error(data.error?.message || '删除失败');
+                throw new Error(data.error?.message || t('deleteFailed'));
             }
 
             // Close dialog
@@ -58,10 +61,10 @@ export function DeckList({ decks, onCreateClick, onDeckDeleted }: DeckListProps)
     if (decks.length === 0) {
         return (
             <div className={styles.emptyState}>
-                <h3>还没有卡组</h3>
-                <p style={{ marginBottom: '24px' }}>创建一个卡组开始学习吧</p>
+                <h3>{t('emptyTitle')}</h3>
+                <p style={{ marginBottom: '24px' }}>{t('emptySubtitle')}</p>
                 <button className={styles.createButton} onClick={onCreateClick}>
-                    + 新建卡组
+                    {t('create')}
                 </button>
             </div>
         );
@@ -78,10 +81,10 @@ export function DeckList({ decks, onCreateClick, onDeckDeleted }: DeckListProps)
                     >
                         <div>
                             <h3 className={styles.cardTitle}>{deck.title}</h3>
-                            <p className={styles.cardDesc}>{deck.description || '无描述'}</p>
+                            <p className={styles.cardDesc}>{deck.description || t('noDescription')}</p>
                         </div>
                         <div className={styles.cardFooter}>
-                            <span>{deck.tags.length > 0 ? deck.tags[0] : '默认'}</span>
+                            <span>{deck.tags.length > 0 ? (deck.tags[0] || t('defaultTag')) : t('defaultTag')}</span>
                             <span>{new Date(deck.created_at).toLocaleDateString()}</span>
                         </div>
 
@@ -89,7 +92,7 @@ export function DeckList({ decks, onCreateClick, onDeckDeleted }: DeckListProps)
                         <button
                             className={styles.deleteButton}
                             onClick={(e) => handleDeleteClick(e, deck)}
-                            title="删除卡组"
+                            title={t('deleteDeck')}
                         >
                             🗑️
                         </button>
@@ -99,12 +102,12 @@ export function DeckList({ decks, onCreateClick, onDeckDeleted }: DeckListProps)
 
             <ConfirmDialog
                 isOpen={deleteDialog.isOpen}
-                title="删除卡组"
-                message="确定要删除这个卡组吗？"
-                details={deleteDialog.deck ? `卡组「${deleteDialog.deck.title}」及其所有卡片将被永久删除，此操作不可恢复。` : ''}
+                title={t('deleteConfirmTitle')}
+                message={t('deleteConfirmMessage')}
+                details={deleteDialog.deck ? t('deleteConfirmDetails', { title: deleteDialog.deck.title }) : ''}
                 variant="danger"
-                confirmText="删除"
-                cancelText="取消"
+                confirmText={t('deleteDeck')}
+                cancelText={tCommon('cancel')}
                 onConfirm={handleConfirmDelete}
                 onCancel={handleCancelDelete}
             />

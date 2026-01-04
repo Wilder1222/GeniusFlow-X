@@ -13,22 +13,28 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setTheme] = useState<Theme>('light');
-    const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>('light');
-
-    useEffect(() => {
-        // Load theme from localStorage
-        const savedTheme = localStorage.getItem('theme') as Theme | null;
-        if (savedTheme) {
-            setTheme(savedTheme);
-        } else {
-            // Check system preference
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            setTheme(prefersDark ? 'dark' : 'light');
+    const [theme, setTheme] = useState<Theme>(() => {
+        // Try to get from localStorage during state initialization (client-side only)
+        if (typeof window !== 'undefined') {
+            return (localStorage.getItem('theme') as Theme) || 'light';
         }
+        return 'light';
+    });
+    const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>('light');
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    // Sync state with localStorage on mount (secondary check for safety)
+    useEffect(() => {
+        const savedTheme = localStorage.getItem('theme') as Theme | null;
+        if (savedTheme && savedTheme !== theme) {
+            setTheme(savedTheme);
+        }
+        setIsLoaded(true);
     }, []);
 
     useEffect(() => {
+        if (!isLoaded) return;
+
         // Calculate effective theme
         let effective: 'light' | 'dark' = 'light';
 

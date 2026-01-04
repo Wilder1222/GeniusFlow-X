@@ -412,7 +412,16 @@
         "loading": "加载中...",
         "empty": "暂无卡组，创建一个吧！",
         "cards": "张卡片",
-        "dueToday": "今日待复习"
+        "dueToday": "今日待复习",
+        "noDescription": "无描述",
+        "defaultTag": "默认",
+        "emptyTitle": "还没有卡组",
+        "emptySubtitle": "创建一个卡组开始学习吧",
+        "deleteDeck": "删除卡组",
+        "deleteFailed": "删除失败",
+        "deleteConfirmTitle": "删除卡组",
+        "deleteConfirmMessage": "确定要删除这个卡组吗？",
+        "deleteConfirmDetails": "卡组「{title}」及其所有卡片将被永久删除，此操作不可恢复。"
     },
     "Stats": {
         "title": "📊 学习数据中心",
@@ -616,6 +625,17 @@
         "newAchievements": "🏆 解锁新成就",
         "syncing": "同步中..."
     },
+    "ImageUpload": {
+        "uploadImage": "上传图片",
+        "onlySupport": "仅支持 JPG, PNG, GIF, WebP 格式",
+        "sizeLimit": "文件大小不能超过 {size}MB",
+        "uploadFailed": "上传失败",
+        "changeImage": "更换图片",
+        "deleteImage": "删除图片",
+        "releaseToUpload": "松开以上传",
+        "dragDropHint": "拖拽图片到此处或点击上传",
+        "hint": "支持 JPG, PNG, GIF, WebP，最大 {size}MB"
+    },
     "CreateDeck": {
         "title": "创建新卡组",
         "name": "卡组名称",
@@ -785,6 +805,7 @@
         "noData": "暂无数据",
         "activityHeatmap": "学习活跃度",
         "pastYearReviews": "过去一年 {count} 次复习",
+        "currentYearReviews": "{year} 年共 {count} 次复习",
         "less": "少",
         "more": "多",
         "reviews": "复习",

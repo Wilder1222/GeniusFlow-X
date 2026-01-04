@@ -111,7 +111,9 @@ export function StudyCard({ card, isRevealed, onReveal, onGrade, ttsEnabled = tr
                     <div className={styles.cardFront}>
                         <div className={styles.cardContent}>
                             <div className={styles.tag}>{t('question')}</div>
-                            <div className={styles.text}>{card.front}</div>
+                            <div className={styles.text}>
+                                <MarkdownContent content={card.front} />
+                            </div>
                         </div>
                         <div className={styles.cardFooter}>
                             <span className={styles.hint}>{t('clickToReveal')}</span>

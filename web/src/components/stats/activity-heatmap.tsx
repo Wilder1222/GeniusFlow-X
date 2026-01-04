@@ -14,21 +14,34 @@ export default function ActivityHeatmap() {
     const { heatmap: data, loading } = useStats();
     const t = useTranslations('StatsCharts');
 
-    // Generate last 365 days
+    // Generate days for the current calendar year
     const generateDays = () => {
         const days: { date: string; count: number }[] = [];
         const today = new Date();
+        const currentYear = today.getFullYear();
 
-        for (let i = 364; i >= 0; i--) {
-            const date = new Date(today);
-            date.setDate(date.getDate() - i);
-            const dateStr = date.toISOString().split('T')[0];
+        // Start from Jan 1st of current year
+        const startDate = new Date(currentYear, 0, 1);
+        // End at Dec 31st of current year
+        const endDate = new Date(currentYear, 11, 31);
+
+        // Calculate number of days to display (from Jan 1st until end of year)
+        // We use the full year to keep the grid stable
+        const tempDate = new Date(startDate);
+        while (tempDate <= endDate) {
+            const y = tempDate.getFullYear();
+            const m = String(tempDate.getMonth() + 1).padStart(2, '0');
+            const dStr = String(tempDate.getDate()).padStart(2, '0');
+            const dateStr = `${y}-${m}-${dStr}`;
 
             const dayData = data.find(d => d.date === dateStr);
+
             days.push({
                 date: dateStr,
                 count: dayData?.count || 0
             });
+
+            tempDate.setDate(tempDate.getDate() + 1);
         }
 
         return days;
@@ -85,7 +98,7 @@ export default function ActivityHeatmap() {
         const weeks = groupByWeeks(days);
         const monthLabels: { month: string; weekIndex: number }[] = [];
         const monthNames = t('monthLabels') as unknown as string[];
-        let lastYearMonth = '';
+        let lastMonth = -1;
 
         weeks.forEach((week, weekIndex) => {
             // Find the first valid day in the week (skip placeholders)
@@ -93,28 +106,20 @@ export default function ActivityHeatmap() {
                 if (day.count === -1 || !day.date) continue;
 
                 const date = new Date(day.date);
-                const year = date.getFullYear();
                 const month = date.getMonth();
-                const yearMonth = `${year}-${month}`;
 
-                if (yearMonth !== lastYearMonth) {
+                if (month !== lastMonth) {
                     monthLabels.push({
                         month: monthNames[month],
                         weekIndex: weekIndex,
                     });
-                    lastYearMonth = yearMonth;
+                    lastMonth = month;
                 }
                 break;
             }
         });
 
-        // Always skip the first month label to avoid showing partial month at the start
-        // This also prevents showing duplicate month names (like 12月 at both ends)
-        const displayLabels = (monthLabels.length > 0 && monthLabels[0].month === (t('monthLabels') as unknown as string[])[11])
-            ? monthLabels.slice(1)
-            : monthLabels;
-
-        return { monthLabels: displayLabels, totalWeeks: weeks.length };
+        return { monthLabels, totalWeeks: weeks.length };
     };
 
     if (loading) {
@@ -128,7 +133,9 @@ export default function ActivityHeatmap() {
 
     const days = generateDays();
     const weeks = groupByWeeks(days);
-    const totalActivity = data.reduce((sum, d) => sum + d.count, 0);
+    const currentYear = new Date().getFullYear();
+    const currentYearData = data.filter(d => d.date.startsWith(currentYear.toString()));
+    const totalActivity = currentYearData.reduce((sum, d) => sum + d.count, 0);
     const { monthLabels, totalWeeks } = getMonthLabels();
 
     return (
@@ -136,7 +143,7 @@ export default function ActivityHeatmap() {
             <div className={styles.header}>
                 <h2 className={styles.title}>{t('activityHeatmap')}</h2>
                 <div className={styles.summary}>
-                    {t('pastYearReviews', { count: totalActivity })}
+                    {t('currentYearReviews', { count: totalActivity, year: currentYear })}
                 </div>
             </div>
 

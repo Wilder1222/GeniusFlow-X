@@ -412,7 +412,16 @@
         "loading": "Loading...",
         "empty": "No decks yet. Create your first deck!",
         "cards": "cards",
-        "dueToday": "due today"
+        "dueToday": "due today",
+        "noDescription": "No description",
+        "defaultTag": "Default",
+        "emptyTitle": "No decks yet",
+        "emptySubtitle": "Create a deck to start learning",
+        "deleteDeck": "Delete Deck",
+        "deleteFailed": "Delete failed",
+        "deleteConfirmTitle": "Delete Deck",
+        "deleteConfirmMessage": "Are you sure you want to delete this deck?",
+        "deleteConfirmDetails": "The deck \"{title}\" and all its cards will be permanently deleted. This action cannot be undone."
     },
     "Stats": {
         "title": "📊 Learning Data Center",
@@ -616,6 +625,17 @@
         "newAchievements": "🏆 New Achievements Unlocked",
         "syncing": "Syncing..."
     },
+    "ImageUpload": {
+        "uploadImage": "Upload Image",
+        "onlySupport": "Only supports JPG, PNG, GIF, WebP formats",
+        "sizeLimit": "File size cannot exceed {size}MB",
+        "uploadFailed": "Upload failed",
+        "changeImage": "Change Image",
+        "deleteImage": "Delete Image",
+        "releaseToUpload": "Release to upload",
+        "dragDropHint": "Drag image here or click to upload",
+        "hint": "Supports JPG, PNG, GIF, WebP, Max {size}MB"
+    },
     "CreateDeck": {
         "title": "Create New Deck",
         "name": "Name",
@@ -784,7 +804,8 @@
         "loading": "Loading...",
         "noData": "No data available",
         "activityHeatmap": "Learning Activity",
-        "pastYearReviews": "Past year {count} reviews",
+        "pastYearReviews": "{count} reviews in past year",
+        "currentYearReviews": "{count} reviews in {year}",
         "less": "Less",
         "more": "More",
         "reviews": "reviews",

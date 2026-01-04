@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, DragEvent } from 'react';
+import { useTranslations } from 'next-intl';
 import { uploadImage } from '@/lib/media';
 import { ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/types/media';
 import styles from './image-upload.module.css';
@@ -22,8 +23,9 @@ export default function ImageUpload({
     currentImage,
     onUploadComplete,
     onDelete,
-    label = '上传图片'
+    label
 }: ImageUploadProps) {
+    const t = useTranslations('ImageUpload');
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [error, setError] = useState<string | null>(null);
@@ -36,13 +38,13 @@ export default function ImageUpload({
 
         // Validate file type
         if (!ALLOWED_IMAGE_TYPES.includes(file.type as any)) {
-            setError('仅支持 JPG, PNG, GIF, WebP 格式');
+            setError(t('onlySupport'));
             return;
         }
 
         // Validate file size
         if (file.size > MAX_FILE_SIZE) {
-            setError(`文件大小不能超过 ${MAX_FILE_SIZE / 1024 / 1024}MB`);
+            setError(t('sizeLimit', { size: MAX_FILE_SIZE / 1024 / 1024 }));
             return;
         }
 
@@ -71,7 +73,7 @@ export default function ImageUpload({
             onUploadComplete(imageUrl);
         } catch (err: any) {
             console.error('Upload error:', err);
-            setError(err.message || '上传失败');
+            setError(err.message || t('uploadFailed'));
             setPreview(currentImage || null);
         } finally {
             setUploading(false);
@@ -118,7 +120,7 @@ export default function ImageUpload({
 
     return (
         <div className={styles.container}>
-            <label className={styles.label}>{label}</label>
+            <label className={styles.label}>{label || t('uploadImage')}</label>
 
             {preview ? (
                 <div className={styles.previewContainer}>
@@ -130,7 +132,7 @@ export default function ImageUpload({
                             onClick={handleClick}
                             disabled={uploading}
                         >
-                            更换图片
+                            {t('changeImage')}
                         </button>
                         <button
                             type="button"
@@ -138,7 +140,7 @@ export default function ImageUpload({
                             onClick={handleDeleteClick}
                             disabled={uploading}
                         >
-                            删除图片
+                            {t('deleteImage')}
                         </button>
                     </div>
                 </div>
@@ -162,10 +164,10 @@ export default function ImageUpload({
                     <div className={styles.dropzoneContent}>
                         <span className={styles.uploadIcon}>📁</span>
                         <p className={styles.dropzoneText}>
-                            {dragActive ? '松开以上传' : '拖拽图片到此处或点击上传'}
+                            {dragActive ? t('releaseToUpload') : t('dragDropHint')}
                         </p>
                         <p className={styles.dropzoneHint}>
-                            支持 JPG, PNG, GIF, WebP，最大 5MB
+                            {t('hint', { size: MAX_FILE_SIZE / 1024 / 1024 })}
                         </p>
                     </div>
                 </div>

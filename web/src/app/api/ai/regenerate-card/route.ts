@@ -46,25 +46,26 @@ export async function POST(req: NextRequest) {
         }
 
         // Build prompt
-        const prompt = `You are an expert flashcard creator. Regenerate a better version of this flashcard.
+        const prompt = `You are an expert flashcard creator. Your task is to provide a NEW, ALTERNATIVE answer for the following question. 
+DO NOT just rephrase the original answer. Aim for a fresh perspective, a more detailed explanation, or a different valid approach to the same question.
 
 Original Question: ${originalCard.front}
-Original Answer: ${originalCard.back}
+Original Answer (to be replaced): ${originalCard.back}
 ${context ? `Context: ${context}` : ''}
-${instruction ? `User Instruction: ${instruction}` : 'Please create an improved version with a clearer question and more comprehensive answer.'}
+${instruction ? `User Instruction: ${instruction}` : 'Please provide a completely new, high-quality alternative answer for this question.'}
 
 Return a JSON object (no markdown wrapping) with this exact structure:
 {
-  "front": "Improved question in Chinese (简体中文)",
-  "back": "Improved answer in Chinese (简体中文)",
+  "front": "The same or slightly refined question in Chinese (简体中文)",
+  "back": "A FRESH, NEW answer in Chinese (简体中文)",
   "tags": ["relevant", "tags"],
   "difficulty": "easy|medium|hard"
 }
 
 IMPORTANT:
 - Output must be in Simplified Chinese (简体中文)
-- Make the question more specific and testable
-- Make the answer more comprehensive but concise
+- The goal is to provide a NEW answer to the same question, not a refactored version of the previous answer
+- Focus on accuracy and clarity
 - Keep inline code format with single backticks if needed`;
 
         // Create AI client
