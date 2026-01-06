@@ -32,8 +32,8 @@ export default async function LocaleLayout({ children, params }: Props) {
 
     return (
         <NextIntlClientProvider messages={messages}>
-            <ThemeProvider>
-                <AuthProvider>
+            <AuthProvider>
+                <ThemeProvider>
                     <AchievementProvider>
                         <GamificationProvider>
                             <ToastProvider>
@@ -41,8 +41,8 @@ export default async function LocaleLayout({ children, params }: Props) {
                             </ToastProvider>
                         </GamificationProvider>
                     </AchievementProvider>
-                </AuthProvider>
-            </ThemeProvider>
+                </ThemeProvider>
+            </AuthProvider>
         </NextIntlClientProvider>
     );
 }

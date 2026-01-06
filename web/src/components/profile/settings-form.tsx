@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button, Input } from '@/components';
+import { useTheme } from '@/lib/theme-context';
 import type { UserSettings, UpdateSettingsData } from '@/types/profile';
 import { getSettings, updateSettings } from '@/lib/settings';
 import { getFriendlyErrorMessage } from '@/lib/errors';
@@ -16,6 +17,7 @@ export interface SettingsFormProps {
 export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
     const t = useTranslations('Settings');
     const tus = useTranslations('UserSettings');
+    const { setTheme } = useTheme();
     const [settings, setSettings] = useState<UserSettings | null>(initialSettings || null);
     const [formData, setFormData] = useState({
         theme: 'system' as 'light' | 'dark' | 'system',
@@ -109,6 +111,12 @@ export function SettingsForm({ initialSettings, onUpdate }: SettingsFormProps) {
             if (updatedSettings) {
                 setSettings(updatedSettings);
                 setSuccess(t('saveSuccess'));
+
+                // Also update the global theme context if theme was changed
+                if (updateData.theme) {
+                    setTheme(updateData.theme as any);
+                }
+
                 onUpdate?.(updatedSettings);
             }
         } catch (err: unknown) {

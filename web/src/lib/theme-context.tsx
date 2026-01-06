@@ -1,6 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { AuthContext } from '@/lib/auth-context';
+import { getSettings, updateSettings } from '@/lib/settings';
 
 type Theme = 'light' | 'dark' | 'classic-dark' | 'system';
 
@@ -22,15 +24,53 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     });
     const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>('light');
     const [isLoaded, setIsLoaded] = useState(false);
+    const authContext = useContext(AuthContext);
+    const user = authContext?.user;
+    const authLoading = authContext?.loading;
+    const [isSyncing, setIsSyncing] = useState(false);
+    const [isInitialSyncDone, setIsInitialSyncDone] = useState(false);
 
-    // Sync state with localStorage on mount (secondary check for safety)
+    // Sync state with localStorage on mount
     useEffect(() => {
-        const savedTheme = localStorage.getItem('theme') as Theme | null;
-        if (savedTheme && savedTheme !== theme) {
-            setTheme(savedTheme);
+        if (typeof window !== 'undefined') {
+            const savedTheme = localStorage.getItem('theme') as Theme | null;
+            if (savedTheme && savedTheme !== theme) {
+                setTheme(savedTheme);
+            }
+            setIsLoaded(true);
         }
-        setIsLoaded(true);
     }, []);
+
+    // Fetch theme from database when user logs in
+    useEffect(() => {
+        const fetchRemoteTheme = async () => {
+            if (user && !authLoading) {
+                try {
+                    console.log('[Theme] Syncing theme from database...');
+                    const settings = await getSettings();
+                    if (settings?.theme) {
+                        const remoteTheme = settings.theme as Theme;
+                        if (remoteTheme !== theme) {
+                            console.log('[Theme] Applying remote theme:', remoteTheme);
+                            setTheme(remoteTheme);
+                            localStorage.setItem('theme', remoteTheme);
+                        }
+                    }
+                } catch (err) {
+                    console.error('[Theme] Failed to fetch remote theme:', err);
+                } finally {
+                    setIsInitialSyncDone(true);
+                }
+            }
+        };
+
+        if (user && isLoaded) {
+            fetchRemoteTheme();
+        } else if (!user) {
+            // Reset sync state on logout
+            setIsInitialSyncDone(false);
+        }
+    }, [user, authLoading, isLoaded]);
 
     useEffect(() => {
         if (!isLoaded) return;
@@ -56,7 +96,30 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
         // Save to localStorage
         localStorage.setItem('theme', theme);
-    }, [theme]);
+
+        // Save to database if user is logged in and initial sync is complete
+        const syncToDb = async () => {
+            if (user && isInitialSyncDone && !isSyncing) {
+                try {
+                    setIsSyncing(true);
+                    await updateSettings({ theme: theme as any });
+                    console.log('[Theme] Saved theme to database:', theme);
+                } catch (err) {
+                    console.error('[Theme] Failed to save theme to database:', err);
+                    // Log more details if it's a Supabase error
+                    if (typeof err === 'object' && err !== null) {
+                        console.error('[Theme] Error details:', JSON.stringify(err, null, 2));
+                    }
+                } finally {
+                    setIsSyncing(false);
+                }
+            }
+        };
+
+        if (isLoaded) {
+            syncToDb();
+        }
+    }, [theme, user, isLoaded]);
 
     // Listen for system theme changes when in system mode
     useEffect(() => {
